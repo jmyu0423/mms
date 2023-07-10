@@ -11,7 +11,7 @@ const Sidebar = () => {
     <Drawer
       variant="permanent"
       sx={{
-        width: sizeConfigs.sidebar.width,
+        width: sizeConfigs.sidebar.width, //사이드 바 넓이
         flexShrink: 0,
         "& .MuiDrawer-paper": {
           width: sizeConfigs.sidebar.width,

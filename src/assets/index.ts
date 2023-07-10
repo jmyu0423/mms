@@ -1,6 +1,7 @@
 const assets = {
   images: {
-    logo: require("./images/typescript-logo-240.png")
+    logo: require("./images/typescript-logo-240.png"),
+    user: require("./images/user.png")
   }
 };
 

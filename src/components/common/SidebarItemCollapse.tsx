@@ -44,10 +44,13 @@ const SidebarItemCollapse = ({ item }: Props) => {
           <ListItemText
             disableTypography
             primary={
-              <Typography>
+              <Typography
+                style={{ fontSize: "15px" }}
+              >
                 {item.sidebarProps.displayText}
               </Typography>
             }
+
           />
           {open ? <ExpandLessOutlinedIcon /> : <ExpandMoreOutlinedIcon />}
         </ListItemButton>
