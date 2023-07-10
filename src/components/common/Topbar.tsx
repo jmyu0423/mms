@@ -1,7 +1,9 @@
-import { AppBar, Toolbar, Typography } from "@mui/material";
+import { AppBar, Toolbar, Typography, Box } from "@mui/material";
 import colorConfigs from "../../configs/colorConfigs";
 import sizeConfigs from "../../configs/sizeConfigs";
-import MainToolbar from "./MainToolbar";
+import MainToolbar from "./mainTool/MainToolbar";
+import MainToolUser from "./mainTool/MainToolUser";
+import MainToolLogout from "./mainTool/MainToolLogout";
 
 const Topbar = () => {
   return (
@@ -14,11 +16,13 @@ const Topbar = () => {
         boxShadow: "unset",
         backgroundColor: colorConfigs.sidebar.bg,
         color: colorConfigs.sidebar.color,
-        // flexDirection: 'column-reverse',
-        // justifyContent: 'center'
       }}
     >
-      <MainToolbar />
+      <Box sx={{ height: '100%' }} display="flex" alignItems="center" justifyContent="flex-end" fontSize="14px">
+        <MainToolbar />
+        <MainToolUser />
+        <MainToolLogout />
+      </Box>
     </AppBar>
   );
 };

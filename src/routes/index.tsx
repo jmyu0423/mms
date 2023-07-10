@@ -5,6 +5,7 @@ import appRoutes from "./appRoutes";
 import { RouteType } from "./config";
 
 const generateRoute = (routes: RouteType[]): ReactNode => {
+  console.log(routes)
   return routes.map((route, index) => (
     route.index ? (
       <Route
