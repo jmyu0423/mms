@@ -16,16 +16,23 @@ import AlertPage from "../pages/component/AlertPage";
 import ButtonPage from "../pages/component/ButtonPage";
 import InstallationPage from "../pages/installation/InstallationPage";
 import DocumentationPage from "../pages/documentation/DocumentationPage";
+import Login from "../pages/login/Login";
+import PrivateRoute from "../PrivateRoute";
 
 const appRoutes: RouteType[] = [
   {
     index: true,
-    element: <HomePage />,
+    element: <PrivateRoute><HomePage /></PrivateRoute>,
     state: "home"
   },
   {
+    path: "/login",
+    element: <Login />,
+    state: "login"
+  },
+  {
     path: "/installation",
-    element: <InstallationPage />,
+    element: <PrivateRoute><InstallationPage /></PrivateRoute>,
     state: "installation",
     sidebarProps: {
       displayText: "Installation",
@@ -34,7 +41,7 @@ const appRoutes: RouteType[] = [
   },
   {
     path: "/dashboard",
-    element: <DashboardPageLayout />,
+    element: <PrivateRoute><DashboardPageLayout /></PrivateRoute>,
     state: "dashboard",
     sidebarProps: {
       displayText: "Dashboard",
@@ -43,7 +50,7 @@ const appRoutes: RouteType[] = [
     child: [
       {
         index: true,
-        element: <DashboardIndex />,
+        element: <PrivateRoute><DashboardIndex /></PrivateRoute>,
         state: "dashboard.index"
       },
       {
