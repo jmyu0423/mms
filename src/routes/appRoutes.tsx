@@ -1,23 +1,30 @@
-import DashboardPageLayout from "../pages/dashboard/DashboardPageLayout";
-import HomePage from "../pages/home/HomePage";
 import { RouteType } from "./config";
-import DefaultPage from "../pages/dashboard/DefaultPage";
-import DashboardIndex from "../pages/dashboard/DashboardIndex";
-import ChangelogPage from "../pages/changelog/ChangelogPage";
-import AnalyticsPage from "../pages/dashboard/AnalyticsPage";
-import SaasPage from "../pages/dashboard/SaasPage";
-import ComponentPageLayout from "../pages/component/ComponentPageLayout";
-import DashboardOutlinedIcon from '@mui/icons-material/DashboardOutlined';
-import AppsOutlinedIcon from '@mui/icons-material/AppsOutlined';
-import ArticleOutlinedIcon from '@mui/icons-material/ArticleOutlined';
-import FormatListBulletedOutlinedIcon from '@mui/icons-material/FormatListBulletedOutlined';
-import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
-import AlertPage from "../pages/component/AlertPage";
-import ButtonPage from "../pages/component/ButtonPage";
-import InstallationPage from "../pages/installation/InstallationPage";
-import DocumentationPage from "../pages/documentation/DocumentationPage";
+
+import HomePage from "../pages/home/HomePage";
+
+import StatisticLayout from "../pages/statistics/StatisticLayout";
+import StatisticsIndex from "../pages/statistics/StatisticsIndex";
+import Statistics1 from "../pages/statistics/Statistics1";
+import Statistics2 from "../pages/statistics/Statistics2";
+import Statistics3 from "../pages/statistics/Statistics3";
+import EqualizerIcon from '@mui/icons-material/Equalizer';
+
+import OperateLayout from "../pages/operate/OperateLayout";
+import Auth from "../pages/operate/Auth";
+import User from "../pages/operate/User";
+import Item from "../pages/operate/Item";
+import Approval from "../pages/operate/Approval";
+import Log from "../pages/operate/Log";
+import ManageHistoryIcon from '@mui/icons-material/ManageHistory';
+
+import Notice from "../pages/notice/Notice";
+import MarkUnreadChatAltIcon from '@mui/icons-material/MarkUnreadChatAlt';
+
+import PostAddIcon from '@mui/icons-material/PostAdd';
+import Management from "../pages/management/Management";
 import Login from "../pages/login/Login";
 import PrivateRoute from "../PrivateRoute";
+
 
 const appRoutes: RouteType[] = [
   {
@@ -31,99 +38,123 @@ const appRoutes: RouteType[] = [
     state: "login"
   },
   {
-    path: "/installation",
-    element: <PrivateRoute><InstallationPage /></PrivateRoute>,
-    state: "installation",
+    path: "/management",
+    element: <PrivateRoute><Management /></PrivateRoute>,
+    state: "management",
     sidebarProps: {
-      displayText: "Installation",
-      icon: <FileDownloadOutlinedIcon />
+      displayText: "박물관리",
+      icon: <PostAddIcon />
     }
   },
   {
-    path: "/dashboard",
-    element: <PrivateRoute><DashboardPageLayout /></PrivateRoute>,
-    state: "dashboard",
+    path: "/statistics",
+    element: <PrivateRoute><StatisticLayout /></PrivateRoute>,
+    state: "statistics",
     sidebarProps: {
-      displayText: "Dashboard",
-      icon: <DashboardOutlinedIcon />
+      displayText: "통계관리",
+      icon: <EqualizerIcon />
     },
     child: [
       {
         index: true,
-        element: <PrivateRoute><DashboardIndex /></PrivateRoute>,
-        state: "dashboard.index"
+        element: <PrivateRoute><StatisticsIndex /></PrivateRoute>,
+        state: "statistics.StatisticsIndex"
       },
       {
-        path: "/dashboard/default",
-        element: <DefaultPage />,
-        state: "dashboard.default",
+        path: "/statistics/statistics1",
+        element: <PrivateRoute><Statistics1 /></PrivateRoute>,
+        state: "statistics.statistics1",
         sidebarProps: {
-          displayText: "Default"
+          displayText: "통계1"
         },
       },
       {
-        path: "/dashboard/analytics",
-        element: <AnalyticsPage />,
-        state: "dashboard.analytics",
+        path: "/statistics/statistics2",
+        element: <PrivateRoute><Statistics2 /></PrivateRoute>,
+        state: "statistics.statistics2",
         sidebarProps: {
-          displayText: "Analytic"
+          displayText: "통계2"
         }
       },
       {
-        path: "/dashboard/saas",
-        element: <SaasPage />,
-        state: "dashboard.saas",
+        path: "/statistics/statistics3",
+        element: <PrivateRoute><Statistics3 /></PrivateRoute>,
+        state: "statistics.statistics3",
         sidebarProps: {
-          displayText: "Saas"
+          displayText: "통계3"
         }
       }
     ]
   },
   {
-    path: "/component",
-    element: <ComponentPageLayout />,
-    state: "component",
+    path: "/operate",
+    element: <PrivateRoute><OperateLayout /></PrivateRoute>,
+    state: "operate",
     sidebarProps: {
-      displayText: "Components",
-      icon: <AppsOutlinedIcon />
+      displayText: "운영관리",
+      icon: <PrivateRoute><ManageHistoryIcon /></PrivateRoute>
     },
     child: [
       {
-        path: "/component/alert",
-        element: <AlertPage />,
-        state: "component.alert",
+        path: "/operate/auth",
+        element: <PrivateRoute><Auth /></PrivateRoute>,
+        state: "operate.auth",
         sidebarProps: {
-          displayText: "Alert"
+          displayText: "권한관리"
         },
       },
       {
-        path: "/component/button",
-        element: <ButtonPage />,
-        state: "component.button",
+        path: "/operate/user",
+        element: <PrivateRoute><User /></PrivateRoute>,
+        state: "operate.user",
         sidebarProps: {
-          displayText: "Button"
+          displayText: "사용자관리"
+        }
+      },
+      {
+        path: "/operate/item",
+        element: <PrivateRoute><Item /></PrivateRoute>,
+        state: "operate.item",
+        sidebarProps: {
+          displayText: "항목관리"
+        }
+      },
+      {
+        path: "/operate/approval",
+        element: <PrivateRoute><Approval /></PrivateRoute>,
+        state: "operate.approval",
+        sidebarProps: {
+          displayText: "승인관리"
+        }
+      },
+      {
+        path: "/operate/log",
+        element: <PrivateRoute><Log /></PrivateRoute>,
+        state: "operate.log",
+        sidebarProps: {
+          displayText: "로그관리"
         }
       }
     ]
   },
   {
-    path: "/documentation",
-    element: <DocumentationPage />,
-    state: "documentation",
+    path: "/notice",
+    element: <PrivateRoute><Notice /></PrivateRoute>,
+    state: "notice",
     sidebarProps: {
-      displayText: "Documentation",
-      icon: <ArticleOutlinedIcon />
+      displayText: "공지사항",
+      icon: <MarkUnreadChatAltIcon />
     }
   },
-  {
-    path: "/changelog",
-    element: <ChangelogPage />,
-    state: "changelog",
-    sidebarProps: {
-      displayText: "Changelog",
-      icon: <FormatListBulletedOutlinedIcon />
-    }
-  }
+  // {
+  //   path: "/changelog",
+  //   element: <ChangelogPage />,
+  //   state: "changelog",
+  //   sidebarProps: {
+  //     displayText: "Changelog",
+  //     icon: <FormatListBulletedOutlinedIcon />
+  //   }
+  // }
 ];
 
 export default appRoutes;

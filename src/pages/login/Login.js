@@ -20,17 +20,29 @@ const Login = () => {
     const [userId, setUserId] = useState("");
     const [password, setPassword] = useState("");
     const auth = useAuth();
+    const [errorParams, setErrorParams] = useState("");
 
     const handleSubmit = (event) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
+
+        // 아이디 패스워드 체크
+        if (!userId) {
+            setErrorParams("아이디를 입력해 주세요")
+            return false;
+        } else if (!password) {
+            setErrorParams("비밀번호를 입력해 주세요")
+            return false;
+        }
         // console.log({
         //     email: data.get('email'),
         //     password: data.get('password'),
         // });
 
-        if(userId === "test" && password === "1234"){
+        if (userId === "test" && password === "1234") {
             auth.login();
+        } else {
+            setErrorParams("아이디(로그인 전용 아이디) 또는 비밀번호를 잘못 입력했습니다. \n입력하신 내용을 다시 확인해주세요.")
         }
     };
 
@@ -50,7 +62,7 @@ const Login = () => {
                         <LockOutlinedIcon />
                     </Avatar>
                     <Typography component="h1" variant="h5">
-                        Sign in
+                        로그인
                     </Typography>
                     <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
                         <TextField
@@ -58,44 +70,52 @@ const Login = () => {
                             required
                             fullWidth
                             id="id"
-                            label="id"
+                            label="아이디"
                             name="id"
                             autoComplete="id"
                             autoFocus
-                            onChange={(e)=>setUserId(e.target.value)}
+                            onChange={(e) => setUserId(e.target.value)}
                         />
                         <TextField
                             margin="normal"
                             required
                             fullWidth
                             name="password"
-                            label="Password"
+                            label="비밀번호"
                             type="password"
                             id="password"
                             autoComplete="current-password"
-                            onChange={(e)=>setPassword(e.target.value)}
+                            onChange={(e) => setPassword(e.target.value)}
                         />
                         <FormControlLabel
-                            control={<Checkbox value="remember" color="primary" />}
-                            label="Remember me"
+                            control={<Checkbox value="remember" color="primary" style={{ padding: "1px" }} />}
+                            label={<Box component="div" fontSize={14} color="#6b6767">
+                                로그인 상태 유지
+                            </Box>}
+                            style={{ marginLeft: "0px" }}
                         />
+                        {errorParams ?
+                            <Box style={{ marginTop: "10px", fontSize: 13, color: "red", whiteSpace: "pre-line" }}>{errorParams}</Box>
+                            :
+                            null
+                        }
                         <Button
                             type="submit"
                             fullWidth
                             variant="contained"
-                            sx={{ mt: 3, mb: 2 }}
+                            sx={{ mt: 2, mb: 2 }}
                         >
-                            Sign In
+                            로그인
                         </Button>
                         <Grid container>
                             <Grid item xs>
                                 <Link href="#" variant="body2">
-                                    Forgot password?
+                                    비밀번호 초기화
                                 </Link>
                             </Grid>
                             <Grid item>
                                 <Link href="#" variant="body2">
-                                    {"Don't have an account? Sign Up"}
+                                    회원가입
                                 </Link>
                             </Grid>
                         </Grid>

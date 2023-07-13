@@ -1,4 +1,4 @@
-import { Avatar, Drawer, List, Stack, Toolbar, Button } from "@mui/material";
+import { Avatar, Drawer, List, Stack, Toolbar, Button, IconButton } from "@mui/material";
 import assets from "../../assets";
 import colorConfigs from "../../configs/colorConfigs";
 import sizeConfigs from "../../configs/sizeConfigs";
@@ -6,8 +6,18 @@ import appRoutes from "../../routes/appRoutes";
 import SidebarItem from "./SidebarItem";
 import SidebarItemCollapse from "./SidebarItemCollapse";
 import KeyboardDoubleArrowLeftOutlinedIcon from '@mui/icons-material/KeyboardDoubleArrowLeftOutlined';
+import { useNavigate } from "react-router-dom";
+import MuseumIcon from '@mui/icons-material/Museum';
 
 const Sidebar = () => {
+  const navigate = useNavigate();
+
+  //홈버튼
+  const directHome = () => {
+    navigate("/");
+    window.location.reload(); //임시 강제 새로고침
+  }
+
   return (
     <Drawer
       variant="permanent"
@@ -24,14 +34,16 @@ const Sidebar = () => {
       }}
     >
       <List disablePadding>
-        <Toolbar sx={{ marginBottom: "20px" }}>
+        <Toolbar sx={{ marginBottom: "10px" }}>
           <Stack
             sx={{ width: "100%" }}
             direction="row"
             justifyContent="center"
           >
-            <Avatar src={assets.images.logo} />
-            
+            <IconButton onClick={(e) => directHome()}>
+              <MuseumIcon sx={{ fontSize: 70, color: "antiquewhite" }} />
+              {/* <Avatar src={assets.images.logo} /> */}
+            </IconButton>
           </Stack>
           {/* <Button 
             sx={{
