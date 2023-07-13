@@ -1,38 +1,28 @@
 import axios from 'axios';
 import { createContext, useContext, useRef, useState } from 'react';
+import { useRecoilState, useSetRecoilState } from 'recoil'
+import { authStatus } from "../recoil/atoms/authAtoms"
 
 export const AuthenticationContext = createContext(undefined);
 
 export const AuthenticationProvider = ({ children }) => {
-
-    const principalPrototype = {
-        userNm: null,
-        userAuthTypeNm: null,
-        userAuthTypeCd: null,
-        dsSeq: null,
-        userId: null
-    };
-    const [principal, setPrincipal] = useState(principalPrototype);
-    const authentication = useRef(principal.userId != null ? true : false);
+    const authCurrent = useRecoilState(authStatus)[0];
+    const setRecoilAuthState = useSetRecoilState(authStatus);
 
     const login = (data) => {
-        authentication.current = true;
+        setRecoilAuthState({userId: "test", current: true})
     };
 
     const logout = () => {
-        authentication.current = false;
-        setPrincipal(principalPrototype);
+        setRecoilAuthState({userId: "", current: false})
     };
-
-    const getPrincipal = () => principal;
 
     return (
         <AuthenticationContext.Provider
             value={{
                 login,
                 logout,
-                getPrincipal,
-                authentication
+                test
             }}
         >
             {children}

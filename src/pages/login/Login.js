@@ -12,17 +12,26 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { useEffect, useState } from 'react';
+import { useAuth } from '../../contexts/AuthenticationContext';
 
 const Login = () => {
     const defaultTheme = createTheme();
+    const [userId, setUserId] = useState("");
+    const [password, setPassword] = useState("");
+    const auth = useAuth();
 
     const handleSubmit = (event) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
-        console.log({
-            email: data.get('email'),
-            password: data.get('password'),
-        });
+        // console.log({
+        //     email: data.get('email'),
+        //     password: data.get('password'),
+        // });
+
+        if(userId === "test" && password === "1234"){
+            auth.login();
+        }
     };
 
     return (
@@ -48,11 +57,12 @@ const Login = () => {
                             margin="normal"
                             required
                             fullWidth
-                            id="email"
-                            label="Email Address"
-                            name="email"
-                            autoComplete="email"
+                            id="id"
+                            label="id"
+                            name="id"
+                            autoComplete="id"
                             autoFocus
+                            onChange={(e)=>setUserId(e.target.value)}
                         />
                         <TextField
                             margin="normal"
@@ -63,6 +73,7 @@ const Login = () => {
                             type="password"
                             id="password"
                             autoComplete="current-password"
+                            onChange={(e)=>setPassword(e.target.value)}
                         />
                         <FormControlLabel
                             control={<Checkbox value="remember" color="primary" />}

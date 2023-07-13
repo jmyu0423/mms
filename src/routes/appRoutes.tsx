@@ -27,7 +27,7 @@ const appRoutes: RouteType[] = [
   },
   {
     path: "/login",
-    element: <Login />,
+    element: <PrivateRoute><Login /></PrivateRoute>,
     state: "login"
   },
   {

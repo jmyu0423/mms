@@ -2,30 +2,28 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import MainLayout from "./components/layout/MainLayout";
 import BaseLayout from "./components/layout/BaseLayout";
 import { routes } from "./routes";
-import { useAuth } from './contexts/AuthenticationContext';
-import React, { Component, Suspense } from 'react'
-
+import { useRecoilState } from 'recoil'
+import { authStatus } from "./recoil/atoms/authAtoms"
 
 function App() {
-  const { authentication }: any = useAuth();
-  console.log(authentication)
+  const authCurrent = useRecoilState(authStatus)[0];
   let element;
 
   //로그인 유무
-  if (authentication.current) {
-    <MainLayout />
+  if (authCurrent.current) {
+    element = <MainLayout />
   } else {
-    <BaseLayout />
+    element = <BaseLayout />
   }
 
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={element}>
-          {routes}
-        </Route>
-      </Routes>
-    </BrowserRouter>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={element}>
+            {routes}
+          </Route>
+        </Routes>
+      </BrowserRouter>
   );
 }
 

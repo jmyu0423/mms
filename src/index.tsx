@@ -6,6 +6,7 @@ import App from './App';
 import { store } from './redux/store';
 import reportWebVitals from './reportWebVitals';
 import { AuthenticationProvider } from './contexts/AuthenticationContext';
+import { RecoilRoot } from 'recoil';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -14,9 +15,11 @@ root.render(
   <React.StrictMode>
     <Provider store={store}>
       <CssBaseline />
-      <AuthenticationProvider>
-        <App />
-      </AuthenticationProvider>
+      <RecoilRoot>
+        <AuthenticationProvider>
+          <App />
+        </AuthenticationProvider>
+      </RecoilRoot>
     </Provider>
   </React.StrictMode>
 );
