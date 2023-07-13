@@ -17,13 +17,13 @@ function App() {
   }
 
   return (
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={element}>
-            {routes}
-          </Route>
-        </Routes>
-      </BrowserRouter>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={element}>
+          {routes}
+        </Route>
+      </Routes>
+    </BrowserRouter>
   );
 }
 
