@@ -21,8 +21,7 @@ export const AuthenticationProvider = ({ children }) => {
         <AuthenticationContext.Provider
             value={{
                 login,
-                logout,
-                test
+                logout
             }}
         >
             {children}
