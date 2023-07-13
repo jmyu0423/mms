@@ -2,9 +2,9 @@ import {
     Box,
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import { useNavigate } from 'react-router';
 import assets from '../../../assets';
 import { useAuth } from '../../../contexts/AuthenticationContext';
+import LogoutOutlined from '@mui/icons-material/LogoutOutlined';
 
 const LogoutBox = styled(Box)`
   width: 100px;
@@ -17,12 +17,10 @@ const LogoutBox = styled(Box)`
 `;
 
 const MainToolLogout = () => {
-    const navigate = useNavigate();
     const auth = useAuth();
 
     const logout = () => {
         auth.logout();
-        navigate("/", { replace: true });
         // axios.get("/logoutProc").then((response) => {
         //     let axiosCommonHeaders = axios.defaults.headers.common;
         //     delete axiosCommonHeaders['Authorization'];

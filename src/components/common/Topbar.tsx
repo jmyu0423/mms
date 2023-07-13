@@ -10,7 +10,8 @@ const Topbar = () => {
     <AppBar
       position="fixed"
       sx={{
-        width: `calc(100% - ${sizeConfigs.sidebar.width})`,
+        // width: `calc(100% - ${sizeConfigs.sidebar.width})`,
+        width: '100%',
         height: sizeConfigs.topbar.height,
         ml: sizeConfigs.sidebar.width,
         boxShadow: "unset",
@@ -18,7 +19,7 @@ const Topbar = () => {
         color: colorConfigs.sidebar.color,
       }}
     >
-      <Box sx={{ height: '100%' }} display="flex" alignItems="center" justifyContent="flex-end" fontSize="14px">
+      <Box sx={{ height: '100%' }} display="flex" alignItems="center" justifyContent="flex-end" fontSize="13px">
         <MainToolbar />
         <MainToolUser />
         <MainToolLogout />

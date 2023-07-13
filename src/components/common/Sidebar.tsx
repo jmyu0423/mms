@@ -1,10 +1,11 @@
-import { Avatar, Drawer, List, Stack, Toolbar } from "@mui/material";
+import { Avatar, Drawer, List, Stack, Toolbar, Button } from "@mui/material";
 import assets from "../../assets";
 import colorConfigs from "../../configs/colorConfigs";
 import sizeConfigs from "../../configs/sizeConfigs";
 import appRoutes from "../../routes/appRoutes";
 import SidebarItem from "./SidebarItem";
 import SidebarItemCollapse from "./SidebarItemCollapse";
+import KeyboardDoubleArrowLeftOutlinedIcon from '@mui/icons-material/KeyboardDoubleArrowLeftOutlined';
 
 const Sidebar = () => {
   return (
@@ -30,7 +31,14 @@ const Sidebar = () => {
             justifyContent="center"
           >
             <Avatar src={assets.images.logo} />
+            
           </Stack>
+          {/* <Button 
+            sx={{
+            }}
+            variant="outlined" 
+            startIcon={<KeyboardDoubleArrowLeftOutlinedIcon />}>
+          </Button> */}
         </Toolbar>
         {appRoutes.map((route, index) => (
           route.sidebarProps ? (
