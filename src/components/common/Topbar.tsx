@@ -13,10 +13,9 @@ const Topbar = () => {
         // width: `calc(100% - ${sizeConfigs.sidebar.width})`,
         width: '100%',
         height: sizeConfigs.topbar.height,
-        ml: sizeConfigs.sidebar.width,
         boxShadow: "unset",
-        backgroundColor: colorConfigs.sidebar.bg,
-        color: colorConfigs.sidebar.color,
+        backgroundColor: colorConfigs.topbar.bg,
+        color: colorConfigs.topbar.color,
       }}
     >
       <Box sx={{ height: '100%' }} display="flex" alignItems="center" justifyContent="flex-end" fontSize="13px">

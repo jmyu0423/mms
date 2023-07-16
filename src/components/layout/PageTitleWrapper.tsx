@@ -7,7 +7,7 @@ import { Box } from '@mui/material';
 const PageTitle = styled(Box)(
     ({ theme }) => `
         padding: ${theme.spacing(1, 0)};
-`
+        `
 );
 
 const PageTitleContainer = styled(Container)(
@@ -15,6 +15,7 @@ const PageTitleContainer = styled(Container)(
       // & .MuiContainer-root: {
         @media (min-width: ${theme.breakpoints.values.lg}px) {
           max-width:none;
+          display:flex;
         };
       // };
   `

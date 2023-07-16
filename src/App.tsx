@@ -4,6 +4,8 @@ import BaseLayout from "./components/layout/BaseLayout";
 import { routes } from "./routes";
 import { useRecoilState } from 'recoil'
 import { authStatus } from "./recoil/atoms/authAtoms"
+import { ThemeProvider, createTheme } from '@mui/material/styles';
+import CssBaseline from '@mui/material/CssBaseline';
 
 function App() {
   const authCurrent = useRecoilState(authStatus)[0];
@@ -16,14 +18,25 @@ function App() {
     element = <BaseLayout />
   }
 
+  const Theme = createTheme({
+    palette: {
+      background: {
+        default: "#dbd9d3"
+      },
+    },
+  });
+
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={element}>
-          {routes}
-        </Route>
-      </Routes>
-    </BrowserRouter>
+    <ThemeProvider theme={Theme}>
+      <CssBaseline />
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={element}>
+            {routes}
+          </Route>
+        </Routes>
+      </BrowserRouter>
+    </ThemeProvider>
   );
 }
 
