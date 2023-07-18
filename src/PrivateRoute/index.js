@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Navigate } from "react-router-dom";
 import { useRecoilState } from 'recoil'
 import { authStatus } from "../recoil/atoms/authAtoms"
-import Login from "../pages/login/Login";
+import Login from "../pages/Login";
 
 const PrivateRoute = ({ children }) => {
     const authCurrent = useRecoilState(authStatus)[0];

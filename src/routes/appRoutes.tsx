@@ -1,11 +1,11 @@
 import { RouteType } from "./config";
 
-import HomePage from "../pages/home/HomePage";
+import HomePage from "../pages/HomePage";
 
 import StatisticLayout from "../pages/statistics/StatisticLayout";
 import StatisticsIndex from "../pages/statistics/StatisticsIndex";
-import Statistics1 from "../pages/statistics/Statistics1";
-import Statistics2 from "../pages/statistics/Statistics2";
+import Statistics1 from "../pages/statistics/Statistics1/Statistics1";
+import Statistics2 from "../pages/statistics/Statistics2/Statistics2";
 import Statistics3 from "../pages/statistics/Statistics3";
 import EqualizerIcon from '@mui/icons-material/Equalizer';
 
@@ -17,12 +17,12 @@ import Approval from "../pages/operate/Approval";
 import Log from "../pages/operate/Log";
 import ManageHistoryIcon from '@mui/icons-material/ManageHistory';
 
-import Notice from "../pages/notice/Notice";
+import Notice from "../pages/Notice";
 import MarkUnreadChatAltIcon from '@mui/icons-material/MarkUnreadChatAlt';
 
 import PostAddIcon from '@mui/icons-material/PostAdd';
-import Management from "../pages/management/Management";
-import Login from "../pages/login/Login";
+import Management from "../pages/manage/Management";
+import Login from "../pages/Login";
 import PrivateRoute from "../PrivateRoute";
 
 
