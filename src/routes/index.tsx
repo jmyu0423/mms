@@ -3,6 +3,7 @@ import { Route } from "react-router-dom";
 import PageWrapper from "../components/layout/PageWrapper";
 import appRoutes from "./appRoutes";
 import { RouteType } from "./config";
+import PrivateRoute from "src/PrivateRoute";
 
 const generateRoute = (routes: RouteType[]): ReactNode => {
   return routes.map((route, index) => (
@@ -11,7 +12,7 @@ const generateRoute = (routes: RouteType[]): ReactNode => {
         index
         path={route.path}
         element={<PageWrapper state={route.state}>
-          {route.element}
+          <PrivateRoute children={route.element} state={route.state} />
         </PageWrapper>}
         key={index}
       />
@@ -20,7 +21,7 @@ const generateRoute = (routes: RouteType[]): ReactNode => {
         path={route.path}
         element={
           <PageWrapper state={route.child ? undefined : route.state}>
-            {route.element}
+            <PrivateRoute children={route.element} state={route.state} />
           </PageWrapper>
         }
         key={index}

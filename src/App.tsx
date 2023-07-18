@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes, HashRouter } from "react-router-dom";
 import MainLayout from "./components/layout/MainLayout";
 import BaseLayout from "./components/layout/BaseLayout";
 import { routes } from "./routes";
@@ -29,13 +29,13 @@ function App() {
   return (
     <ThemeProvider theme={Theme}>
       <CssBaseline />
-      <BrowserRouter>
+      <HashRouter>
         <Routes>
           <Route path="/" element={element}>
             {routes}
           </Route>
         </Routes>
-      </BrowserRouter>
+      </HashRouter>
     </ThemeProvider>
   );
 }

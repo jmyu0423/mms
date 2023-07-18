@@ -39,20 +39,16 @@ const Management = ({ }) => {
   const [selectedRow, setSelectedRow] = useState([]);
 
   const [columnDefs, setColumnDefs] = useState([
-    { field: 'resionNm', headerName: '지역', flex: 2, align: 'center', cellStyle: { textAlign: "center" } },
-    { field: 'custNm', headerName: '고객명', flex: 2, align: 'center', textAlign: 'center' },
-    { field: 'fullAddr', headerName: '주소', flex: 3, align: 'center', textAlign: 'center' },
-    { field: 'custId', headerName: '고객ID', flex: 2, align: 'center', textAlign: 'center' },
-    { field: 'rtuSeq', headerName: 'RTU일련번호', flex: 2, align: 'center', textAlign: 'center' },
-    { field: 'multi', headerName: '멀티번호', flex: 2, align: 'center', textAlign: 'center' },
-    { field: 'loraDevEui', headerName: 'LoRa장비EUI', flex: 2, align: 'center', textAlign: 'center' },
-    { field: 'eventCnt', headerName: '시스템장애수', flex: 2, align: 'center', textAlign: 'center' },
-    { field: 'dataEventSt', headerName: '데이터오류여부', flex: 2, align: 'center', textAlign: 'center' },
-    { field: 'genCnt', headerName: '발전데이터수', flex: 2, align: 'center', textAlign: 'center' },
-    { field: 'genEventSt', headerName: '발전데이터수집여부', flex: 2, align: 'center', textAlign: 'center' },
-    { field: 'useCnt', headerName: '소비데이터수', flex: 2, align: 'center', textAlign: 'center' },
-    { field: 'useEventSt', headerName: '소비데이터수집여부', flex: 2, align: 'center', textAlign: 'center' },
-    { field: 'comment', headerName: '메모', flex: 2, align: 'center', textAlign: 'center' }
+    { field: 'resionNm', headerName: '번호', flex: 2, align: 'center', cellStyle: { textAlign: "center" } },
+    { field: 'custNm', headerName: '제목', flex: 2, align: 'center', textAlign: 'center' },
+    { field: 'fullAddr', headerName: '이름', flex: 3, align: 'center', textAlign: 'center' },
+    { field: 'custId', headerName: '항목1', flex: 2, align: 'center', textAlign: 'center' },
+    { field: 'rtuSeq', headerName: '항목1', flex: 2, align: 'center', textAlign: 'center' },
+    { field: 'multi', headerName: '항목1', flex: 2, align: 'center', textAlign: 'center' },
+    { field: 'loraDevEui', headerName: '항목1', flex: 2, align: 'center', textAlign: 'center' },
+    { field: 'eventCnt', headerName: '항목1', flex: 2, align: 'center', textAlign: 'center' },
+    { field: 'dataEventSt', headerName: '항목1', flex: 2, align: 'center', textAlign: 'center' },
+    { field: 'genCnt', headerName: '항목1', flex: 2, align: 'center', textAlign: 'center' }
   ]);
 
   const defaultColDef = useMemo(() => ({
