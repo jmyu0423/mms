@@ -3,9 +3,10 @@ import PageTitleWrapper from "src/components/layout/PageTitleWrapper";
 import { Box, Button, Card, CardActions, CardContent, Container, FormControlLabel, Grid, MenuItem, TextField, Typography } from "@mui/material";
 import PageTitle from 'src/components/layout/PageTitle';
 import { styled } from '@mui/material/styles';
-import BaseButton from 'src/components/button/BaseButton'
-import DangerButton from 'src/components/button/DangerButton'
 import AgGrid from "src/components/AgGrid";
+import ManagementRegistModal from "src/pages/manage/ManagementRegistModal"
+import { indigo } from '@mui/material/colors';
+import { red, grey } from '@mui/material/colors';
 
 const PageContainer = styled(Container)(
   ({ theme }) => `
@@ -33,10 +34,37 @@ const WngCard = styled(Card)(({ theme }) => ({
   padding: '12px 12px'
 }));
 
+const BaseButton = styled(Button)(({ theme }) => ({
+  color: theme.palette.getContrastText(indigo[400]),
+  backgroundColor: indigo[400],
+  width: 80,
+  height: 30,
+  fontSize: 15,
+  marginRight: 5,
+  '&:hover': {
+    backgroundColor: indigo[600],
+  },
+}));
+
+const DangerButton = styled(Button)(({ theme }) => ({
+  color: theme.palette.getContrastText(indigo[400]),
+  backgroundColor: red[300],
+  width: 80,
+  height: 30,
+  fontSize: 15,
+  marginRight: 0,
+  '&:hover': {
+    backgroundColor: red[400],
+  },
+}));
+
 const Management = ({ }) => {
   const [gridState, setgridState] = useState(null); // Optional - for accessing Grid's API
   const [rowData, setRowData] = useState([]); // Set rowData to Array of Objects, one Object per Row
   const [selectedRow, setSelectedRow] = useState([]);
+
+  //모달 컨트롤 state
+  const [open, setOpen] = useState(false);
 
   const [columnDefs, setColumnDefs] = useState([
     { field: 'resionNm', headerName: '번호', flex: 2, align: 'center', cellStyle: { textAlign: "center" } },
@@ -64,12 +92,20 @@ const Management = ({ }) => {
     setSelectedRow(row);
   }
 
+  const openRegistModal = () => {
+    setOpen(true);
+  }
+
+  const closeRegistModal = () => {
+    setOpen(false)
+  }
+
   return (
     <>
       <PageTitleWrapper>
         <PageTitle heading="박물관리" />
-        <BaseButton value={"등록"} marginRightValue={5} />
-        <DangerButton value={"삭제"} marginRightValue={0} />
+        <BaseButton onClick={(e) => openRegistModal()}>등록</BaseButton>
+        <DangerButton>삭제</DangerButton>
         {/* <Button variant="outlined" size="small">등록</Button> */}
       </PageTitleWrapper>
       <PageContainer>
@@ -94,6 +130,11 @@ const Management = ({ }) => {
           </Grid>
         </Grid>
       </PageContainer>
+
+      <ManagementRegistModal
+        open={open}
+        closeRegistModal={closeRegistModal}
+      />
     </>
   );
 };
