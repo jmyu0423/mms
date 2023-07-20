@@ -75,15 +75,6 @@ const Notice = () => {
     { field: 'genCnt', headerName: '항목1', flex: 2, align: 'center', textAlign: 'center' }
   ]);
 
-  const defaultColDef = useMemo(() => ({
-    sortable: true,
-    resizable: true,
-    headerClass: function (params: any) {
-      // logic to return the correct class
-      return 'header-one';
-    }
-  }), []);
-
   const onRowClicked = (row: any) => {
     setSelectedRow(row);
   }
@@ -107,7 +98,6 @@ const Notice = () => {
                       setRef={setgridState} // Ref for accessing Grid's API
                       rowData={rowData} // Row Data for Rows
                       columnDefs={columnDefs} // Column Defs for Columns
-                      defaultColDef={defaultColDef} // Default Column Properties
                       onRowClicked={onRowClicked}
                       heightVal={850}
                     />

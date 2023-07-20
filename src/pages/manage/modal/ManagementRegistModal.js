@@ -1,11 +1,19 @@
 import { useEffect, useRef, useMemo, useState, useLayoutEffect } from 'react';
-import { Box, TextField, styled, Button, DialogContent, Grid } from "@mui/material";
+import { Box, TextField, styled, Button, DialogContent, Grid, Typography, formControlClasses } from "@mui/material";
 import RegistModal from 'src/components/modal/RegistModal';
 import { ItemGroup, PopupFormControlLabel } from 'src/components/modal/ItemGroup';
 import StorageCombo from 'src/components/combobox/StorageCombo';
 import CountryCombo from 'src/components/combobox/CountryCombo';
 
-const ManagementRegistModal = ({ open, closeRegistModal }) => {
+const ManagementRegistModal = ({ open, closeRegistModal, setRowData, rowData }) => {
+    //파일 기본적인 정보
+    const fileObj = {
+        fileName: '파일명',
+        fileInfo: ''
+    };
+    const fileListRef = useRef([fileObj]);
+    const WIDTH_SIZE = '500px';
+
     //컬럼의 상태관리
     const [itemNm, setItemNm] = useState(""); //명칭
     const [number, setNumber] = useState(""); //번호
@@ -19,6 +27,8 @@ const ManagementRegistModal = ({ open, closeRegistModal }) => {
     const [country, setCountry] = useState("") //국가
     const [giver, setGiver] = useState(""); //증정자이름/직책
     const [characteristic, setCharacteristic] = useState(""); //특징
+    const [fileList, setFileList] = useState({}); // 파일
+    const [image, setImage] = useState("");
 
     //컬럼의 에러관리
     const [paramError, setParamError] = useState({
@@ -39,6 +49,7 @@ const ManagementRegistModal = ({ open, closeRegistModal }) => {
     useEffect(() => {
         if (open) {
             resetData();
+            resetErrorParams();
         }
     }, [open])
 
@@ -56,6 +67,8 @@ const ManagementRegistModal = ({ open, closeRegistModal }) => {
         setCountry("");
         setGiver("");
         setCharacteristic("");
+        setFileList(fileListRef.current[0]);
+        setImage("");
     }
 
     //에러파라미터 리셋
@@ -77,7 +90,54 @@ const ManagementRegistModal = ({ open, closeRegistModal }) => {
         })
     }
 
+    //파일업로드
+    const uploadFile = (e) => {
+        let data = { ...fileList };
+        data.fileName = e.target.files[0].name;
+        data.fileInfo = e.target.files[0];
+        setFileList(data);
+
+        //이미지 생성
+        const reader = new FileReader();
+        const file = e.target.files[0];
+        reader.readAsDataURL(file);
+
+        return new Promise((resolve) => {
+            reader.onload = () => {
+                setImage(reader.result || null); // 파일의 컨텐츠
+                resolve();
+            };
+            e.target.value = ''; //이벤트 값 초기화
+        });
+    };
+
+    //파일제거
+    const deleteFile = (e) => {
+        setFileList(fileListRef.current[0]);
+        setImage(""); //이미지 초기화
+    };
+
+    //물품등록
     const insertItem = () => {
+        let tempList = [...rowData];
+        tempList.push({
+            itemNm: itemNm,
+            number: number,
+            storage: storage,
+            texture: texture,
+            count: count,
+            piece: piece,
+            comment: comment,
+            size: size,
+            getReason: getReason,
+            country: country,
+            giver: giver,
+            characteristic: characteristic,
+            fileList: fileList,
+            image: image
+        })
+        setRowData(tempList);
+        closeRegistModal();
     }
 
     return (
@@ -166,6 +226,61 @@ const ManagementRegistModal = ({ open, closeRegistModal }) => {
                             control={<TextField fullWidth size="small" value={characteristic} inputProps={{ maxLength: 20 }} onChange={(e) => setCharacteristic(e.target.value)} error={paramError.itemNm === '' ? false : true} helperText={paramError.itemNm} />}
                             label="특징"
                             labelPlacement="start"
+                        />
+                    </Grid>
+                    <Grid xs={6} display={'flex'} flexDirection={'column'} alignItems={'center'} marginTop={"50px"}>
+                        <Box
+                            style={{ width: WIDTH_SIZE }}
+                            display={'flex'}
+                            mt={1}
+                            sx={{
+                                background: '#F8F8F8',
+                                padding: '5px 20px',
+                                borderRadius: '6px',
+                                border: '1px solid #C7C7C7',
+                                boxSizing: 'border-box',
+                                width: '100%',
+                                justifyContent: 'space-between'
+                            }}
+                        >
+                            <Typography children={fileList.fileName} flexGrow={1} fontWeight={'bold'} />
+                            <Box>
+                                <Typography
+                                    component="label"
+                                    onChange={uploadFile}
+                                    sx={{
+                                        cursor: 'pointer'
+                                    }}
+                                    style={{ color: 'black', fontWeight: 'bold', fontSize: "14px" }}
+                                >
+                                    파일 업로드
+                                    <input hidden accept="image/*" type="file" />
+                                </Typography>
+                            </Box>
+                            &nbsp;
+                            <Box
+                                sx={{
+                                    cursor: 'pointer',
+                                    display: "flex",
+                                    flexDirection: "column",
+                                    justifyContent: "center"
+                                }}
+                            >
+                                <Typography
+                                    onClick={(e) => deleteFile(e)}
+                                    children="삭제"
+                                    color="red"
+                                    fontWeight={'bold'}
+                                    fontSize={"14px"}
+
+                                />
+                            </Box>
+                        </Box>
+                    </Grid>
+                    <Grid xs={6} display={'flex'} justifyContent={'center'} marginTop={"50px"}>
+                        <img
+                            width="50%"
+                            src={image}
                         />
                     </Grid>
                 </Grid>

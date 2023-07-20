@@ -8,7 +8,7 @@ const StyledButton = styled(Button)(({ theme }) => ({
     width: '80px'
 }))
 
-const RegistModal = ({ title, open, onClose, children }) => {
+const RegistModal = ({ title, open, onOk, onClose, children }) => {
     return (
         <Dialog open={open} onClose={onClose} maxWidth='xl'>
             <DialogTitle sx={{
@@ -40,7 +40,7 @@ const RegistModal = ({ title, open, onClose, children }) => {
                 <Box sx={{ flexGrow: 1, width: '100%', display: 'flex', justifyContent: 'center' }}>
                     <StyledButton sx={{ background: '#898989' }} onClick={onClose}>닫기</StyledButton>
                     <Box sx={{ width: '8px' }} />
-                    <StyledButton sx={{ background: '#1E4DBA' }}>등록</StyledButton>
+                    <StyledButton sx={{ background: '#1E4DBA' }} onClick={onOk}>등록</StyledButton>
                 </Box>
                 <Box sx={{ flexGrow: 1, width: '100%' }}></Box>
             </DialogActions>

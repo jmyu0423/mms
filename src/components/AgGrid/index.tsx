@@ -2,14 +2,25 @@ import 'ag-grid-community/styles/ag-grid.css'; // Core grid CSS, always needed
 import 'ag-grid-community/styles/ag-theme-alpine.css'; // Optional theme CSS
 // import 'ag-grid-enterprise';
 import { AgGridReact } from 'ag-grid-react'; // the AG Grid React Component
-import React, { useEffect, useRef, useCallback, useState } from 'react';
+import React, { useEffect, useRef, useCallback, useState, useMemo } from 'react';
+import './style.css';
 
-const AgGrid = ({ setRef, rowData, columnDefs, defaultColDef, onRowClicked, heightVal }: any) => {
+const AgGrid = ({ setRef, rowData, columnDefs, onRowClicked, heightVal }: any) => {
     const gridRef = useRef<any>(null);
 
     useEffect(() => {
         setRef(gridRef)
     }, [gridRef])
+
+    const defaultColDef = useMemo(() => ({
+        sortable: true,
+        resizable: true,
+        filter: 'agTextColumnFilter',
+        // headerClass: function (params: any) {
+        //   // logic to return the correct class
+        //   return 'header-one';
+        // }
+    }), []);
 
     const onSelectionChanged = useCallback(() => {
         const selectedRows = gridRef.current.api.getSelectedRows();
@@ -27,7 +38,7 @@ const AgGrid = ({ setRef, rowData, columnDefs, defaultColDef, onRowClicked, heig
                 columnDefs={columnDefs} // Column Defs for Columns
                 defaultColDef={defaultColDef}
                 animateRows={true} // Optional - set to 'true' to have rows animate when sorted
-                rowSelection='single' // Options - allows click selection of rows
+                rowSelection='multiple' // Options - allows click selection of rows
                 onRowClicked={(e) => onRowClicked(gridRef.current.api.getSelectedRows())} // click row event
                 overlayNoRowsTemplate={"데이터가없습니다."}
                 onSelectionChanged={onSelectionChanged}

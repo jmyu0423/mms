@@ -57,7 +57,7 @@ function StorageCombo(props) {
                     : null
             }
             {storageList.map((option) => (
-                <MenuItem key={option.cd} value={option.cd}>
+                <MenuItem key={option.cd} value={option.title}>
                     {option.title}
                 </MenuItem>
             ))}
