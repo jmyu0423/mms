@@ -5,7 +5,7 @@ import { ItemGroup, PopupFormControlLabel } from 'src/components/modal/ItemGroup
 import StorageCombo from 'src/components/combobox/StorageCombo';
 import CountryCombo from 'src/components/combobox/CountryCombo';
 
-const ManagementRegistModal = ({ openRegist, closeRegistModal, setRowData, rowData }) => {
+const ManagementUpdateModal = ({ openUpdate, closeUpdateModal, setSingleCurrRowData, singleCurrRowData, updateRow }) => {
     //파일 기본적인 정보
     const fileObj = {
         fileName: '파일명',
@@ -36,8 +36,8 @@ const ManagementRegistModal = ({ openRegist, closeRegistModal, setRowData, rowDa
         number: '',
         storage: '',
         texture: '',
-        count: '',
-        piece: '',
+        count: 1,
+        piece: 1,
         comment: '',
         size: '',
         getReason: '',
@@ -47,29 +47,25 @@ const ManagementRegistModal = ({ openRegist, closeRegistModal, setRowData, rowDa
     })
 
     useEffect(() => {
-        if (openRegist) {
-            resetData();
+        if (openUpdate) {
+            console.log(singleCurrRowData)
+            setItemNm(singleCurrRowData.itemNm);
+            setNumber(singleCurrRowData.number);
+            setStorage(singleCurrRowData.storage);
+            setTexture(singleCurrRowData.texture);
+            setCount(singleCurrRowData.count);
+            setPiece(singleCurrRowData.piece);
+            setComment(singleCurrRowData.comment);
+            setSize(singleCurrRowData.size);
+            setGetReason(singleCurrRowData.getReason);
+            setCountry(singleCurrRowData.country);
+            setGiver(singleCurrRowData.giver);
+            setCharacteristic(singleCurrRowData.characteristic);
+            setFileList(singleCurrRowData.fileList === {} ? fileListRef.current[0] : singleCurrRowData.fileList);
+            setImage(singleCurrRowData.image);
             resetErrorParams();
         }
-    }, [openRegist])
-
-    //데이터 리셋
-    const resetData = () => {
-        setItemNm("");
-        setNumber("");
-        setStorage("");
-        setTexture("");
-        setCount(1);
-        setPiece(1);
-        setComment("");
-        setSize("");
-        setGetReason("");
-        setCountry("");
-        setGiver("");
-        setCharacteristic("");
-        setFileList(fileListRef.current[0]);
-        setImage("");
-    }
+    }, [openUpdate, singleCurrRowData])
 
     //에러파라미터 리셋
     const resetErrorParams = () => {
@@ -117,10 +113,10 @@ const ManagementRegistModal = ({ openRegist, closeRegistModal, setRowData, rowDa
         setImage(""); //이미지 초기화
     };
 
-    //물품등록
-    const insertItem = () => {
-        let tempList = [...rowData];
-        tempList.push({
+    //물품수정
+    const updateItem = () => {
+        let tempList = {
+            ...singleCurrRowData,
             itemNm: itemNm,
             number: number,
             storage: storage,
@@ -135,13 +131,17 @@ const ManagementRegistModal = ({ openRegist, closeRegistModal, setRowData, rowDa
             characteristic: characteristic,
             fileList: fileList,
             image: image
-        })
-        setRowData(tempList);
-        closeRegistModal();
+        };
+        console.log(tempList)
+
+        setSingleCurrRowData(tempList);
+        updateRow(tempList)
+
+        closeUpdateModal();
     }
 
     return (
-        <RegistModal title="물품등록" open={openRegist} onClose={closeRegistModal} onOk={insertItem} >
+        <RegistModal title="물품등록" open={openUpdate} onClose={closeUpdateModal} onOk={updateItem} >
             <DialogContent dividers sx={{ flexGrow: 1, maxWidth: "1200px" }}>
                 <Grid container spacing={2}>
                     <Grid xs={4} display={'flex'} justifyContent={'right'}>
@@ -288,4 +288,4 @@ const ManagementRegistModal = ({ openRegist, closeRegistModal, setRowData, rowDa
         </RegistModal>
     )
 }
-export default ManagementRegistModal;
+export default ManagementUpdateModal;
