@@ -1,17 +1,20 @@
 import { Box, Avatar, Button } from '@mui/material';
 import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
+import { authStatus } from "src/recoil/atoms/authAtoms"
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
 
 const MainToolUser = () => {
+    const authCurrent = useRecoilState(authStatus)[0];
     return (
-        <Button 
+        <Button
             style={{
-                backgroundColor: "aliceblue", 
+                backgroundColor: "aliceblue",
                 padding: "0px 5px",
                 marginRight: "10px"
-            }} 
-            variant="outlined" 
+            }}
+            variant="outlined"
             startIcon={<PersonOutlineIcon />}>
-            User
+            {authCurrent.userId}
         </Button>
         // <>
         //     <IconButton color="primary" aria-label="user" style={{ padding: 0 }}>

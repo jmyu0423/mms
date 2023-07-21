@@ -70,8 +70,6 @@ function CountryCombo(props) {
 }
 
 CountryCombo.propTypes = {
-    venType: PropTypes.string.isRequired,
-    venCd: PropTypes.string.isRequired,
     value: PropTypes.string.isRequired,
     size: PropTypes.string,
     error: PropTypes.bool,

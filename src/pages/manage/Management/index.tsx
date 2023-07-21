@@ -4,10 +4,10 @@ import { Box, Button, Card, CardActions, CardContent, Container, FormControlLabe
 import PageTitle from 'src/components/layout/PageTitle';
 import { styled } from '@mui/material/styles';
 import AgGrid from "src/components/AgGrid";
+import { red, grey, indigo } from '@mui/material/colors';
 import ManagementRegistModal from "src/pages/manage/modal/ManagementRegistModal"
 import ManagementUpdateModal from "src/pages/manage/modal/ManagementUpdateModal"
-import { indigo } from '@mui/material/colors';
-import { red, grey } from '@mui/material/colors';
+import ImagePreviewModal from "src/pages/manage/modal/ImagePreviewModal";
 
 const PageContainer = styled(Container)(
   ({ theme }) => `
@@ -60,7 +60,7 @@ const DangerButton = styled(Button)(({ theme }) => ({
 }));
 
 const Management = ({ }) => {
-  const imgSize = { maxHeight: 35, maxWidth: "100%" };
+  const imgSize = { maxHeight: 35, maxWidth: "100%", cursor: "pointer" };
   const [gridState, setgridState] = useState(null); // Optional - for accessing Grid's API
   const [rowData, setRowData] = useState([
     {
@@ -133,6 +133,9 @@ const Management = ({ }) => {
   const [openUpdate, setOpenUpdate] = useState(false);
   const [singleCurrRowData, setSingleCurrRowData] = useState({});
 
+  //이미지 미리보기 컨트롤 state
+  const [openPreview, setOpenPreview] = useState(false);
+
   const [columnDefs, setColumnDefs] = useState([
     { field: 'number', headerName: '번호', flex: 2, cellStyle: { textAlign: "center" } },
     { field: 'itemNm', headerName: '명칭', flex: 2, cellStyle: { textAlign: "center" } },
@@ -150,7 +153,7 @@ const Management = ({ }) => {
       cellRenderer: function (row) {
         if (row.data.image) {
           return (
-            <div className="">
+            <div className="" onClick={(e) => { openPreviewModal(row) }}>
               <img
                 style={imgSize}
                 loading="lazy"
@@ -212,9 +215,7 @@ const Management = ({ }) => {
 
   //깜빡임 없이 aggrid update
   const updateRow = (obj) => {
-    console.log(obj)
     let rowNode = gridState.current.api.getRowNode(gridState.current.api.getSelectedNodes()[0].rowIndex);
-    console.log(rowNode)
     let newData = { ...rowNode.data }
     Object.assign(newData, {
       itemNm: obj.itemNm,
@@ -235,6 +236,14 @@ const Management = ({ }) => {
     rowNode.setData(newData)
   }
 
+  const openPreviewModal = (row) => {
+    setSingleCurrRowData(row.data);
+    setOpenPreview(true);
+  }
+
+  const closePreviewModal = () => {
+    setOpenPreview(false);
+  }
 
   return (
     <>
@@ -266,6 +275,7 @@ const Management = ({ }) => {
         </Grid>
       </PageContainer>
 
+      {/* 등록모달 */}
       <ManagementRegistModal
         openRegist={openRegist}
         closeRegistModal={closeRegistModal}
@@ -273,12 +283,19 @@ const Management = ({ }) => {
         rowData={rowData}
       />
 
+      {/* 수정모달 */}
       <ManagementUpdateModal
         openUpdate={openUpdate}
         closeUpdateModal={closeUpdateModal}
         setSingleCurrRowData={setSingleCurrRowData}
         singleCurrRowData={singleCurrRowData}
         updateRow={updateRow}
+      />
+
+      <ImagePreviewModal
+        openPreview={openPreview}
+        closePreviewModal={closePreviewModal}
+        singleCurrRowData={singleCurrRowData}
       />
     </>
   );

@@ -209,7 +209,7 @@ const ManagementRegistModal = ({ openRegist, closeRegistModal, setRowData, rowDa
                     </Grid>
                     <Grid xs={4} display={'flex'} justifyContent={'right'}>
                         <PopupFormControlLabel
-                            control={<CountryCombo fullWidth size="small" value={country} codeChange={(e) => setCountry(e.target.value)} error={paramError.itemNm === '' ? false : true} helperText={paramError.itemNm} />}
+                            control={<CountryCombo fullWidth size="small" type="none" value={country} codeChange={(e) => setCountry(e.target.value)} error={paramError.itemNm === '' ? false : true} helperText={paramError.itemNm} />}
                             label="국가명"
                             labelPlacement="start"
                         />
@@ -228,7 +228,7 @@ const ManagementRegistModal = ({ openRegist, closeRegistModal, setRowData, rowDa
                             labelPlacement="start"
                         />
                     </Grid>
-                    <Grid xs={6} display={'flex'} flexDirection={'column'} alignItems={'center'} marginTop={"50px"}>
+                    <Grid xs={8} display={'flex'} flexDirection={'column'} alignItems={'center'} marginTop={"50px"}>
                         <Box
                             style={{ width: WIDTH_SIZE }}
                             display={'flex'}
@@ -277,9 +277,9 @@ const ManagementRegistModal = ({ openRegist, closeRegistModal, setRowData, rowDa
                             </Box>
                         </Box>
                     </Grid>
-                    <Grid xs={6} display={'flex'} justifyContent={'center'} marginTop={"50px"}>
+                    <Grid xs={4} display={'flex'} justifyContent={'center'} marginTop={"50px"}>
                         <img
-                            width="50%"
+                            width="80%"
                             src={image}
                         />
                     </Grid>

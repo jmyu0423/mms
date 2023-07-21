@@ -10,11 +10,11 @@ export const AuthenticationProvider = ({ children }) => {
     const setRecoilAuthState = useSetRecoilState(authStatus);
 
     const login = (data) => {
-        setRecoilAuthState({userId: "test", current: true})
+        setRecoilAuthState({ userId: data, current: true })
     };
 
     const logout = () => {
-        setRecoilAuthState({userId: "", current: false})
+        setRecoilAuthState({ userId: "", current: false })
     };
 
     return (
