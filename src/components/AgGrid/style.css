@@ -1,3 +1,9 @@
 .ag-header-cell-label {
     justify-content: center;
 }
+
+.ag-ltr .ag-cell {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}

@@ -16,6 +16,8 @@ const AgGrid = ({ setRef, rowData, columnDefs, onRowClicked, heightVal }: any) =
         sortable: true,
         resizable: true,
         filter: 'agTextColumnFilter',
+        wrapHeaderText: true,
+        autoHeaderHeight: true,
         // headerClass: function (params: any) {
         //   // logic to return the correct class
         //   return 'header-one';
@@ -30,6 +32,10 @@ const AgGrid = ({ setRef, rowData, columnDefs, onRowClicked, heightVal }: any) =
         }
     }, [gridRef]);
 
+    const getRowHeight = useCallback((params) => {
+        return params.data.rowHeight;
+    }, []);
+
     return (
         <div className="ag-theme-alpine" style={{ width: '100%', height: heightVal }}>
             <AgGridReact
@@ -42,6 +48,7 @@ const AgGrid = ({ setRef, rowData, columnDefs, onRowClicked, heightVal }: any) =
                 onRowClicked={(e) => onRowClicked(gridRef.current.api.getSelectedRows())} // click row event
                 overlayNoRowsTemplate={"데이터가없습니다."}
                 onSelectionChanged={onSelectionChanged}
+                getRowHeight={getRowHeight}
             />
         </div>
     )

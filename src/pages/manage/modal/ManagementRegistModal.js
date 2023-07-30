@@ -136,6 +136,7 @@ const ManagementRegistModal = ({ openRegist, closeRegistModal, setRowData, rowDa
             fileList: fileList,
             image: image
         })
+
         setRowData(tempList);
         closeRegistModal();
     }

@@ -60,7 +60,7 @@ const DangerButton = styled(Button)(({ theme }) => ({
 }));
 
 const Management = ({ }) => {
-  const imgSize = { maxHeight: 35, maxWidth: "100%", cursor: "pointer" };
+  const imgSize = { maxHeight: "100%", maxWidth: "100%", cursor: "pointer", display: "flex" };
   const [gridState, setgridState] = useState(null); // Optional - for accessing Grid's API
   const [rowData, setRowData] = useState([
     {
@@ -137,19 +137,21 @@ const Management = ({ }) => {
   const [openPreview, setOpenPreview] = useState(false);
 
   const [columnDefs, setColumnDefs] = useState([
-    { field: 'number', headerName: '번호', flex: 2, cellStyle: { textAlign: "center" } },
-    { field: 'itemNm', headerName: '명칭', flex: 2, cellStyle: { textAlign: "center" } },
-    { field: 'storage', headerName: '보관장소', flex: 2, cellStyle: { textAlign: "center" } },
-    { field: 'texture', headerName: '재질', flex: 2, cellStyle: { textAlign: "center" } },
-    { field: 'count', headerName: '건', flex: 1.5, cellStyle: { textAlign: "center" } },
-    { field: 'piece', headerName: '점', flex: 1.5, cellStyle: { textAlign: "center" } },
-    { field: 'comment', headerName: '제작시대/용도기능', flex: 3, cellStyle: { textAlign: "center" } },
-    { field: 'size', headerName: '크기(cm)', flex: 2, cellStyle: { textAlign: "center" } },
-    { field: 'getReason', headerName: '입수연유', flex: 2, cellStyle: { textAlign: "center" } },
-    { field: 'country', headerName: '국가명', flex: 2, cellStyle: { textAlign: "center" } },
-    { field: 'giver', headerName: '증정자이름/직책', flex: 2, cellStyle: { textAlign: "center" } },
+    { field: 'number', headerName: '번호', flex: 2, cellStyle: { textAlign: "center", 'white-space': 'normal' }, autoHeight: true },
+    { field: 'itemNm', headerName: '명칭', flex: 2, cellStyle: { textAlign: "center", 'white-space': 'normal' }, autoHeight: true },
+    { field: 'storage', headerName: '보관장소', flex: 2, cellStyle: { textAlign: "center", 'white-space': 'normal' }, autoHeight: true },
+    { field: 'texture', headerName: '재질', flex: 2, cellStyle: { textAlign: "center", 'white-space': 'normal' }, autoHeight: true },
+    { field: 'count', headerName: '건', flex: 1.5, cellStyle: { textAlign: "center", 'white-space': 'normal' }, autoHeight: true },
+    { field: 'piece', headerName: '점', flex: 1.5, cellStyle: { textAlign: "center", 'white-space': 'normal' }, autoHeight: true },
+    { field: 'comment', headerName: '제작시대/용도기능', flex: 3, cellStyle: { textAlign: "center", 'white-space': 'normal' }, autoHeight: true },
+    { field: 'size', headerName: '크기(cm)', flex: 2, cellStyle: { textAlign: "center", 'white-space': 'normal' }, autoHeight: true },
+    { field: 'getReason', headerName: '입수연유', flex: 2, cellStyle: { textAlign: "center", 'white-space': 'normal' }, autoHeight: true },
+    { field: 'country', headerName: '국가명', flex: 2, cellStyle: { textAlign: "center", 'white-space': 'normal' }, autoHeight: true },
     {
-      field: 'image', headerName: '이미지', flex: 2, cellStyle: { textAlign: "center" },
+      field: 'giver', headerName: '증정자이름/직책', flex: 2, cellStyle: { textAlign: "center", 'white-space': 'normal' }, autoHeight: true
+    },
+    {
+      field: 'image', headerName: '이미지', flex: 2, cellStyle: { textAlign: "center", 'white-space': 'normal' }, autoHeight: true,
       cellRenderer: function (row) {
         if (row.data.image) {
           return (
@@ -200,17 +202,22 @@ const Management = ({ }) => {
   const deleteRowData = () => {
     let seqNos = [];
     let currRowData = [];
-    if (selectedRow.length > 0) {
-      selectedRow.map((data) => {
-        seqNos.push(data.seqNo);
-      })
-    }
 
-    //삭제할 array 제외
-    if (rowData.length > 0) {
-      currRowData = rowData.filter(it => !seqNos.includes(it.seqNo));
+    if (window.confirm("정말 삭제하시겠습니까?")) {
+      if (selectedRow.length > 0) {
+        selectedRow.map((data) => {
+          seqNos.push(data.seqNo);
+        })
+      }
+
+      //삭제할 array 제외
+      if (rowData.length > 0) {
+        currRowData = rowData.filter(it => !seqNos.includes(it.seqNo));
+      }
+      setRowData(currRowData)
+    } else {
+      console.log("취소")
     }
-    setRowData(currRowData)
   }
 
   //깜빡임 없이 aggrid update

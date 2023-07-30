@@ -14,6 +14,7 @@ import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useEffect, useState } from 'react';
 import { useAuth } from '../../contexts/AuthenticationContext';
+import axios from 'axios';
 
 const Login = () => {
     const defaultTheme = createTheme();
@@ -22,9 +23,8 @@ const Login = () => {
     const auth = useAuth();
     const [errorParams, setErrorParams] = useState("");
 
-    const handleSubmit = (event) => {
-        event.preventDefault();
-        const data = new FormData(event.currentTarget);
+    const handleSubmit = async () => {
+        const params = new FormData();
 
         // 아이디 패스워드 체크
         if (!userId) {
@@ -34,16 +34,35 @@ const Login = () => {
             setErrorParams("비밀번호를 입력해 주세요")
             return false;
         }
-        // console.log({
-        //     email: data.get('email'),
-        //     password: data.get('password'),
-        // });
 
-        if (userId === "test" && password === "1234") {
-            auth.login(userId);
-        } else {
-            setErrorParams("아이디(로그인 전용 아이디) 또는 비밀번호를 잘못 입력했습니다. \n입력하신 내용을 다시 확인해주세요.")
-        }
+        // params.append("action", "login");
+
+        // // try {
+        // const data = await axios.post('http://smus.scjmatthias.net/api/do.php', params);
+        // console.log(data)
+        // // } catch (e) {
+
+        // // }
+
+        const response = await fetch('http://smus.scjmatthias.net/api/do.php', {
+            method: 'POST',
+            // headers: {
+            //     'Content-Type': 'application/json',
+            // },
+            body: JSON.stringify({
+                action: "login",
+                username: userId,
+                password: password,
+            }),
+        });
+        const body = await response.json();
+        alert(body.date)
+
+        // if (userId === "test" && password === "1234") {
+        //     auth.login(userId);
+        // } else {
+        //     setErrorParams("아이디(로그인 전용 아이디) 또는 비밀번호를 잘못 입력했습니다. \n입력하신 내용을 다시 확인해주세요.")
+        // }
     };
 
     return (
@@ -64,15 +83,15 @@ const Login = () => {
                     <Typography component="h1" variant="h5">
                         로그인
                     </Typography>
-                    <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+                    <Box onClick={handleSubmit} noValidate sx={{ mt: 1 }}>
                         <TextField
                             margin="normal"
                             required
                             fullWidth
-                            id="id"
+                            id="username"
                             label="아이디"
-                            name="id"
-                            autoComplete="id"
+                            name="username"
+                            autoComplete="username"
                             autoFocus
                             onChange={(e) => setUserId(e.target.value)}
                         />

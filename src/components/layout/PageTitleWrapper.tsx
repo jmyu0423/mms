@@ -13,8 +13,8 @@ const PageTitle = styled(Box)(
 const PageTitleContainer = styled(Container)(
     ({ theme }) => `
       // & .MuiContainer-root: {
-        @media (min-width: ${theme.breakpoints.values.lg}px) {
-          max-width:none;
+        @media (min-width: 100px) {
+          max-width:100%;
           display:flex;
         };
       // };
