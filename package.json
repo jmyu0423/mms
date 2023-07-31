@@ -2,6 +2,7 @@
   "name": "mms",
   "version": "0.1.0",
   "private": true,
+  "proxy": "http://smus.scjmatthias.net",
   "dependencies": {
     "@coreui/icons": "^3.0.1",
     "@coreui/icons-react": "^2.2.1",

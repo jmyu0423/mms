@@ -24,8 +24,7 @@ const Login = () => {
     const [errorParams, setErrorParams] = useState("");
 
     const handleSubmit = async () => {
-        const params = new FormData();
-
+        console.log(1234)
         // 아이디 패스워드 체크
         if (!userId) {
             setErrorParams("아이디를 입력해 주세요")
@@ -35,28 +34,27 @@ const Login = () => {
             return false;
         }
 
-        // params.append("action", "login");
+        const params = new URLSearchParams({
+            "action": "login",
+            "username": userId,
+            "password": password
+        })
 
-        // // try {
-        // const data = await axios.post('http://smus.scjmatthias.net/api/do.php', params);
-        // console.log(data)
-        // // } catch (e) {
+        const config = {
+            responseType: "text",
+            headers: {
+                "content-type": "application/x-www-form-urlencoded",
+            },
+        };
 
-        // // }
-
-        const response = await fetch('http://smus.scjmatthias.net/api/do.php', {
-            method: 'POST',
-            // headers: {
-            //     'Content-Type': 'application/json',
-            // },
-            body: JSON.stringify({
-                action: "login",
-                username: userId,
-                password: password,
-            }),
-        });
-        const body = await response.json();
-        alert(body.date)
+        await axios
+            .post("/api/do.php", params, config)
+            .then(function (response) {
+                console.log("성공");
+            })
+            .catch(function (error) {
+                console.log("실패", error);
+            })
 
         // if (userId === "test" && password === "1234") {
         //     auth.login(userId);
@@ -83,7 +81,7 @@ const Login = () => {
                     <Typography component="h1" variant="h5">
                         로그인
                     </Typography>
-                    <Box onClick={handleSubmit} noValidate sx={{ mt: 1 }}>
+                    <Box sx={{ mt: 1 }}>
                         <TextField
                             margin="normal"
                             required
@@ -123,6 +121,7 @@ const Login = () => {
                             fullWidth
                             variant="contained"
                             sx={{ mt: 2, mb: 2 }}
+                            onClick={handleSubmit}
                         >
                             로그인
                         </Button>
