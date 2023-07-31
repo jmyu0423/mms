@@ -24,7 +24,6 @@ const Login = () => {
     const [errorParams, setErrorParams] = useState("");
 
     const handleSubmit = async () => {
-        console.log(1234)
         // 아이디 패스워드 체크
         if (!userId) {
             setErrorParams("아이디를 입력해 주세요")
@@ -34,11 +33,12 @@ const Login = () => {
             return false;
         }
 
-        const params = new URLSearchParams({
+        //raw data
+        const object = {
             "action": "login",
             "username": userId,
             "password": password
-        })
+        }
 
         const config = {
             responseType: "text",
@@ -47,10 +47,16 @@ const Login = () => {
             },
         };
 
+        // "http://smus.scjmatthias.net/api/do.php"
         await axios
-            .post("/api/do.php", params, config)
+            .post("/api/do.php", object, config)
             .then(function (response) {
-                console.log("성공");
+                if (response.data.result === "ok") {
+                    auth.login(response.data);
+                    console.log("성공");
+                } else {
+                    setErrorParams("아이디(로그인 전용 아이디) 또는 비밀번호를 잘못 입력했습니다. \n입력하신 내용을 다시 확인해주세요.")
+                }
             })
             .catch(function (error) {
                 console.log("실패", error);

@@ -7,9 +7,9 @@ import Login from "../pages/Login";
 const PrivateRoute = ({ children, state }) => {
     const authCurrent = useRecoilState(authStatus)[0];
     if (state === "login") {
-        return authCurrent.current ? <Navigate to="/" /> : <Login />
+        return authCurrent.result === "ok" ? <Navigate to="/" /> : <Login />
     } else {
-        return authCurrent.current ? children : <Navigate to="/login" />
+        return authCurrent.result === "ok" ? children : <Navigate to="/login" />
     }
 
 

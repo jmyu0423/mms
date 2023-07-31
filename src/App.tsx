@@ -12,7 +12,7 @@ function App() {
   let element;
 
   //로그인 유무
-  if (authCurrent.current) {
+  if (authCurrent.result === "ok") {
     element = <MainLayout />
   } else {
     element = <BaseLayout />

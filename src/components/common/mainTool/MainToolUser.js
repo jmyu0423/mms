@@ -12,9 +12,11 @@ const MainToolUser = () => {
                 padding: "0px 5px",
                 marginRight: "10px"
             }}
+            sx={{ "& .MuiButton-startIcon": { marginRight: "0px" } }}
+
             variant="outlined"
             startIcon={<PersonOutlineIcon />}>
-            {authCurrent.userId}
+            {authCurrent.realname}
         </Button>
         // <>
         //     <IconButton color="primary" aria-label="user" style={{ padding: 0 }}>
