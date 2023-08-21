@@ -4,6 +4,18 @@ import RegistModal from 'src/components/modal/RegistModal';
 import { ItemGroup, PopupFormControlLabel } from 'src/components/modal/ItemGroup';
 import StorageCombo from 'src/components/combobox/StorageCombo';
 import CountryCombo from 'src/components/combobox/CountryCombo';
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+
+const CustomDatePicker = styled(DatePicker)`
+    width: 200px;
+    height: 35px;
+    box-sizing: border-box;
+    padding: 8px;
+    border-radius: 4px;
+    border: 1px solid darkgray;
+    font-size: 15px;
+`;
 
 const ManagementRegistModal = ({ openRegist, closeRegistModal, setRowData, rowData }) => {
     //파일 기본적인 정보
@@ -12,18 +24,24 @@ const ManagementRegistModal = ({ openRegist, closeRegistModal, setRowData, rowDa
         fileInfo: ''
     };
     const fileListRef = useRef([fileObj]);
-    const WIDTH_SIZE = '500px';
+    const WIDTH_SIZE = '600px';
 
     //컬럼의 상태관리
+    const [title, setTitle] = useState("") //제목
     const [itemNm, setItemNm] = useState(""); //명칭
-    const [number, setNumber] = useState(""); //번호
     const [storage, setStorage] = useState(""); //보관장소
     const [texture, setTexture] = useState(""); //재질
     const [count, setCount] = useState(1); //건
     const [piece, setPiece] = useState(1); //점
     const [comment, setComment] = useState("") //제작시대/용도기능
-    const [size, setSize] = useState(""); //크기
+    const [sizeA, setSizeA] = useState(""); //크기A
+    const [sizeB, setSizeB] = useState(""); //크기B
+    const [sizeC, setSizeC] = useState(""); //크기C
     const [getReason, setGetReason] = useState(""); //입수연유
+    const [presdate, setPresdate] = useState(new Date()); //수여(증정)날짜
+    const [presplace, setPresplace] = useState("") //수여(증정)장소
+    const [eventname, setEventname] = useState("") //행사명
+    const [conferrer, setConferrer] = useState("") //수여자
     const [country, setCountry] = useState("") //국가
     const [giver, setGiver] = useState(""); //증정자이름/직책
     const [characteristic, setCharacteristic] = useState(""); //특징
@@ -32,18 +50,24 @@ const ManagementRegistModal = ({ openRegist, closeRegistModal, setRowData, rowDa
 
     //컬럼의 에러관리
     const [paramError, setParamError] = useState({
+        title: '',
         itemNm: '',
-        number: '',
         storage: '',
         texture: '',
         count: '',
         piece: '',
         comment: '',
-        size: '',
+        sizeA: '',
+        sizeB: '',
+        sizeC: '',
         getReason: '',
+        presdate: '',
+        presplace: '',
+        eventname: '',
+        conferrer: '',
         country: '',
         giver: '',
-        characteristic: ''
+        characteristic: '',
     })
 
     useEffect(() => {
@@ -55,15 +79,21 @@ const ManagementRegistModal = ({ openRegist, closeRegistModal, setRowData, rowDa
 
     //데이터 리셋
     const resetData = () => {
+        setTitle("");
         setItemNm("");
-        setNumber("");
         setStorage("");
         setTexture("");
         setCount(1);
         setPiece(1);
         setComment("");
-        setSize("");
+        setSizeA("");
+        setSizeB("");
+        setSizeC("");
         setGetReason("");
+        setPresdate(new Date());
+        setPresplace("");
+        setEventname("");
+        setConferrer("");
         setCountry("");
         setGiver("");
         setCharacteristic("");
@@ -75,15 +105,21 @@ const ManagementRegistModal = ({ openRegist, closeRegistModal, setRowData, rowDa
     const resetErrorParams = () => {
         setParamError({
             ...paramError,
+            title: '',
             itemNm: '',
-            number: '',
             storage: '',
             texture: '',
             count: '',
             piece: '',
             comment: '',
-            size: '',
+            sizeA: '',
+            sizeB: '',
+            sizeC: '',
             getReason: '',
+            presdate: '',
+            presplace: '',
+            eventname: '',
+            conferrer: '',
             country: '',
             giver: '',
             characteristic: ''
@@ -121,21 +157,29 @@ const ManagementRegistModal = ({ openRegist, closeRegistModal, setRowData, rowDa
     const insertItem = () => {
         let tempList = [...rowData];
         tempList.push({
+            title: title,
             itemNm: itemNm,
-            number: number,
             storage: storage,
             texture: texture,
             count: count,
             piece: piece,
             comment: comment,
-            size: size,
+            sizeA: sizeA,
+            sizeB: sizeB,
+            sizeC: sizeC,
             getReason: getReason,
+            presdate: presdate,
+            presplace: presplace,
+            eventname: eventname,
+            conferrer: conferrer,
             country: country,
             giver: giver,
             characteristic: characteristic,
             fileList: fileList,
             image: image
         })
+
+        console.log(tempList)
 
         setRowData(tempList);
         closeRegistModal();
@@ -147,15 +191,15 @@ const ManagementRegistModal = ({ openRegist, closeRegistModal, setRowData, rowDa
                 <Grid container spacing={2}>
                     <Grid xs={4} display={'flex'} justifyContent={'right'}>
                         <PopupFormControlLabel
-                            control={<TextField fullWidth size="small" value={itemNm} inputProps={{ maxLength: 20 }} onChange={(e) => setItemNm(e.target.value)} error={paramError.itemNm === '' ? false : true} helperText={paramError.itemNm} />}
-                            label="명칭"
+                            control={<TextField fullWidth size="small" value={title} inputProps={{ maxLength: 20 }} onChange={(e) => setTitle(e.target.value)} error={paramError.title === '' ? false : true} helperText={paramError.title} />}
+                            label="제목"
                             labelPlacement="start"
                         />
                     </Grid>
                     <Grid xs={4} display={'flex'} justifyContent={'right'}>
                         <PopupFormControlLabel
-                            control={<TextField fullWidth size="small" value={number} inputProps={{ maxLength: 20 }} onChange={(e) => setNumber(e.target.value)} error={paramError.itemNm === '' ? false : true} helperText={paramError.itemNm} />}
-                            label="번호"
+                            control={<TextField fullWidth size="small" value={itemNm} inputProps={{ maxLength: 20 }} onChange={(e) => setItemNm(e.target.value)} error={paramError.itemNm === '' ? false : true} helperText={paramError.itemNm} />}
+                            label="명칭"
                             labelPlacement="start"
                         />
                     </Grid>
@@ -189,15 +233,57 @@ const ManagementRegistModal = ({ openRegist, closeRegistModal, setRowData, rowDa
                     </Grid>
                     <Grid xs={4} display={'flex'} justifyContent={'right'}>
                         <PopupFormControlLabel
-                            control={<TextField fullWidth size="small" value={comment} inputProps={{ maxLength: 20 }} onChange={(e) => setComment(e.target.value)} error={paramError.itemNm === '' ? false : true} helperText={paramError.itemNm} />}
-                            label="제작시대/용도기능"
+                            control={<TextField fullWidth size="small" value={sizeA} inputProps={{ maxLength: 20 }} onChange={(e) => setSizeA(e.target.value)} error={paramError.itemNm === '' ? false : true} helperText={paramError.itemNm} />}
+                            label="가로(지름)mm"
                             labelPlacement="start"
                         />
                     </Grid>
                     <Grid xs={4} display={'flex'} justifyContent={'right'}>
                         <PopupFormControlLabel
-                            control={<TextField fullWidth size="small" value={size} inputProps={{ maxLength: 20 }} onChange={(e) => setSize(e.target.value)} error={paramError.itemNm === '' ? false : true} helperText={paramError.itemNm} />}
-                            label="크기(cm)"
+                            control={<TextField fullWidth size="small" value={sizeB} inputProps={{ maxLength: 20 }} onChange={(e) => setSizeB(e.target.value)} error={paramError.itemNm === '' ? false : true} helperText={paramError.itemNm} />}
+                            label="세로mm"
+                            labelPlacement="start"
+                        />
+                    </Grid>
+                    <Grid xs={4} display={'flex'} justifyContent={'right'}>
+                        <PopupFormControlLabel
+                            control={<TextField fullWidth size="small" value={sizeC} inputProps={{ maxLength: 20 }} onChange={(e) => setSizeC(e.target.value)} error={paramError.itemNm === '' ? false : true} helperText={paramError.itemNm} />}
+                            label="높이(두께)mm"
+                            labelPlacement="start"
+                        />
+                    </Grid>
+                    <Grid xs={4} display={'flex'} justifyContent={'right'}>
+                        <PopupFormControlLabel
+                            control={<CustomDatePicker dateFormat="yyyy/MM/dd" selected={presdate} onChange={(date) => setPresdate(date)} />}
+                            label="수여(증정)날짜"
+                            labelPlacement="start"
+                        />
+                    </Grid>
+                    <Grid xs={4} display={'flex'} justifyContent={'right'}>
+                        <PopupFormControlLabel
+                            control={<TextField fullWidth size="small" value={presplace} inputProps={{ maxLength: 20 }} onChange={(e) => setPresplace(e.target.value)} error={paramError.presplace === '' ? false : true} helperText={paramError.presplace} />}
+                            label="수여(증정)장소"
+                            labelPlacement="start"
+                        />
+                    </Grid>
+                    <Grid xs={4} display={'flex'} justifyContent={'right'}>
+                        <PopupFormControlLabel
+                            control={<TextField fullWidth size="small" value={eventname} inputProps={{ maxLength: 20 }} onChange={(e) => setEventname(e.target.value)} error={paramError.eventname === '' ? false : true} helperText={paramError.eventname} />}
+                            label="행사명"
+                            labelPlacement="start"
+                        />
+                    </Grid>
+                    <Grid xs={4} display={'flex'} justifyContent={'right'}>
+                        <PopupFormControlLabel
+                            control={<TextField fullWidth size="small" value={conferrer} inputProps={{ maxLength: 20 }} onChange={(e) => setConferrer(e.target.value)} error={paramError.conferrer === '' ? false : true} helperText={paramError.conferrer} />}
+                            label="수여자"
+                            labelPlacement="start"
+                        />
+                    </Grid>
+                    <Grid xs={4} display={'flex'} justifyContent={'right'}>
+                        <PopupFormControlLabel
+                            control={<TextField fullWidth size="small" value={comment} inputProps={{ maxLength: 20 }} onChange={(e) => setComment(e.target.value)} error={paramError.itemNm === '' ? false : true} helperText={paramError.itemNm} />}
+                            label="제작시대/용도기능"
                             labelPlacement="start"
                         />
                     </Grid>
@@ -211,7 +297,7 @@ const ManagementRegistModal = ({ openRegist, closeRegistModal, setRowData, rowDa
                     <Grid xs={4} display={'flex'} justifyContent={'right'}>
                         <PopupFormControlLabel
                             control={<CountryCombo fullWidth size="small" type="none" value={country} codeChange={(e) => setCountry(e.target.value)} error={paramError.itemNm === '' ? false : true} helperText={paramError.itemNm} />}
-                            label="국가명"
+                            label="증정자국적(코드)"
                             labelPlacement="start"
                         />
                     </Grid>
@@ -229,7 +315,7 @@ const ManagementRegistModal = ({ openRegist, closeRegistModal, setRowData, rowDa
                             labelPlacement="start"
                         />
                     </Grid>
-                    <Grid xs={8} display={'flex'} flexDirection={'column'} alignItems={'center'} marginTop={"50px"}>
+                    <Grid xs={8} display={'flex'} flexDirection={'column'} alignItems={'center'} marginTop={"80px"}>
                         <Box
                             style={{ width: WIDTH_SIZE }}
                             display={'flex'}
@@ -278,7 +364,7 @@ const ManagementRegistModal = ({ openRegist, closeRegistModal, setRowData, rowDa
                             </Box>
                         </Box>
                     </Grid>
-                    <Grid xs={4} display={'flex'} justifyContent={'center'} marginTop={"50px"}>
+                    <Grid xs={4} display={'flex'} justifyContent={'center'} marginTop={"80px"}>
                         <img
                             width="80%"
                             src={image}
@@ -286,7 +372,7 @@ const ManagementRegistModal = ({ openRegist, closeRegistModal, setRowData, rowDa
                     </Grid>
                 </Grid>
             </DialogContent>
-        </RegistModal>
+        </RegistModal >
     )
 }
 export default ManagementRegistModal;

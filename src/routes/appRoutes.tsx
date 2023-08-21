@@ -47,97 +47,97 @@ const appRoutes: RouteType[] = [
       icon: <PostAddIcon />
     }
   },
-  {
-    path: "/statistics",
-    element: <StatisticLayout />,
-    state: "statistics",
-    sidebarProps: {
-      displayText: "통계관리",
-      icon: <EqualizerIcon />
-    },
-    child: [
-      {
-        index: true,
-        element: <StatisticsIndex />,
-        state: "statistics.StatisticsIndex"
-      },
-      {
-        path: "/statistics/statistics1",
-        element: <Statistics1 />,
-        state: "statistics.statistics1",
-        sidebarProps: {
-          displayText: "통계1"
-        },
-      },
-      {
-        path: "/statistics/statistics2",
-        element: <Statistics2 />,
-        state: "statistics.statistics2",
-        sidebarProps: {
-          displayText: "통계2"
-        }
-      },
-      {
-        path: "/statistics/statistics3",
-        element: <Statistics3 />,
-        state: "statistics.statistics3",
-        sidebarProps: {
-          displayText: "통계3"
-        }
-      }
-    ]
-  },
-  {
-    path: "/operate",
-    element: <OperateLayout />,
-    state: "operate",
-    sidebarProps: {
-      displayText: "운영관리",
-      icon: <ManageHistoryIcon />
-    },
-    child: [
-      {
-        path: "/operate/auth",
-        element: <Auth />,
-        state: "operate.auth",
-        sidebarProps: {
-          displayText: "권한관리"
-        },
-      },
-      {
-        path: "/operate/user",
-        element: <User />,
-        state: "operate.user",
-        sidebarProps: {
-          displayText: "사용자관리"
-        }
-      },
-      {
-        path: "/operate/item",
-        element: <Item />,
-        state: "operate.item",
-        sidebarProps: {
-          displayText: "항목관리"
-        }
-      },
-      {
-        path: "/operate/approval",
-        element: <Approval />,
-        state: "operate.approval",
-        sidebarProps: {
-          displayText: "승인관리"
-        }
-      },
-      {
-        path: "/operate/log",
-        element: <Log />,
-        state: "operate.log",
-        sidebarProps: {
-          displayText: "로그관리"
-        }
-      }
-    ]
-  },
+  // {
+  //   path: "/statistics",
+  //   element: <StatisticLayout />,
+  //   state: "statistics",
+  //   sidebarProps: {
+  //     displayText: "통계관리",
+  //     icon: <EqualizerIcon />
+  //   },
+  //   child: [
+  //     {
+  //       index: true,
+  //       element: <StatisticsIndex />,
+  //       state: "statistics.StatisticsIndex"
+  //     },
+  //     {
+  //       path: "/statistics/statistics1",
+  //       element: <Statistics1 />,
+  //       state: "statistics.statistics1",
+  //       sidebarProps: {
+  //         displayText: "통계1"
+  //       },
+  //     },
+  //     {
+  //       path: "/statistics/statistics2",
+  //       element: <Statistics2 />,
+  //       state: "statistics.statistics2",
+  //       sidebarProps: {
+  //         displayText: "통계2"
+  //       }
+  //     },
+  //     {
+  //       path: "/statistics/statistics3",
+  //       element: <Statistics3 />,
+  //       state: "statistics.statistics3",
+  //       sidebarProps: {
+  //         displayText: "통계3"
+  //       }
+  //     }
+  //   ]
+  // },
+  // {
+  //   path: "/operate",
+  //   element: <OperateLayout />,
+  //   state: "operate",
+  //   sidebarProps: {
+  //     displayText: "운영관리",
+  //     icon: <ManageHistoryIcon />
+  //   },
+  //   child: [
+  //     {
+  //       path: "/operate/auth",
+  //       element: <Auth />,
+  //       state: "operate.auth",
+  //       sidebarProps: {
+  //         displayText: "권한관리"
+  //       },
+  //     },
+  //     {
+  //       path: "/operate/user",
+  //       element: <User />,
+  //       state: "operate.user",
+  //       sidebarProps: {
+  //         displayText: "사용자관리"
+  //       }
+  //     },
+  //     {
+  //       path: "/operate/item",
+  //       element: <Item />,
+  //       state: "operate.item",
+  //       sidebarProps: {
+  //         displayText: "항목관리"
+  //       }
+  //     },
+  //     {
+  //       path: "/operate/approval",
+  //       element: <Approval />,
+  //       state: "operate.approval",
+  //       sidebarProps: {
+  //         displayText: "승인관리"
+  //       }
+  //     },
+  //     {
+  //       path: "/operate/log",
+  //       element: <Log />,
+  //       state: "operate.log",
+  //       sidebarProps: {
+  //         displayText: "로그관리"
+  //       }
+  //     }
+  //   ]
+  // },
   {
     path: "/notice",
     element: <Notice />,
