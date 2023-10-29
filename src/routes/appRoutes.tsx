@@ -26,6 +26,8 @@ import Login from "../pages/Login";
 import MainLayout from "src/components/layout/MainLayout";
 import BaseLayout from "src/components/layout/BaseLayout";
 
+import UserManagement from '../pages/UserManagement';
+
 
 const appRoutes: RouteType[] = [
   {
@@ -39,54 +41,63 @@ const appRoutes: RouteType[] = [
     state: "login"
   },
   {
+    path: "/statistics",
+    element: <StatisticLayout />,
+    state: "statistics",
+    sidebarProps: {
+      displayText: "통계관리",
+      icon: <EqualizerIcon />
+    },
+    child: [
+      {
+        index: true,
+        element: <StatisticsIndex />,
+        state: "statistics.StatisticsIndex"
+      },
+      {
+        path: "/statistics/statistics1",
+        element: <Statistics1 />,
+        state: "statistics.statistics1",
+        sidebarProps: {
+          displayText: "통계1"
+        },
+      },
+      {
+        path: "/statistics/statistics2",
+        element: <Statistics2 />,
+        state: "statistics.statistics2",
+        sidebarProps: {
+          displayText: "통계2"
+        }
+      },
+      {
+        path: "/statistics/statistics3",
+        element: <Statistics3 />,
+        state: "statistics.statistics3",
+        sidebarProps: {
+          displayText: "통계3"
+        }
+      }
+    ]
+  },
+  {
     path: "/management",
     element: <Management />,
     state: "management",
     sidebarProps: {
-      displayText: "박물관리",
+      displayText: "박물조회",
       icon: <PostAddIcon />
     }
   },
-  // {
-  //   path: "/statistics",
-  //   element: <StatisticLayout />,
-  //   state: "statistics",
-  //   sidebarProps: {
-  //     displayText: "통계관리",
-  //     icon: <EqualizerIcon />
-  //   },
-  //   child: [
-  //     {
-  //       index: true,
-  //       element: <StatisticsIndex />,
-  //       state: "statistics.StatisticsIndex"
-  //     },
-  //     {
-  //       path: "/statistics/statistics1",
-  //       element: <Statistics1 />,
-  //       state: "statistics.statistics1",
-  //       sidebarProps: {
-  //         displayText: "통계1"
-  //       },
-  //     },
-  //     {
-  //       path: "/statistics/statistics2",
-  //       element: <Statistics2 />,
-  //       state: "statistics.statistics2",
-  //       sidebarProps: {
-  //         displayText: "통계2"
-  //       }
-  //     },
-  //     {
-  //       path: "/statistics/statistics3",
-  //       element: <Statistics3 />,
-  //       state: "statistics.statistics3",
-  //       sidebarProps: {
-  //         displayText: "통계3"
-  //       }
-  //     }
-  //   ]
-  // },
+  {
+    path: "/UserManagement",
+    element: <UserManagement />,
+    state: "UserManagement",
+    sidebarProps: {
+      displayText: "관리자계정 관리",
+      icon: <ManageHistoryIcon />
+    }
+  },
   // {
   //   path: "/operate",
   //   element: <OperateLayout />,
@@ -138,15 +149,15 @@ const appRoutes: RouteType[] = [
   //     }
   //   ]
   // },
-  {
-    path: "/notice",
-    element: <Notice />,
-    state: "notice",
-    sidebarProps: {
-      displayText: "공지사항",
-      icon: <MarkUnreadChatAltIcon />
-    }
-  },
+  // {
+  //   path: "/notice",
+  //   element: <Notice />,
+  //   state: "notice",
+  //   sidebarProps: {
+  //     displayText: "공지사항",
+  //     icon: <MarkUnreadChatAltIcon />
+  //   }
+  // },
   // {
   //   path: "/changelog",
   //   element: <ChangelogPage />,

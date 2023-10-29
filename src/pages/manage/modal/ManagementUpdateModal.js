@@ -102,7 +102,7 @@ const ManagementUpdateModal = ({ openUpdate, closeUpdateModal, setSingleCurrRowD
             setCountry(singleCurrRowData.country);
             setGiver(singleCurrRowData.giver);
             setCharacteristic(singleCurrRowData.characteristic);
-            setFileList(singleCurrRowData.fileList === {} ? fileListRef.current[0] : singleCurrRowData.fileList);
+            setFileList(singleCurrRowData.fileList && Object.keys(singleCurrRowData.fileList).length === 0 ? fileListRef.current[0] : singleCurrRowData.fileList);
             setImage(singleCurrRowData.image);
             resetErrorParams();
         }

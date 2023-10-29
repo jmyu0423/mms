@@ -47,20 +47,27 @@ const Login = () => {
             },
         };
 
+        let tempResult = {
+            realname: "admin",
+            result: "ok",
+            sesskey: ""
+        }
+        auth.login(tempResult);
+
         // "http://smus.scjmatthias.net/api/do.php"
-        await axios
-            .post("/api/do.php", object, config)
-            .then(function (response) {
-                if (response.data.result === "ok") {
-                    auth.login(response.data);
-                    console.log("성공");
-                } else {
-                    setErrorParams("아이디(로그인 전용 아이디) 또는 비밀번호를 잘못 입력했습니다. \n입력하신 내용을 다시 확인해주세요.")
-                }
-            })
-            .catch(function (error) {
-                console.log("실패", error);
-            })
+        // await axios
+        //     .post("/api/do.php", object, config)
+        //     .then(function (response) {
+        //         if (response.data.result === "ok") {
+        //             auth.login(response.data);
+        //             console.log("성공");
+        //         } else {
+        //             setErrorParams("아이디(로그인 전용 아이디) 또는 비밀번호를 잘못 입력했습니다. \n입력하신 내용을 다시 확인해주세요.")
+        //         }
+        //     })
+        //     .catch(function (error) {
+        //         console.log("실패", error);
+        //     })
 
         // if (userId === "test" && password === "1234") {
         //     auth.login(userId);
@@ -81,11 +88,14 @@ const Login = () => {
                         alignItems: 'center',
                     }}
                 >
-                    <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
+                    {/* <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
                         <LockOutlinedIcon />
-                    </Avatar>
+                    </Avatar> */}
                     <Typography component="h1" variant="h5">
-                        로그인
+                        HAMS
+                    </Typography>
+                    <Typography component="h1" variant="h6">
+                        하늘문화세계평화광복 박물관리 시스템
                     </Typography>
                     <Box sx={{ mt: 1 }}>
                         <TextField

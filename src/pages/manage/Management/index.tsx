@@ -255,7 +255,7 @@ const Management = ({ }) => {
   return (
     <>
       <PageTitleWrapper>
-        <PageTitle heading="박물관리" />
+        <PageTitle heading="박물조회" />
         <BaseButton onClick={(e) => openRegistModal()}>등록</BaseButton>
         <DangerButton onClick={(e) => deleteRowData()}>삭제</DangerButton>
         {/* <Button variant="outlined" size="small">등록</Button> */}
