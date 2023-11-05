@@ -27,6 +27,7 @@ import MainLayout from "src/components/layout/MainLayout";
 import BaseLayout from "src/components/layout/BaseLayout";
 
 import UserManagement from '../pages/UserManagement';
+import ObjectRegister from "../pages/manage/ObjectRegister";
 
 
 const appRoutes: RouteType[] = [
@@ -59,7 +60,7 @@ const appRoutes: RouteType[] = [
         element: <Statistics1 />,
         state: "statistics.statistics1",
         sidebarProps: {
-          displayText: "통계1"
+          displayText: "전체 통계"
         },
       },
       {
@@ -67,17 +68,17 @@ const appRoutes: RouteType[] = [
         element: <Statistics2 />,
         state: "statistics.statistics2",
         sidebarProps: {
-          displayText: "통계2"
+          displayText: "통계 상세"
         }
       },
-      {
-        path: "/statistics/statistics3",
-        element: <Statistics3 />,
-        state: "statistics.statistics3",
-        sidebarProps: {
-          displayText: "통계3"
-        }
-      }
+      // {
+      //   path: "/statistics/statistics3",
+      //   element: <Statistics3 />,
+      //   state: "statistics.statistics3",
+      //   sidebarProps: {
+      //     displayText: "통계3"
+      //   }
+      // }
     ]
   },
   {
@@ -87,6 +88,15 @@ const appRoutes: RouteType[] = [
     sidebarProps: {
       displayText: "박물조회",
       icon: <PostAddIcon />
+    }
+  },
+  {
+    path: "/objectRegister",
+    element: <ObjectRegister />,
+    state: "objectRegister",
+    sidebarProps: {
+      displayText: "박물등록",
+      icon: <MarkUnreadChatAltIcon />
     }
   },
   {

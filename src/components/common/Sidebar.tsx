@@ -15,7 +15,7 @@ const Sidebar = () => {
   //홈버튼
   const directHome = () => {
     navigate("/");
-    window.location.reload(); //임시 강제 새로고침
+    // window.location.reload(); //임시 강제 새로고침
   }
 
   return (

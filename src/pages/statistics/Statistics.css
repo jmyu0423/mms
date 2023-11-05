@@ -1,0 +1,42 @@
+.dashboard-stat {
+    padding: 20px;
+    width: 100%;
+    display: flex;
+}
+
+.dashboard-stat-table {
+    width: 33%;
+    padding: 20px 50px;
+}
+
+.stat-table {
+    border: solid 1px black;
+
+    .stat-title {
+        padding: 5px;
+        background-color: rgb(204, 209, 248);
+        font-weight: bold;
+    }
+
+    .stat-value {
+        border-top: 1px solid black;
+        padding: 10px;
+        text-align: right;
+        font-size: 25px;
+        font-weight: bold;
+    }
+}
+
+.dashboard-chart {
+    padding: 20px;
+    width: 100%;
+    display: flex;
+}
+
+.dashboard-chart-table {
+    width: 50%;
+    padding: 20px 50px;
+    border: solid 1px black;
+    border-radius: 20px;
+    margin-left: 20px;
+}
