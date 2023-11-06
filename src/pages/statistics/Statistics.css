@@ -1,5 +1,17 @@
+.dashboard {
+    user-select: none;
+}
+
+.dashboard-main {
+    margin: 20px;
+    height: 100%;
+    border: solid 1px black;
+    border-radius: 8px;
+    background-color: #fff;
+}
+
 .dashboard-stat {
-    padding: 20px;
+    padding: 10px;
     width: 100%;
     display: flex;
 }
@@ -16,6 +28,7 @@
         padding: 5px;
         background-color: rgb(204, 209, 248);
         font-weight: bold;
+        color: rgb(93, 116, 214);
     }
 
     .stat-value {
@@ -28,7 +41,7 @@
 }
 
 .dashboard-chart {
-    padding: 10px 30px;
+    padding: 10px 20px;
     display: flex;
 
 }
@@ -36,8 +49,33 @@
 .dashboard-chart-table {
     width: 46%;
     height: 300px;
-    padding: 20px;
+    padding: 10px 20px 30px 20px;
     border: solid 1px black;
     border-radius: 20px;
     margin-left: 40px;
+}
+
+.dashboard-chart-header {}
+
+.dashboard-chart-title {
+    font-size: 16px;
+    color: rgb(93, 116, 214);
+    font-weight: bold;
+    float: left;
+}
+
+.dashboard-chart-detail-btn {
+    float: right;
+    width: 25px;
+    height: 25px;
+    cursor: pointer;
+
+
+    .detail-icon {
+        background-image: url("../../../public//img/arrow-right.png");
+        background-size: cover;
+        background-repeat: no-repeat;
+        width: 100%;
+        height: 100%;
+    }
 }

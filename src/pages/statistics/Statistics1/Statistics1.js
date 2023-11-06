@@ -10,15 +10,19 @@ const Statistics1 = ({ }) => {
 
   let options1 = {
     responsive: true,
-    maintainAspectRatio :false,
+    maintainAspectRatio: false,
     plugins: {
       legend: {
-        position: 'top',
+        position: 'right',
       },
-      title: {
-        display: true,
-        text: 'Chart.js Bar Chart',
-      },
+      // title: {
+      //   display: true,
+      //   text: '재질별 등록통계',
+      //   font: {
+      //     size: 20,
+      //     family: 'helvetical Neue'
+      //   }
+      // },
     },
   }
 
@@ -40,15 +44,15 @@ const Statistics1 = ({ }) => {
 
   let options2 = {
     responsive: true,
-    maintainAspectRatio :false,
+    maintainAspectRatio: false,
     plugins: {
       legend: {
-        position: 'top',
+        position: 'right',
       },
-      title: {
-        display: true,
-        text: 'Chart.js Bar Chart',
-      },
+      // title: {
+      //   display: true,
+      //   text: 'Chart.js Bar Chart',
+      // },
     },
   }
 
@@ -70,11 +74,16 @@ const Statistics1 = ({ }) => {
 
   let options3 = {
     responsive: true,
-    maintainAspectRatio :false,
-    legend: {
-      display: true,
-      position: "right"
-    }
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        position: 'right',
+      },
+      // title: {
+      //   display: true,
+      //   text: 'Chart.js Bar Chart',
+      // },
+    },
   };
 
   let data3 = {
@@ -94,77 +103,134 @@ const Statistics1 = ({ }) => {
   // map chart
   let options4 = {
     responsive: true,
-    maintainAspectRatio :false,
-    legend: {
-      display: true,
-      position: "right"
-    }
-  };
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        position: 'right',
+      },
+      // title: {
+      //   display: true,
+      //   text: 'Chart.js Bar Chart',
+      // },
+    },
+  }
 
   let data4 = {
-    labels: ["Red", "Green", "Yellow"],
+    labels,
     datasets: [
       {
-        data: [300, 50, 100],
-        backgroundColor: ["#FF6384", "#36A2EB", "#FFCE56"],
-        hoverBackgroundColor: ["#FF6384", "#36A2EB", "#FFCE56"]
-      }
+        label: 'Dataset 1',
+        data: [1, 2, 3, 4, 5, 6, 7], //실제 그려지는 데이터(Y축 숫자)
+        backgroundColor: 'rgba(255, 99, 132, 0.5)',
+      },
+      {
+        label: 'Dataset 2',
+        data: [2, 3, 4, 5, 4, 7, 8],
+        backgroundColor: 'rgba(53, 162, 235, 0.5)',
+      },
     ],
-    text: "Total: 9000+"
-  };
+  }
 
   return (
-    <div>
-      <div className='dashboard-stat'>
-        <div className="dashboard-stat-table">
-          <div className='stat-table'>
-            <div className='stat-title'>
-              총 등록 박물 수
+    <div className='dashboard'>
+      <div className='dashboard-main'>
+        <div className='dashboard-stat'>
+          <div className="dashboard-stat-table">
+            <div className='stat-table'>
+              <div className='stat-title'>
+                총 등록 박물 수
+              </div>
+              <div className='stat-value'>
+                3,976 건
+              </div>
             </div>
-            <div className='stat-value'>
-              3,976 건
+          </div>
+
+          <div className="dashboard-stat-table">
+            <div className='stat-table'>
+              <div className='stat-title'>
+                총 유실 건 수
+              </div>
+              <div className='stat-value'>
+                98 건
+              </div>
+            </div>
+          </div>
+
+          <div className="dashboard-stat-table">
+            <div className='stat-table'>
+              <div className='stat-title'>
+                총 파손 건 수
+              </div>
+              <div className='stat-value'>
+                198 건
+              </div>
             </div>
           </div>
         </div>
 
-        <div className="dashboard-stat-table">
-          <div className='stat-table'>
-            <div className='stat-title'>
-              총 유실 건 수
+        <div className='dashboard-chart'>
+          <div className='dashboard-chart-table'>
+            <div className='dashboard-chart-header'>
+              <div className='dashboard-chart-title'>
+                ● 재질별 등록 통계
+              </div>
+              <div className='dashboard-chart-detail-btn'>
+                <div className='detail-icon'></div>
+              </div>
             </div>
-            <div className='stat-value'>
-              98 건
+            <BarChart options={options1} data={data1} />
+          </div>
+          <div className='dashboard-chart-table'>
+            <div className='dashboard-chart-header'>
+              <div className='dashboard-chart-title'>
+                ● 행사별 등록 통계
+              </div>
+              <div className='dashboard-chart-detail-btn'>
+                <div className='detail-icon'></div>
+              </div>
             </div>
+            <LineChart options={options2} data={data2} />
           </div>
         </div>
 
-        <div className="dashboard-stat-table">
-          <div className='stat-table'>
-            <div className='stat-title'>
-              총 파손 건 수
+        <div className='dashboard-chart'>
+          <div className='dashboard-chart-table'>
+            <div className='dashboard-chart-header'>
+              <div className='dashboard-chart-title'>
+                ● 연도별 등록 통계
+              </div>
+              <div className='dashboard-chart-detail-btn'>
+                <div className='detail-icon'></div>
+              </div>
             </div>
-            <div className='stat-value'>
-              198 건
+            <DoughnutChart options={options3} data={data3} />
+          </div>
+          <div className='dashboard-chart-table'>
+            <div className='dashboard-chart-header'>
+              <div className='dashboard-chart-title'>
+                ● 국가별 등록 통계
+              </div>
+              <div className='dashboard-chart-detail-btn'>
+                <div className='detail-icon'></div>
+              </div>
             </div>
+            <MapChart options={options4} data={data4} />
           </div>
         </div>
-      </div>
 
-      <div className='dashboard-chart'>
-        <div className='dashboard-chart-table'>
-          <BarChart options={options1} data={data1} />
-        </div>
-        <div className='dashboard-chart-table'>
-          <LineChart options={options2} data={data2} />
-        </div>
-      </div>
-
-      <div className='dashboard-chart'>
-        <div className='dashboard-chart-table'>
-          <DoughnutChart options={options3} data={data3} />
-        </div>
-        <div className='dashboard-chart-table'>
-          <MapChart options={options4} data={data4} />
+        <div className='dashboard-chart'>
+          <div className='dashboard-chart-table'>
+            <div className='dashboard-chart-header'>
+              <div className='dashboard-chart-title'>
+                ● 기증자 등급별 등록 통계
+              </div>
+              <div className='dashboard-chart-detail-btn'>
+                <div className='detail-icon'></div>
+              </div>
+            </div>
+            <DoughnutChart options={options3} data={data3} />
+          </div>
         </div>
       </div>
     </div>

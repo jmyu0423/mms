@@ -78,19 +78,32 @@ const Login = () => {
 
     return (
         <ThemeProvider theme={defaultTheme}>
-            <Container component="main" maxWidth="xs">
-                <CssBaseline />
+            <CssBaseline />
+            <Box sx={{ display: 'flex', height: '1050px' }}>
+                <Box sx={{
+                    width: '50%',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    backgroundColor: '#1976d2',
+                    color: 'white',
+                    fontSize: '30px'
+                }}>
+                    HANS LOGO
+                </Box>
                 <Box
                     sx={{
-                        marginTop: 8,
                         display: 'flex',
+                        justifyContent: 'center',
                         flexDirection: 'column',
                         alignItems: 'center',
+                        width: '50%',
                     }}
                 >
                     {/* <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-                        <LockOutlinedIcon />
-                    </Avatar> */}
+                    <LockOutlinedIcon />
+                </Avatar> */}
                     <Typography component="h1" variant="h5">
                         HAMS
                     </Typography>
@@ -155,7 +168,8 @@ const Login = () => {
                         </Grid>
                     </Box>
                 </Box>
-            </Container>
+            </Box>
+
         </ThemeProvider>
     )
 }

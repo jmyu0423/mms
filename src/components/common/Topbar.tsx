@@ -18,6 +18,7 @@ const Topbar = ({ sidebarToggleButton, headerWidth }) => {
         boxShadow: "unset",
         backgroundColor: colorConfigs.topbar.bg,
         color: colorConfigs.topbar.color,
+        userSelect: 'none'
       }}
     >
       <SidebarToggleIcon sidebarToggleButton={sidebarToggleButton} />
