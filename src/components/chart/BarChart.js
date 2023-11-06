@@ -1,11 +1,26 @@
-import { Chart, registerables } from 'chart.js'
-import { Bar } from 'react-chartjs-2'
+import {
+  Chart as ChartJS,
+  LinearScale,
+  CategoryScale,
+  BarElement,
+  PointElement,
+  LineElement,
+  Legend,
+  Tooltip,
+  LineController,
+  BarController,
+  ArcElement,
+} from 'chart.js';
+import { Chart, Bar  } from 'react-chartjs-2';
 import React, { useEffect, useState } from 'react';
+import { styled } from '@mui/material/styles';
+import {
+    Box, Stack, Table, TableBody, TableCell, TableRow, Typography
+} from '@mui/material';
 
-Chart.register(...registerables)
+ChartJS.register(ArcElement, LinearScale, CategoryScale, BarElement, PointElement, LineElement, Legend, Tooltip, LineController, BarController);
+
 const BarChart = ({ options, data }) => {
-    console.log(options)
-    console.log(data)
 
     return (
         <Bar options={options} data={data} />

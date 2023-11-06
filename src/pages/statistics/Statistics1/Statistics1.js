@@ -1,12 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import './../Statistics.css';
 import BarChart from '../../../components/chart/BarChart';
+import DoughnutChart from '../../../components/chart/DoughnutChart';
+import LineChart from 'src/components/chart/LineChart';
+import MapChart from 'src/components/chart/MapChart';
 
 const Statistics1 = ({ }) => {
   let labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
 
   let options1 = {
     responsive: true,
+    maintainAspectRatio :false,
     plugins: {
       legend: {
         position: 'top',
@@ -36,6 +40,7 @@ const Statistics1 = ({ }) => {
 
   let options2 = {
     responsive: true,
+    maintainAspectRatio :false,
     plugins: {
       legend: {
         position: 'top',
@@ -62,6 +67,51 @@ const Statistics1 = ({ }) => {
       },
     ],
   }
+
+  let options3 = {
+    responsive: true,
+    maintainAspectRatio :false,
+    legend: {
+      display: true,
+      position: "right"
+    }
+  };
+
+  let data3 = {
+    labels: ["Red", "Green", "Yellow"],
+    datasets: [
+      {
+        data: [300, 50, 100],
+        backgroundColor: ["#FF6384", "#36A2EB", "#FFCE56"],
+        hoverBackgroundColor: ["#FF6384", "#36A2EB", "#FFCE56"]
+      }
+    ],
+    text: "Total: 9000+"
+  };
+
+
+
+  // map chart
+  let options4 = {
+    responsive: true,
+    maintainAspectRatio :false,
+    legend: {
+      display: true,
+      position: "right"
+    }
+  };
+
+  let data4 = {
+    labels: ["Red", "Green", "Yellow"],
+    datasets: [
+      {
+        data: [300, 50, 100],
+        backgroundColor: ["#FF6384", "#36A2EB", "#FFCE56"],
+        hoverBackgroundColor: ["#FF6384", "#36A2EB", "#FFCE56"]
+      }
+    ],
+    text: "Total: 9000+"
+  };
 
   return (
     <div>
@@ -105,7 +155,16 @@ const Statistics1 = ({ }) => {
           <BarChart options={options1} data={data1} />
         </div>
         <div className='dashboard-chart-table'>
-          <BarChart options={options2} data={data2} />
+          <LineChart options={options2} data={data2} />
+        </div>
+      </div>
+
+      <div className='dashboard-chart'>
+        <div className='dashboard-chart-table'>
+          <DoughnutChart options={options3} data={data3} />
+        </div>
+        <div className='dashboard-chart-table'>
+          <MapChart options={options4} data={data4} />
         </div>
       </div>
     </div>
