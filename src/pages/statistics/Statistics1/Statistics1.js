@@ -4,8 +4,10 @@ import BarChart from '../../../components/chart/BarChart';
 import DoughnutChart from '../../../components/chart/DoughnutChart';
 import LineChart from 'src/components/chart/LineChart';
 import MapChart from 'src/components/chart/MapChart';
+import { redirect, useNavigate  } from 'react-router-dom';
 
 const Statistics1 = ({ }) => {
+  const navigate = useNavigate();
   let labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
 
   let options1 = {
@@ -131,6 +133,22 @@ const Statistics1 = ({ }) => {
     ],
   }
 
+  const redirectDetail = (e) =>{
+    let type = e.currentTarget.title;
+
+    if(type === "texture-detail"){
+      navigate('/statistics/statistics2');
+    }else if(type === "event-detail"){
+      navigate('/statistics/statistics3');
+    }else if(type === "year-detail"){
+      navigate('/statistics/statistics4');
+    }else if(type === "country-detail"){
+      navigate('/statistics/statistics5');
+    }else if(type === "donor-detail"){
+      navigate('/statistics/statistics6');
+    }
+  }
+
   return (
     <div className='dashboard'>
       <div className='dashboard-main'>
@@ -175,7 +193,7 @@ const Statistics1 = ({ }) => {
               <div className='dashboard-chart-title'>
                 ● 재질별 등록 통계
               </div>
-              <div className='dashboard-chart-detail-btn'>
+              <div className='dashboard-chart-detail-btn' title={'texture-detail'} onClick={(e)=>{redirectDetail(e)}}>
                 <div className='detail-icon'></div>
               </div>
             </div>
@@ -186,7 +204,7 @@ const Statistics1 = ({ }) => {
               <div className='dashboard-chart-title'>
                 ● 행사별 등록 통계
               </div>
-              <div className='dashboard-chart-detail-btn'>
+              <div className='dashboard-chart-detail-btn' title={'event-detail'} onClick={(e)=>{redirectDetail(e)}}>
                 <div className='detail-icon'></div>
               </div>
             </div>
@@ -200,7 +218,7 @@ const Statistics1 = ({ }) => {
               <div className='dashboard-chart-title'>
                 ● 연도별 등록 통계
               </div>
-              <div className='dashboard-chart-detail-btn'>
+              <div className='dashboard-chart-detail-btn' title={'year-detail'} onClick={(e)=>{redirectDetail(e)}}>
                 <div className='detail-icon'></div>
               </div>
             </div>
@@ -211,7 +229,7 @@ const Statistics1 = ({ }) => {
               <div className='dashboard-chart-title'>
                 ● 국가별 등록 통계
               </div>
-              <div className='dashboard-chart-detail-btn'>
+              <div className='dashboard-chart-detail-btn' title={'country-detail'} onClick={(e)=>{redirectDetail(e)}}>
                 <div className='detail-icon'></div>
               </div>
             </div>
@@ -225,7 +243,7 @@ const Statistics1 = ({ }) => {
               <div className='dashboard-chart-title'>
                 ● 기증자 등급별 등록 통계
               </div>
-              <div className='dashboard-chart-detail-btn'>
+              <div className='dashboard-chart-detail-btn' title={'donor-detail'} onClick={(e)=>{redirectDetail(e)}}>
                 <div className='detail-icon'></div>
               </div>
             </div>

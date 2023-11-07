@@ -5,8 +5,11 @@ import HomePage from "../pages/HomePage";
 import StatisticLayout from "../pages/statistics/StatisticLayout";
 import StatisticsIndex from "../pages/statistics/StatisticsIndex";
 import Statistics1 from "../pages/statistics/Statistics1/Statistics1";
-import Statistics2 from "../pages/statistics/Statistics2/Statistics2";
+import Statistics2 from "../pages/statistics/Statistics2";
 import Statistics3 from "../pages/statistics/Statistics3";
+import Statistics4 from "../pages/statistics/Statistics4";
+import Statistics5 from "../pages/statistics/Statistics5";
+import Statistics6 from "../pages/statistics/Statistics6";
 import EqualizerIcon from '@mui/icons-material/Equalizer';
 
 import OperateLayout from "../pages/operate/OperateLayout";
@@ -68,17 +71,41 @@ const appRoutes: RouteType[] = [
         element: <Statistics2 />,
         state: "statistics.statistics2",
         sidebarProps: {
-          displayText: "통계 상세"
+          displayText: "재질별 등록 통계"
         }
       },
-      // {
-      //   path: "/statistics/statistics3",
-      //   element: <Statistics3 />,
-      //   state: "statistics.statistics3",
-      //   sidebarProps: {
-      //     displayText: "통계3"
-      //   }
-      // }
+      {
+        path: "/statistics/statistics3",
+        element: <Statistics3 />,
+        state: "statistics.statistics3",
+        sidebarProps: {
+          displayText: "행사별 등록 통계"
+        }
+      },
+      {
+        path: "/statistics/statistics4",
+        element: <Statistics4 />,
+        state: "statistics.statistics4",
+        sidebarProps: {
+          displayText: "연도별 등록 통계"
+        }
+      },
+      {
+        path: "/statistics/statistics5",
+        element: <Statistics5 />,
+        state: "statistics.statistics5",
+        sidebarProps: {
+          displayText: "국가별 등록 통계"
+        }
+      },
+      {
+        path: "/statistics/statistics6",
+        element: <Statistics6 />,
+        state: "statistics.statistics6",
+        sidebarProps: {
+          displayText: "기증자 등급별 등록 통계"
+        }
+      }
     ]
   },
   {
