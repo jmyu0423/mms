@@ -49,6 +49,7 @@ const AgGrid = ({ setRef, rowData, columnDefs, onRowClicked, heightVal }: any) =
                 overlayNoRowsTemplate={"데이터가없습니다."}
                 onSelectionChanged={onSelectionChanged}
                 getRowHeight={getRowHeight}
+                pagination={true}
             />
         </div>
     )

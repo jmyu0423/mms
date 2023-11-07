@@ -1,3 +1,4 @@
+import './management.css'
 import React, { useEffect, useRef, useMemo, useState, useLayoutEffect } from 'react';
 import PageTitleWrapper from "src/components/layout/PageTitleWrapper";
 import { Box, Button, Card, CardActions, CardContent, Container, FormControlLabel, Grid, MenuItem, TextField, Typography } from "@mui/material";
@@ -154,6 +155,9 @@ const Management = ({ }) => {
     }
   ]);
 
+  //검색 테이블 on/off
+  const [searchTable, setSearchTable] = useState(true);
+
   const onRowClicked = (row: any) => {
     setSelectedRow(row);
   }
@@ -228,33 +232,34 @@ const Management = ({ }) => {
     setOpenPreview(false);
   }
 
+  //토글 검색 테이블
+  const toggleSearchTable = () =>{
+    setSearchTable(!searchTable)
+  }
+
   return (
-    <>
-      <PageTitleWrapper>
-        <PageTitle heading="박물조회" />
-        <BaseButton onClick={(e) => openRegistModal()}>등록</BaseButton>
-        <DangerButton onClick={(e) => deleteRowData()}>삭제</DangerButton>
-        {/* <Button variant="outlined" size="small">등록</Button> */}
-      </PageTitleWrapper>
-      <PageContainer>
-        <Grid container direction="row" justifyContent="center" alignItems="stretch" spacing={3}>
-          <Grid item xs={12}>
-            <WngCard style={{ display: 'block' }}>
-              <Grid xs={12}>
-                <Box noValidate component="form" autoComplete="off" sx={{ display: 'flex' }}>
-                  <AgGrid
-                    setRef={setgridState} // Ref for accessing Grid's API
-                    rowData={rowData} // Row Data for Rows
-                    columnDefs={columnDefs} // Column Defs for Columns
-                    onRowClicked={onRowClicked}
-                    heightVal={850}
-                  />
-                </Box>
-              </Grid>
-            </WngCard>
-          </Grid>
-        </Grid>
-      </PageContainer>
+    <div className='search-main'>
+      
+      <div className='search-container'>
+        <div className='search-title'>
+          박물 조회
+        </div>
+        <div className='search-controller'>
+          <div className='search-header'>
+            <div className='title'>검색 조건</div>
+            <div className='toggle' onClick={(e)=>toggleSearchTable()}>{searchTable ? "검색 조건 닫기" : "검색 조건 열기"}</div>
+          </div>
+          {searchTable ? 
+            <table>
+              <tr>
+                <td>등록일</td>
+                <td>달력공간</td>
+              </tr>
+            </table>
+            :
+            null}
+        </div>
+      </div>
 
       {/* 등록모달 */}
       <ManagementRegistModal
@@ -278,7 +283,7 @@ const Management = ({ }) => {
         closePreviewModal={closePreviewModal}
         singleCurrRowData={singleCurrRowData}
       />
-    </>
+    </div>
   );
 };
 
