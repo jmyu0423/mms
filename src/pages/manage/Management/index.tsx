@@ -4,10 +4,10 @@ import { Box, Button, Card, CardActions, CardContent, Container, FormControlLabe
 import PageTitle from 'src/components/layout/PageTitle';
 import { styled } from '@mui/material/styles';
 import AgGrid from "src/components/AgGrid";
-import { red, grey, indigo } from '@mui/material/colors';
 import ManagementRegistModal from "src/pages/manage/modal/ManagementRegistModal"
 import ManagementUpdateModal from "src/pages/manage/modal/ManagementUpdateModal"
 import ImagePreviewModal from "src/pages/manage/modal/ImagePreviewModal";
+import {BaseButton, DangerButton} from 'src/components/CustomButton';
 
 const PageContainer = styled(Container)(
   ({ theme }) => `
@@ -33,30 +33,6 @@ const WngCard = styled(Card)(({ theme }) => ({
   display: 'flex',
   justifyContent: 'space-between',
   padding: '12px 12px'
-}));
-
-const BaseButton = styled(Button)(({ theme }) => ({
-  color: theme.palette.getContrastText(indigo[400]),
-  backgroundColor: indigo[400],
-  width: 80,
-  height: 30,
-  fontSize: 15,
-  marginRight: 5,
-  '&:hover': {
-    backgroundColor: indigo[600],
-  },
-}));
-
-const DangerButton = styled(Button)(({ theme }) => ({
-  color: theme.palette.getContrastText(indigo[400]),
-  backgroundColor: red[300],
-  width: 80,
-  height: 30,
-  fontSize: 15,
-  marginRight: 0,
-  '&:hover': {
-    backgroundColor: red[400],
-  },
 }));
 
 const Management = ({ }) => {
@@ -265,17 +241,15 @@ const Management = ({ }) => {
           <Grid item xs={12}>
             <WngCard style={{ display: 'block' }}>
               <Grid xs={12}>
-                <CardContent sx={{ padding: 0, flexGrow: 8 }}>
-                  <Box noValidate component="form" autoComplete="off" sx={{ display: 'flex' }}>
-                    <AgGrid
-                      setRef={setgridState} // Ref for accessing Grid's API
-                      rowData={rowData} // Row Data for Rows
-                      columnDefs={columnDefs} // Column Defs for Columns
-                      onRowClicked={onRowClicked}
-                      heightVal={850}
-                    />
-                  </Box>
-                </CardContent>
+                <Box noValidate component="form" autoComplete="off" sx={{ display: 'flex' }}>
+                  <AgGrid
+                    setRef={setgridState} // Ref for accessing Grid's API
+                    rowData={rowData} // Row Data for Rows
+                    columnDefs={columnDefs} // Column Defs for Columns
+                    onRowClicked={onRowClicked}
+                    heightVal={850}
+                  />
+                </Box>
               </Grid>
             </WngCard>
           </Grid>

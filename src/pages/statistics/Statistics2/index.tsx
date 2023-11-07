@@ -4,6 +4,9 @@ import PageTitle from 'src/components/layout/PageTitle';
 import { Box, Button, Card, CardActions, CardContent, Container, FormControlLabel, Grid, MenuItem, TextField, Typography } from "@mui/material";
 import { styled } from '@mui/material/styles';
 import BarChart from 'src/components/chart/BarChart';
+import CustomDatePicker from 'src/components/CustomDatePicker';
+import dayjs from 'dayjs';
+import {BaseButton, DangerButton, NormalButton} from 'src/components/CustomButton';
 
 const PageContainer = styled(Container)(
   ({ theme }) => `
@@ -32,7 +35,10 @@ const WngCard = styled(Card)(({ theme }) => ({
 }));
 
 const Statistics2 = ({}) => {
-
+  const [startDt, setStartDt] = useState(dayjs(new Date()).subtract(1, "month"))
+  const [endDt, setEndDt] = useState(dayjs(new Date()));
+  // const [endDt, setEndDt] = useState(dayjs(new Date()).format('YYYY-MM-DD'));
+  
   let labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
   let options1 = {
     responsive: true,
@@ -60,6 +66,10 @@ const Statistics2 = ({}) => {
     ],
   }
 
+  const openRegistModal = () =>{
+
+  }
+
   return (
     <>
       <PageTitleWrapper>
@@ -69,14 +79,23 @@ const Statistics2 = ({}) => {
         <Grid container direction="row" justifyContent="center" alignItems="stretch" spacing={3}>
           <Grid item xs={12}>
             <WngCard style={{ display: 'block', marginBottom: '20px' }}>
-              <Grid xs={12}>
-                <CardContent sx={{ padding: 0, flexGrow: 8 }}>
+              <Grid xs={12} style={{height: '220px'}}>
                 <BarChart options={options1} data={data1} />
-                  
-                </CardContent>
               </Grid>
             </WngCard>
             <WngCard style={{ display: 'block' }}>
+              <Box>
+                <Box sx={{float: 'left'}}>
+                  <CustomDatePicker startDt={startDt} endDt={endDt} setStartDt={setStartDt} setEndDt={setEndDt}/>
+                </Box>
+                <Box sx={{float: 'right', position: 'relative', top: '5px'}}>
+                    <NormalButton onClick={(e) => openRegistModal()}>최근 7일</NormalButton>
+                    <NormalButton onClick={(e) => openRegistModal()}>당월</NormalButton>
+                    <NormalButton onClick={(e) => openRegistModal()}>3개월</NormalButton>
+                    <NormalButton onClick={(e) => openRegistModal()}>6개월</NormalButton>
+                    <BaseButton onClick={(e) => openRegistModal()}>조회</BaseButton>
+                </Box>
+              </Box>
               <Box noValidate component="form" autoComplete="off" sx={{ display: 'flex' }}>
                 {/* <AgGrid
                   setRef={setgridState} // Ref for accessing Grid's API
