@@ -5,7 +5,8 @@ import { red, grey, indigo } from '@mui/material/colors';
 export const BaseButton = styled(Button)(({ theme }) => ({
     color: theme.palette.getContrastText(indigo[400]),
     backgroundColor: indigo[400],
-    width: 80,
+    width: 'auto',
+    minWidth: 80,
     height: 30,
     fontSize: 15,
     marginRight: 5,
@@ -17,7 +18,8 @@ export const BaseButton = styled(Button)(({ theme }) => ({
 export const DangerButton = styled(Button)(({ theme }) => ({
     color: theme.palette.getContrastText(indigo[400]),
     backgroundColor: red[300],
-    width: 80,
+    width: 'auto',
+    minWidth: 80,
     height: 30,
     fontSize: 15,
     marginRight: 0,
@@ -29,7 +31,8 @@ export const DangerButton = styled(Button)(({ theme }) => ({
 export const NormalButton = styled(Button)(({ theme }) => ({
   color: theme.palette.getContrastText(indigo[400]),
   backgroundColor: grey[400],
-  width: 80,
+  width: 'auto',
+  minWidth: 80,
   height: 30,
   fontSize: 15,
   marginRight: 5,

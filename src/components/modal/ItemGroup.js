@@ -25,6 +25,32 @@ let PopupFormControlLabel = styled(FormControlLabel)(({ theme }) => ({
     },
 }));
 
+let ComboControlLabel = styled(FormControlLabel)(({ theme }) => ({
+    width: 'auto',
+    alignItems: 'baseline',
+    marginLeft: '-5px',
+    marginRight: '5px',
+
+    '& .MuiFormControlLabel-label': {
+        marginBottom: '2px',
+        marginRight: '5px',
+        fontSize: '16px',
+        color: '#e57373',
+        fontWeight: 'bold'
+    },
+    '& .MuiInputBase-input': {
+        padding: '10px',
+        height: '12px',
+    },
+    '& .MuiTextField-root': {
+        width: '120px',
+        background: '#fcfcfc',
+        '.Mui-disabled': {
+            background: '#f7f7f7',
+        }
+    },
+}));
+
 const Title = styled(Box)`
   font-weight: 700;
   font-size: 14px;
@@ -56,4 +82,4 @@ function ItemGroup({ display, title, marginTop, control, children }) {
     );
 }
 
-export { ItemGroup, PopupFormControlLabel };
+export { ItemGroup, PopupFormControlLabel, ComboControlLabel};

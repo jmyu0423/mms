@@ -14,16 +14,21 @@
   margin: auto;
 }
 
-.search-controller{
+.search-controller-container{
   width: 98%;
-  height: 100vh;
+  height: 100%;
   margin: auto;
   background-color: white;
+  margin-bottom: 5px;
+}
+
+.search-controller{
+  background-color: #6f96f7;
 }
 
 .search-header{
+  border: solid 1px lightgray;
   padding: 0px;
-  background-color: #6f96f7;
   font-size: 16px;
   font-weight: bold;
   height: 30px;
@@ -36,7 +41,7 @@
 
   .toggle{
     float: right;
-    width: 180px;
+    width: 160px;
     height: 100%;
     color: white;
     background-color: #064bfc;
@@ -45,9 +50,138 @@
     justify-content: center;
     align-items: center;
     cursor: pointer;
+
+    .topArrow-icon{
+      background-image: url("/public/img/topArrow.png");
+      background-size: cover;
+      background-repeat: no-repeat;
+      width: 20px;
+      height: 20px;
+      margin-left: 5px;
+    }
+
+    .downArrow-icon{
+      background-image: url("/public/img/downArrow.png");
+      background-size: cover;
+      background-repeat: no-repeat;
+      width: 20px;
+      height: 20px;
+      margin-left: 5px;
+    }
   }
 
   .toggle:active{
-    background-color: #a3beff;
+    background-color: #000000;
+  }
+}
+
+.search-list{
+  font-size: 14px;
+  background-color: #F7F7F7;
+}
+
+.search-table{
+  width: 100%;
+
+  >tr >td:first-child{
+    background-color: #6f96f7;
+  }
+
+  >tr >td{
+    padding: 3px;
+
+    >button{
+      width: 80px;
+      height: 30px;
+      font-size: 14px;
+      color: white;
+      background-color: #064bfc;
+      border: 0px;
+      cursor: pointer;
+      border-radius: 8px;
+    }
+
+    >button:active{
+      background-color: black;
+    }
+  }
+}
+
+.search-table ,tr, td{
+  border-collapse: collapse;
+  border: 1px solid lightgray;
+}
+
+.item-list-container{
+  width: 98%;
+  height: 100%;
+  margin: auto;
+  background-color: white;
+  font-size: 16px;
+}
+
+.item-list-button-container{
+  display: flex;
+}
+
+.item-list-button-radio{
+  height: 35px;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  margin-left: 10px;
+  
+
+  >input{
+    display: none;
+  }
+
+  >input[type="radio"]:checked + label{
+    background-color: #064bfc;
+    color: white;
+  }
+
+  >label{
+    height: 80%;
+    width: 120px;
+    background-color: lightgray;
+    color: black;
+    border: 0px;
+    cursor: pointer;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 5px;
+  }
+}
+
+.item-list-area{
+  padding: 15px;
+}
+
+.item-list-result{
+  display: flex;
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 5px;
+
+  >p{
+    font-size: 14px;
+    font-weight: 400;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+}
+
+.item-list-button-controller{
+  display: flex;
+  margin-bottom: 10px;
+
+  .float-right{
+    margin-left: auto;
   }
 }

@@ -8,7 +8,11 @@ import AgGrid from "src/components/AgGrid";
 import ManagementRegistModal from "src/pages/manage/modal/ManagementRegistModal"
 import ManagementUpdateModal from "src/pages/manage/modal/ManagementUpdateModal"
 import ImagePreviewModal from "src/pages/manage/modal/ImagePreviewModal";
-import {BaseButton, DangerButton} from 'src/components/CustomButton';
+import {BaseButton, DangerButton, NormalButton} from 'src/components/CustomButton';
+import CustomDatePicker from 'src/components/CustomDatePicker';
+import dayjs from 'dayjs';
+import { ItemGroup, PopupFormControlLabel, ComboControlLabel } from 'src/components/modal/ItemGroup';
+import CustomCombo from 'src/components/combobox/CustomCombo';
 
 const PageContainer = styled(Container)(
   ({ theme }) => `
@@ -37,7 +41,7 @@ const WngCard = styled(Card)(({ theme }) => ({
 }));
 
 const Management = ({ }) => {
-  const imgSize = { maxHeight: "100%", maxWidth: "100%", cursor: "pointer", display: "flex" };
+  const imgSize = { maxHeight: "60%", maxWidth: "60%", cursor: "pointer", display: "flex" };
   const [gridState, setgridState] = useState(null); // Optional - for accessing Grid's API
   const [rowData, setRowData] = useState([
     {
@@ -155,8 +159,41 @@ const Management = ({ }) => {
     }
   ]);
 
+  const [organization1List, setOrganization1List] = useState([
+    { cd: 0, title: '총회' },
+    { cd: 1, title: '1' },
+    { cd: 2, title: '2' },
+    { cd: 3, title: '3' },
+  ]);
+
+  const [organization2List, setOrganization2List] = useState([
+    { cd: 0, title: '본부' },
+    { cd: 1, title: '1' },
+    { cd: 2, title: '2' },
+    { cd: 3, title: '3' },
+  ]);
+
+  const [materialList, setMaterialList] = useState([
+    { cd: 0, title: '천' },
+    { cd: 1, title: '종이' },
+    { cd: 2, title: '철' },
+    { cd: 3, title: '합금' },
+  ])
+
+
   //검색 테이블 on/off
   const [searchTable, setSearchTable] = useState(true);
+  const [seachType, setSearchType] = useState("itemList");
+  const [totalCnt, setTotalCnt] = useState(0);
+  const [startDt, setStartDt] = useState(dayjs(new Date()).subtract(1, "month"))
+  const [endDt, setEndDt] = useState(dayjs(new Date()));
+
+  const [organization1, setOrganization1] = useState(""); //기관1
+  const [organization2, setOrganization2] = useState(""); //기관2
+  const [material1, setMaterial1] = useState("") //재질
+  const [material2, setMaterial2] = useState("") //재질
+  const [startNumber, setStartNumber] = useState(""); //시작번호
+  const [endNumber, setEndNumber] = useState(""); //끝번호
 
   const onRowClicked = (row: any) => {
     setSelectedRow(row);
@@ -237,6 +274,26 @@ const Management = ({ }) => {
     setSearchTable(!searchTable)
   }
 
+  const handleListType = (value) =>{
+    if(value === "itemList"){
+      setSearchType("itemList")
+    }else if(value === "imgList"){
+      setSearchType("imgList");
+    }
+  }
+
+  const setFirstValue = (cd, targetData) => {
+    if(targetData === "organization1"){
+      setOrganization1(organization1List[cd].title)
+    }else if(targetData === "organization2"){
+      setOrganization2(organization2List[cd].title)
+    }else if(targetData === "material1"){
+      setMaterial1(materialList[cd].title)
+    }else if(targetData === "material2"){
+      setMaterial2(materialList[cd].title)
+    }
+  }
+
   return (
     <div className='search-main'>
       
@@ -244,20 +301,151 @@ const Management = ({ }) => {
         <div className='search-title'>
           박물 조회
         </div>
-        <div className='search-controller'>
-          <div className='search-header'>
-            <div className='title'>검색 조건</div>
-            <div className='toggle' onClick={(e)=>toggleSearchTable()}>{searchTable ? "검색 조건 닫기" : "검색 조건 열기"}</div>
+        <div className='search-controller-container'>
+          <div className='search-controller'>
+            <div className='search-header'>
+              <div className='title'>검색 조건</div>
+              <div className='toggle' onClick={(e)=>toggleSearchTable()}>{searchTable ? "검색 조건 닫기" : "검색 조건 열기"}
+                {searchTable ? 
+                <div className='topArrow-icon'></div>
+                :
+                <div className='downArrow-icon'></div>
+                }  
+              </div>
+            </div>
+            {searchTable ?
+              <div className='search-list'>
+                <table className='search-table'>
+                  <tr>
+                    <td style={{width: '10%', textAlign: 'center'}}>등록일</td>
+                    <td colSpan={4} style={{width: '90%'}}>
+                    <CustomDatePicker startDt={startDt} endDt={endDt} setStartDt={setStartDt} setEndDt={setEndDt}/>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style={{width: '10%', textAlign: 'center'}}>보관 소속</td>
+                    <td colSpan={4} style={{width: '90%'}}>
+                      <ComboControlLabel
+                        control={<CustomCombo size="small" type="none" setData={setFirstValue} dataList={organization1List} value={organization1} targetData={"organization1"} codeChange={(e) => setOrganization1(e.target.value)} />}
+                        label=""
+                        labelPlacement="start"
+                      />
+                      <ComboControlLabel
+                        control={<CustomCombo size="small" type="none" setData={setFirstValue} dataList={organization2List} value={organization2} targetData={"organization2"} codeChange={(e) => setOrganization2(e.target.value)} />}
+                        label=""
+                        labelPlacement="start"
+                      />
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style={{width: '10%', textAlign: 'center'}}>소장품 번호</td>
+                    <td style={{width: '10%', textAlign: 'center', backgroundColor: '#deebff'}}>시작 번호</td>
+                    <td style={{width: '35%'}}>
+                      <ComboControlLabel
+                        control={<CustomCombo size="small" type="none" setData={setFirstValue} dataList={materialList} value={material1} targetData={"material1"} codeChange={(e) => setMaterial1(e.target.value)} />}
+                        label=""
+                        labelPlacement="start"
+                      />
+                      <ComboControlLabel
+                        control={<TextField fullWidth size="small" value={startNumber} inputProps={{ maxLength: 20, min: 0 }} onChange={(e) => setStartNumber(e.target.value)} type="number"/>}
+                        label=""
+                        labelPlacement="start"
+                      />
+                    </td>
+                    <td style={{width: '10%', textAlign: 'center', backgroundColor: '#deebff'}}>끝 번호</td>
+                    <td style={{width: '35%'}}>
+                      <ComboControlLabel
+                        control={<CustomCombo size="small" type="none" setData={setFirstValue} dataList={materialList} value={material2} targetData={"material2"} codeChange={(e) => setMaterial2(e.target.value)} />}
+                        label=""
+                        labelPlacement="start"
+                      />
+                      <ComboControlLabel
+                        control={<TextField fullWidth size="small" value={endNumber} inputProps={{ maxLength: 20, min: 0 }} onChange={(e) => setEndNumber(e.target.value)} type="number"/>}
+                        label=""
+                        labelPlacement="start"
+                      />
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style={{width: '10%', textAlign: 'center'}}>재질</td>
+                    <td colSpan={4} style={{width: '90%'}}>보관공간</td>
+                  </tr>
+                  <tr>
+                    <td style={{width: '10%', textAlign: 'center'}}>입수 연유</td>
+                    <td colSpan={4} style={{width: '90%'}}>보관공간</td>
+                  </tr>
+                  <tr>
+                    <td style={{width: '10%', textAlign: 'center'}}>입수 시기</td>
+                    <td colSpan={4} style={{width: '90%'}}>보관공간</td>
+                  </tr>
+                  <tr>
+                    <td style={{width: '10%', textAlign: 'center'}}>연관 주제</td>
+                    <td colSpan={4} style={{width: '90%'}}>보관공간</td>
+                  </tr>
+                  <tr>
+                    <td style={{width: '10%', textAlign: 'center'}}>기증자</td>
+                    <td style={{width: '10%', textAlign: 'center', backgroundColor: '#deebff'}}>국적 대륙</td>
+                    <td style={{width: '30%'}}></td>
+                    <td style={{width: '10%', textAlign: 'center', backgroundColor: '#deebff'}}>국적 나라</td>
+                    <td style={{width: '30%'}}></td>
+                  </tr>
+                  <tr>
+                    <td style={{width: '10%', textAlign: 'center'}}>검색어 입력</td>
+                    <td colSpan={4} style={{width: '90%'}}>보관공간</td>
+                  </tr>
+                  <tr>
+                    <td colSpan={5} style={{backgroundColor: '#F7F7F7', textAlign: 'right'}}>
+                      <button>검색</button>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+              :
+              null
+            }
+            
           </div>
-          {searchTable ? 
-            <table>
-              <tr>
-                <td>등록일</td>
-                <td>달력공간</td>
-              </tr>
-            </table>
-            :
-            null}
+        </div>
+        <div className='item-list-container'>
+          <div className='item-list-button-container'>
+            <div className='item-list-button-radio'>
+              <input type='radio' id="itemList" name="searchType" value="itemList" checked={seachType === "itemList"} onChange={(e)=>handleListType(e.target.value)}/>
+              <label htmlFor="itemList">결과 목록</label>
+            </div>
+
+            <div className='item-list-button-radio'>
+              <input type='radio' id="imgList" name="searchType" value="imgList" checked={seachType === "imgList"} onChange={(e)=>handleListType(e.target.value)}/>
+              <label htmlFor="imgList">결과 이미지 목록</label>
+            </div>
+          </div>
+
+          <div className='item-list-area'>
+            <div className='item-list-result'>
+              검색결과
+              <p>(Total {totalCnt}건)</p>
+            </div>
+            <div className='item-list-button-controller'>
+              <div className='float-left'>
+                <NormalButton >검색항목 추가/수정</NormalButton>
+              </div>
+              <div className='float-right'>            
+                <NormalButton >선택 일괄수정</NormalButton>
+                <NormalButton >인쇄</NormalButton>
+                <NormalButton >다운로드</NormalButton>
+              </div>
+            </div>
+            <div>
+              <Box noValidate component="form" autoComplete="off" sx={{ display: 'flex' }}>
+                <AgGrid
+                  setRef={setgridState} // Ref for accessing Grid's API
+                  rowData={rowData} // Row Data for Rows
+                  columnDefs={columnDefs} // Column Defs for Columns
+                  onRowClicked={onRowClicked}
+                  heightVal={660}
+                />
+              </Box>
+            </div>
+          </div>
         </div>
       </div>
 
