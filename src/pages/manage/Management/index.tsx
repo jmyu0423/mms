@@ -371,6 +371,13 @@ const Management = ({ }) => {
                     <td colSpan={4} style={{width: '90%'}}>보관공간</td>
                   </tr>
                   <tr>
+                    <td style={{width: '10%', textAlign: 'center'}}>국적</td>
+                    <td style={{width: '10%', textAlign: 'center', backgroundColor: '#deebff'}}>국적 대륙</td>
+                    <td style={{width: '30%'}}></td>
+                    <td style={{width: '10%', textAlign: 'center', backgroundColor: '#deebff'}}>국적 나라</td>
+                    <td style={{width: '30%'}}></td>
+                  </tr>
+                  <tr>
                     <td style={{width: '10%', textAlign: 'center'}}>입수 연유</td>
                     <td colSpan={4} style={{width: '90%'}}>보관공간</td>
                   </tr>
