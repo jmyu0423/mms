@@ -36,7 +36,7 @@ const WngCard = styled(Card)(({ theme }) => ({
 }));
 
 const Statistics3 = ({}) => {
-  const imgSize = { maxHeight: "100%", maxWidth: "100%", cursor: "pointer", display: "flex" };
+  const imgSize = { maxHeight: "40%", maxWidth: "40%", cursor: "pointer", display: "flex" };
   const [startDt, setStartDt] = useState(dayjs(new Date()).subtract(1, "month"))
   const [endDt, setEndDt] = useState(dayjs(new Date()));
   // const [endDt, setEndDt] = useState(dayjs(new Date()).format('YYYY-MM-DD'));
@@ -52,11 +52,11 @@ const Statistics3 = ({}) => {
   const [columnDefs, setColumnDefs] = useState([
     { field: 'number', headerName: 'No.', flex: 1.5, cellStyle: { textAlign: "center", 'white-space': 'normal' }, autoHeight: true },
     {
-      field: 'image', headerName: '대표 이미지', flex: 2.5, cellStyle: { textAlign: "center", 'white-space': 'normal' }, autoHeight: true,
+      field: 'image', headerName: '대표 이미지', flex: 2, cellStyle: { textAlign: "center", 'white-space': 'normal' }, autoHeight: true,
       cellRenderer: function (row) {
         if (row.data.image) {
           return (
-            <div className="" onClick={(e) => { openPreviewModal(row) }}>
+            <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}} onClick={(e) => { openPreviewModal(row) }}>
               <img
                 style={imgSize}
                 loading="lazy"

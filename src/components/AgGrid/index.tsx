@@ -5,7 +5,7 @@ import { AgGridReact } from 'ag-grid-react'; // the AG Grid React Component
 import React, { useEffect, useRef, useCallback, useState, useMemo } from 'react';
 import './style.css';
 
-const AgGrid = ({ setRef, rowData, columnDefs, onRowClicked, heightVal }: any) => {
+const AgGrid = ({ setRef, rowData, columnDefs, onRowClicked, heightVal, pageCnt}: any) => {
     const gridRef = useRef<any>(null);
 
     useEffect(() => {
@@ -36,8 +36,37 @@ const AgGrid = ({ setRef, rowData, columnDefs, onRowClicked, heightVal }: any) =
         return params.data.rowHeight;
     }, []);
 
+    const onGridReady = (params) =>{
+        gridRef.current.api.addEventListener('paginationChanged', (e) =>{
+            //Reset rows selection based on current page
+            resetPaginationSelection(gridRef.current);
+        });
+    }
+
+    //전체 셀렉트 현재 페이지만 적용
+    const resetPaginationSelection = (self) =>{
+        self.api.deselectAll();
+
+        //Initialize pagination data
+        let paginationSize = self.api.paginationGetPageSize();
+        let currentPageNum = self.api.paginationGetCurrentPage();
+        let totalRowsCount = self.api.getDisplayedRowCount();
+
+        //Calculate current page row indexes
+        let currentPageRowStartIndex = (currentPageNum * paginationSize);
+        let currentPageRowLastIndex = (currentPageRowStartIndex + paginationSize);
+        if(currentPageRowLastIndex > totalRowsCount) currentPageRowLastIndex = (totalRowsCount);
+
+        for(let i = 0; i < totalRowsCount; i++)
+        {
+            //Set isRowSelectable=true attribute for current page rows, and false for other page rows
+            let isWithinCurrentPage = (i >= currentPageRowStartIndex && i < currentPageRowLastIndex);
+            self.api.getDisplayedRowAtIndex(i).setRowSelectable(isWithinCurrentPage);
+        }
+    }
+
     return (
-        <div className="ag-theme-alpine" style={{ width: '100%', height: heightVal }}>
+        <div className="ag-theme-alpine" style={{ height: heightVal }}>
             <AgGridReact
                 ref={gridRef}
                 rowData={rowData} // Row Data for Rows
@@ -50,6 +79,8 @@ const AgGrid = ({ setRef, rowData, columnDefs, onRowClicked, heightVal }: any) =
                 onSelectionChanged={onSelectionChanged}
                 getRowHeight={getRowHeight}
                 pagination={true}
+                paginationPageSize={pageCnt}
+                onGridReady={onGridReady}
             />
         </div>
     )
