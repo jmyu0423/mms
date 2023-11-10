@@ -175,12 +175,17 @@ const Management = ({ }) => {
     currList = tempList.slice(offset, Number(offset) + Number(pageCnt));
     setImageList(currList);
 
+    resetImageCheckbox();
   },[pageCnt, page])
 
   //페이지 갯수 바꾸면 1페이지로 초기화
   useEffect(()=>{
     setPage(1);
   },[pageCnt])
+
+  const resetImageCheckbox = () =>{
+    setImageListChckItems([]);
+  }
 
   const onRowClicked = (row: any) => {
     setSelectedRow(row);
@@ -394,15 +399,29 @@ const Management = ({ }) => {
   const onChangeSelectImageList = (e) =>{
     let isChecked = e.target.checked;
 
-    if(isChecked){
-      setImageListChckItems(prev => [...prev, e.target.value]);
+    if(e.target.value != ""){
+      if(isChecked){
+        setImageListChckItems(prev => [...prev, e.target.value]);
+      }else{
+        setImageListChckItems(imageListChckItems.filter((el) => el !== e.target.value));
+      }
+    //전체선택일때
     }else{
-      setImageListChckItems(imageListChckItems.filter((el) => el !== e.target.value));
+      if(isChecked){
+        let idArray = [];
+        imageList.map((data)=>{
+          idArray.push(data.seqNo.toString());
+        })
+
+        setImageListChckItems(idArray);
+      }else{
+        setImageListChckItems([]);
+      }
     }
   }
 
   const openMoreBtn = (e, index) =>{
-    let tempData= [...rowData];
+    let tempData= [...imageList];
     for(let i=0; i<tempData.length; i++){
       if(i === index){
         tempData[i].openMoreFlag = !tempData[i].openMoreFlag;
@@ -410,7 +429,12 @@ const Management = ({ }) => {
         tempData[i].openMoreFlag = false;
       }
     }
-    setRowData(tempData);
+    setImageList(tempData);
+  }
+
+  const openDetailImageModal = (e, index) =>{
+    console.log(index)
+    console.log(imageList)
   }
 
   return (
@@ -648,6 +672,16 @@ const Management = ({ }) => {
             </div>
             <div className='item-list-button-controller'>
               <div className='float-left'>
+                {seachType === "imgList" ?
+                  <div className='image-list-all-checkbox'>
+                    <label className='image-list-all-checkbox-label'>
+                      <input type="checkbox" onClick={(e)=>onChangeSelectImageList(e)} value={""} checked={imageListChckItems.length === imageList.length ? true : false}/>
+                      전체선택
+                    </label>
+                  </div>
+                  :
+                  null
+                }
                 <NormalButton >검색항목 추가/수정</NormalButton>
               </div>
               <div className='float-right'>            
@@ -687,7 +721,7 @@ const Management = ({ }) => {
                         <div className='image-list-area-header-more'>
                           <div className='more-icon' onClick={(e)=>openMoreBtn(e, index)}>
                             {data.openMoreFlag ?
-                            <ul className='btn-more-ul'>
+                            <ul className='btn-more-ul' onClick={(e)=>openDetailImageModal(e, index)}>
                               <li>
                                 <a>
                                   <span>이미지 더보기</span>
