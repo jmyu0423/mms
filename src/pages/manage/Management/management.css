@@ -215,3 +215,114 @@
   outline: none;
   position: relative;
 }
+
+.image-list-area{
+  >ul{
+    list-style-type: none;
+    padding: 0px;
+    margin: 0px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+
+    >li{
+      position: relative;
+      width: 18%;
+      float: left;
+      margin: 10px;
+      border: solid 1px black;
+      box-shadow: 2px 2px 2px 2px rgb(220, 220, 220);
+    }
+  } 
+}
+
+.image-list-area-imageContainer{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+
+  >img{
+    width: 80%;
+    height: 80%;
+    box-shadow: 2px 2px 2px 2px rgb(220, 220, 220);
+  }
+}
+
+.image-list-area-header{
+  display: flex;
+  justify-content: space-between;
+}
+
+.image-list-area-header-checkbox{
+  width: 20px;
+  height: 20px;
+
+  >input[type="checkbox"]{
+    margin-top: 4px;
+    margin-left: 5px;
+    padding: 0px;
+    width: 80%;
+    height: 80%;
+  }
+}
+
+.image-list-area-title{
+  text-align: center;
+}
+
+.image-list-area-header-more{
+  width: 20px;
+  height: 20px;
+  
+  .more-icon{
+    background-image: url("/public/img/more.png");
+    background-size: cover;
+    background-repeat: no-repeat;
+    margin-top: 4px;
+    margin-left: 5px;
+    padding: 0px;
+    width: 20%;
+    height: 80%;
+    cursor: pointer;
+  }
+}
+
+.btn-more-ul{
+  position: absolute;
+  right: 0;
+  top: 20px;
+  width: 120px;
+  border: 1px solid #dcdcdc;
+  border-radius: 5px;
+  background: #fff;
+  margin: 0;
+  padding: 0;
+  z-index: 1;
+  cursor: pointer;
+
+  >li{
+     list-style: none;
+     padding: 0;
+     margin: 0;
+
+     >a{
+        display: block;
+        height: 40px;
+        line-height: 39px;
+        padding-left: 15px;
+        font-size: 14px;
+        color: #212121;
+        text-decoration: none;
+     }
+
+     >a:hover{
+        background: #f9f9f9;
+     }
+  }
+}
+
+.image-list-pagination{
+  display: flex;
+  justify-content: flex-end;
+}

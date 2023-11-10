@@ -24,6 +24,7 @@ import {
   broughtReasonData,
   relatedTopicData
 } from 'src/jsonData';
+import CustomPagination from 'src/components/CustomPagination'; 
 
 const PageContainer = styled(Container)(
   ({ theme }) => `
@@ -128,6 +129,7 @@ const Management = ({ }) => {
   const [broughtEndDt, setBroughtEndDt] = useState(dayjs(new Date())); //입수시기끝
   const [donorCountry, setDonorCountry] = useState("") //기증자국적
   const [pageCnt, setPageCnt] = useState(10); //그리드 갯수
+  const [page, setPage] = useState(1); //이미지리스트 현재 페이지
 
   //재질 체크박스
   const [materialCheckItems, setMaterialCheckItems] = useState([]);
@@ -139,6 +141,10 @@ const Management = ({ }) => {
   const [relatedTopicCheckItems, setRelatedTopicCheckItems] = useState([]);
   //기증자 국적 체크박스
   const [donorCountryCheckItems, setDonorCountryCheckItems] = useState([]);
+  //이미지 리스트 체크박스
+  const [imageListChckItems, setImageListChckItems] = useState([]);
+  //이미지 리스트
+  const [imageList, setImageList] = useState([]);
 
   //체크박스 default 전체 선택
   useEffect(()=>{
@@ -161,8 +167,20 @@ const Management = ({ }) => {
     setBroughtReasonCheckItems(broughtReasonList);
   },[])
 
+  //페이지네이션 작동
   useEffect(()=>{
-  },[relatedTopicCheckItems])
+    let tempList = [...rowData];
+    let currList = [];
+    let offset = (page-1)*pageCnt; 
+    currList = tempList.slice(offset, Number(offset) + Number(pageCnt));
+    setImageList(currList);
+
+  },[pageCnt, page])
+
+  //페이지 갯수 바꾸면 1페이지로 초기화
+  useEffect(()=>{
+    setPage(1);
+  },[pageCnt])
 
   const onRowClicked = (row: any) => {
     setSelectedRow(row);
@@ -346,7 +364,7 @@ const Management = ({ }) => {
     }
   }
 
-  const onDonorChangeCountry = (e) =>{
+  const onChangeDonorCountry = (e) =>{
     let isChecked = e.target.checked;
 
     if(e.target.value != ""){
@@ -369,9 +387,31 @@ const Management = ({ }) => {
     }
   }
 
-  const onPageSizeChanged = (e) =>{
+  const onChangePageSize = (e) =>{
     setPageCnt(e.target.value)
   };
+
+  const onChangeSelectImageList = (e) =>{
+    let isChecked = e.target.checked;
+
+    if(isChecked){
+      setImageListChckItems(prev => [...prev, e.target.value]);
+    }else{
+      setImageListChckItems(imageListChckItems.filter((el) => el !== e.target.value));
+    }
+  }
+
+  const openMoreBtn = (e, index) =>{
+    let tempData= [...rowData];
+    for(let i=0; i<tempData.length; i++){
+      if(i === index){
+        tempData[i].openMoreFlag = !tempData[i].openMoreFlag;
+      }else{
+        tempData[i].openMoreFlag = false;
+      }
+    }
+    setRowData(tempData);
+  }
 
   return (
     <div className='search-main'>
@@ -544,14 +584,14 @@ const Management = ({ }) => {
                     <td style={{width: '10%', textAlign: 'center', backgroundColor: '#deebff'}}>국적 대륙</td>
                     <td style={{width: '30%'}}>
                       <label className='normal-checkbox-lable'>
-                        <input type="checkbox" onClick={(e)=>onDonorChangeCountry(e)} value={""} checked={donorCountryCheckItems.length === countryData.length ? true : false}/>
+                        <input type="checkbox" onClick={(e)=>onChangeDonorCountry(e)} value={""} checked={donorCountryCheckItems.length === countryData.length ? true : false}/>
                         전체
                       </label>
                       {
                         countryData.length > 0 && countryData.map((data)=>{
                           return(
                             <label className='normal-checkbox-lable'>
-                              <input type="checkbox" onClick={(e)=>onDonorChangeCountry(e)} value={data.cd} checked={donorCountryCheckItems.includes(data.cd) ? true : false}/>
+                              <input type="checkbox" onClick={(e)=>onChangeDonorCountry(e)} value={data.cd} checked={donorCountryCheckItems.includes(data.cd) ? true : false}/>
                               {data.name}
                             </label>
                           )
@@ -614,7 +654,7 @@ const Management = ({ }) => {
                 <NormalButton >선택 일괄수정</NormalButton>
                 <NormalButton >인쇄</NormalButton>
                 <NormalButton >다운로드</NormalButton>
-                <select className='ag-pageCnt-select' onChange={onPageSizeChanged} value={pageCnt}>
+                <select className='ag-pageCnt-select' onChange={onChangePageSize} value={pageCnt}>
                   <option value="1">1</option>
                   <option value="10">10</option>
                   <option value="20">20</option>
@@ -623,7 +663,7 @@ const Management = ({ }) => {
                 </select>
               </div>
             </div>
-            <div>
+            {seachType === "itemList" ?
               <Box noValidate component="form" autoComplete="off" sx={{ display: 'flex' }}>
                 <AgGrid
                   setRef={setgridState} // Ref for accessing Grid's API
@@ -634,7 +674,55 @@ const Management = ({ }) => {
                   pageCnt={pageCnt}
                 />
               </Box>
-            </div>
+              :
+              <div className='image-list-area'>
+                <ul>
+                {imageList.length > 0 && imageList.map((data, index)=>{
+                  return(
+                    <li>
+                      <div className='image-list-area-header'>
+                        <div className='image-list-area-header-checkbox'>
+                          <input type="checkbox" onClick={(e)=>onChangeSelectImageList(e)} value={data.seqNo} checked={imageListChckItems.includes(data.seqNo.toString()) ? true : false}/>
+                        </div>
+                        <div className='image-list-area-header-more'>
+                          <div className='more-icon' onClick={(e)=>openMoreBtn(e, index)}>
+                            {data.openMoreFlag ?
+                            <ul className='btn-more-ul'>
+                              <li>
+                                <a>
+                                  <span>이미지 더보기</span>
+                                </a>
+                              </li>
+                            </ul>
+                            :
+                            null
+                            }
+                          </div>
+                        </div>
+                      </div>
+                      <div className='image-list-area-imageContainer'>
+                        <img
+                          loading="lazy"
+                          src={data.image}
+                        />
+                      </div>
+                      <div className='image-list-area-title'>
+                        {data.itemNm}
+                      </div>
+                    </li>   
+                  )
+                })}
+                </ul>
+                <div className='image-list-pagination'>
+                  <CustomPagination 
+                    totalItemsCount={rowData.length} 
+                    pageCnt={pageCnt}
+                    page={page}
+                    setPage={setPage}
+                  />
+                </div>
+              </div>
+            }
           </div>
         </div>
       </div>
