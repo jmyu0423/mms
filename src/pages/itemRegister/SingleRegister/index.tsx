@@ -205,8 +205,8 @@ const SingleRegister = ({ }) => {
                   <td style={{width: '10%', textAlign: 'center'}}>딸림자료</td>
                   <td style={{width: '10%', textAlign: 'center', backgroundColor: '#deebff'}}>유/무</td>
                   <td style={{width: '30%'}}>
-                    <div className='checkbox-container'>
-                      <div className='checkbox-item'>
+                    <div className={styles.checkbox_container}>
+                      <div className={styles.checkbox_item}>
                         <label>
                           <input 
                             type='radio' 
