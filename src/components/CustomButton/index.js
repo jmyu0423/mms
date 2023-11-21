@@ -1,6 +1,6 @@
 import { styled } from '@mui/material/styles';
 import { Box, Button, Card, CardActions, CardContent, Container, FormControlLabel, Grid, MenuItem, TextField, Typography } from "@mui/material";
-import { red, grey, indigo } from '@mui/material/colors';
+import { red, grey, indigo,  } from '@mui/material/colors';
 
 export const BaseButton = styled(Button)(({ theme }) => ({
     color: theme.palette.getContrastText(indigo[400]),
@@ -38,5 +38,18 @@ export const NormalButton = styled(Button)(({ theme }) => ({
   marginRight: 5,
   '&:hover': {
     backgroundColor: grey[400],
+  },
+}));
+
+export const AddButton = styled(Button)(({ theme }) => ({
+  color: theme.palette.getContrastText(indigo[400]),
+  backgroundColor: grey[900],
+  width: 'auto',
+  minWidth: 80,
+  height: 30,
+  fontSize: 15,
+  marginRight: 5,
+  '&:hover': {
+    backgroundColor: grey[900],
   },
 }));

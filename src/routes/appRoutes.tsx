@@ -30,8 +30,11 @@ import MainLayout from "src/components/layout/MainLayout";
 import BaseLayout from "src/components/layout/BaseLayout";
 
 import UserManagement from '../pages/UserManagement';
-import ObjectRegister from "../pages/manage/ObjectRegister";
 
+import ItemRegisterLayout from "src/pages/itemRegister/ItemRegisterLayout";
+import MultiRegister from "src/pages/itemRegister/MultiRegister";
+import SingleRegister from "src/pages/itemRegister/SingleRegister";
+import ItemRegister from "src/pages/itemRegister/ItemRegisterIndex";
 
 const appRoutes: RouteType[] = [
   {
@@ -118,13 +121,36 @@ const appRoutes: RouteType[] = [
     }
   },
   {
-    path: "/objectRegister",
-    element: <ObjectRegister />,
-    state: "objectRegister",
+    path: "/itemRegister",
+    element: <ItemRegisterLayout/>,
+    state: "itemRegister",
     sidebarProps: {
       displayText: "박물등록",
       icon: <MarkUnreadChatAltIcon />
-    }
+    },
+    child: [
+      {
+        index: true,
+        element: <ItemRegister />,
+        state: "itemRegister.itemRegisterIndex"
+      },
+      {
+        path: "/itemRegister/multiRegister",
+        element: <MultiRegister />,
+        state: "itemRegister.multiRegister",
+        sidebarProps: {
+          displayText: "대량등록"
+        },
+      },
+      {
+        path: "/itemRegister/singleRegister",
+        element: <SingleRegister />,
+        state: "itemRegister.singleRegister",
+        sidebarProps: {
+          displayText: "개별등록"
+        },
+      },
+    ]
   },
   {
     path: "/UserManagement",

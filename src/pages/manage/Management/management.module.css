@@ -1,12 +1,12 @@
-.search-main{
+.search_main{
   user-select: none;
 }
 
-.search-container{
+.search_container{
   
 }
 
-.search-title{
+.search_title{
   font-size: 20px;
   font-weight: bold;
   padding: 5px;
@@ -14,7 +14,7 @@
   margin: auto;
 }
 
-.search-controller-container{
+.search_controller_container{
   width: 98%;
   height: 100%;
   margin: auto;
@@ -22,65 +22,66 @@
   margin-bottom: 5px;
 }
 
-.search-controller{
+.search_controller{
   background-color: #6f96f7;
 }
 
-.search-header{
+.search_header{
   border: solid 1px lightgray;
   padding: 0px;
   font-size: 16px;
   font-weight: bold;
   height: 30px;
-
-  .title{
-    float: left;
-    margin-left: 5px;
-    margin-top: 3px;
-  }
-
-  .toggle{
-    float: right;
-    width: 160px;
-    height: 100%;
-    color: white;
-    background-color: #064bfc;
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-
-    .topArrow-icon{
-      background-image: url("/public/img/topArrow.png");
-      background-size: cover;
-      background-repeat: no-repeat;
-      width: 15px;
-      height: 15px;
-      margin-left: 5px;
-    }
-
-    .downArrow-icon{
-      background-image: url("/public/img/downArrow.png");
-      background-size: cover;
-      background-repeat: no-repeat;
-      width: 15px;
-      height: 15px;
-      margin-left: 5px;
-    }
-  }
-
-  .toggle:active{
-    background-color: #000000;
-  }
 }
 
-.search-list{
+.search_header_title{
+  float: left;
+  margin-left: 5px;
+  margin-top: 3px;
+}
+
+.search_header_toggle{
+  float: right;
+  width: 160px;
+  height: 100%;
+  color: white;
+  background-color: #064bfc;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+.search_header_topArrow_icon{
+  background-image: url("/public/img/topArrow.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+  width: 15px;
+  height: 15px;
+  margin-left: 5px;
+}
+
+.search_header_downArrow_icon{
+  background-image: url("/public/img/downArrow.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+  width: 15px;
+  height: 15px;
+  margin-left: 5px;
+}
+
+.search_header_toggle:active{
+  background-color: #000000;
+}
+
+
+.search_list{
   font-size: 14px;
   background-color: #F7F7F7;
 }
 
-.search-table{
+.search_table{
   width: 100%;
 
   >tr >td:first-child{
@@ -89,30 +90,15 @@
 
   >tr >td{
     padding: 3px;
-
-    >button{
-      width: 80px;
-      height: 30px;
-      font-size: 14px;
-      color: white;
-      background-color: #064bfc;
-      border: 0px;
-      cursor: pointer;
-      border-radius: 8px;
-    }
-
-    >button:active{
-      background-color: black;
-    }
   }
 }
 
-.search-table ,tr, td{
+.search_table ,tr, td{
   border-collapse: collapse;
   border: 1px solid lightgray;
 }
 
-.item-list-container{
+.item_list_container{
   width: 98%;
   height: 100%;
   margin: auto;
@@ -120,11 +106,11 @@
   font-size: 16px;
 }
 
-.item-list-button-container{
+.item_list_button_container{
   display: flex;
 }
 
-.item-list-button-radio{
+.item_list_button_radio{
   height: 35px;
   font-size: 14px;
   display: flex;
@@ -157,11 +143,11 @@
   }
 }
 
-.item-list-area{
+.item_list_area{
   padding: 15px;
 }
 
-.item-list-result{
+.item_list_result{
   display: flex;
   font-size: 16px;
   font-weight: bold;
@@ -177,7 +163,7 @@
   }
 }
 
-.item-list-button-controller{
+.item_list_button_controller{
   display: flex;
   margin-bottom: 10px;
 
@@ -186,13 +172,13 @@
   }
 }
 
-.normal-checkbox-lable{
+.normal_checkbox_lable{
   margin-right: 5px;
   display: inline-block;
 
   >input[type="checkbox"]{
     position: relative;
-    top: 1.5px;
+    top: 1px;
   }
 
   >input[type="number"]{
@@ -209,14 +195,14 @@
   }
 }
 
-.ag-pageCnt-select{
+.ag_pageCnt_select{
   width: 60px;
   height: 30px;
   outline: none;
   position: relative;
 }
 
-.image-list-area{
+.image_list_area{
   >ul{
     list-style-type: none;
     padding: 0px;
@@ -236,7 +222,7 @@
   } 
 }
 
-.image-list-area-imageContainer{
+.image_list_area_imageContainer{
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -251,18 +237,18 @@
   }
 }
 
-.image-list-area-empty{
+.image_list_area_empty{
   width: 80%;
   height: 80%;
   box-shadow: 2px 2px 2px 2px rgb(220, 220, 220);
 }
 
-.image-list-area-header{
+.image_list_area_header{
   display: flex;
   justify-content: space-between;
 }
 
-.image-list-area-header-checkbox{
+.image_list_area_header_checkbox{
   width: 20px;
   height: 20px;
 
@@ -275,28 +261,28 @@
   }
 }
 
-.image-list-area-title{
+.image_list_area_title{
   text-align: center;
 }
 
-.image-list-area-header-more{
+.image_list_area_header_more{
   width: 20px;
   height: 20px;
-  
-  .more-icon{
-    background-image: url("/public/img/more.png");
-    background-size: cover;
-    background-repeat: no-repeat;
-    margin-top: 4px;
-    margin-left: 5px;
-    padding: 0px;
-    width: 20%;
-    height: 80%;
-    cursor: pointer;
-  }
 }
 
-.btn-more-ul{
+.more_icon{
+  background-image: url("/public/img/more.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+  margin-top: 4px;
+  margin-left: 5px;
+  padding: 0px;
+  width: 20%;
+  height: 80%;
+  cursor: pointer;
+}
+
+.btn_more_ul{
   position: absolute;
   right: 0;
   top: 20px;
@@ -330,25 +316,40 @@
   }
 }
 
-.image-list-pagination{
+.image_list_pagination{
   display: flex;
   justify-content: flex-end;
 }
 
-.float-left{
+.float_left{
   display: flex;
 }
 
-.image-list-all-checkbox{
+.image_list_all_checkbox{
   width: 90px;
   display: flex;
   flex-direction: column;
   justify-content: center;
 }
 
-.image-list-all-checkbox-label{
+.image_list_all_checkbox_label{
   >input[type="checkbox"]{
     padding: 0;
     transform : scale(1.2);
   }
+}
+
+.search_btn{
+  width: 80px;
+  height: 30px;
+  font-size: 14px;
+  color: white;
+  background-color: #064bfc;
+  border: 0px;
+  cursor: pointer;
+  border-radius: 8px;
+}
+
+.search_btn:active{
+  background-color: black;
 }
