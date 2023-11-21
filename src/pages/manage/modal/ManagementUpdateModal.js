@@ -193,7 +193,7 @@ const ManagementUpdateModal = ({ openUpdate, closeUpdateModal, setSingleCurrRowD
     }
 
     return (
-        <RegistModal title="물품등록" open={openUpdate} onClose={closeUpdateModal} onOk={updateItem} >
+        <RegistModal title="물품수정" open={openUpdate} onClose={closeUpdateModal} onOk={updateItem} >
             <DialogContent dividers sx={{ flexGrow: 1, maxWidth: "1200px" }}>
                 <Grid container spacing={2}>
                     <Grid xs={4} display={'flex'} justifyContent={'right'}>

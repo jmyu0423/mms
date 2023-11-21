@@ -25,6 +25,7 @@ import {
   relatedTopicData
 } from 'src/jsonData';
 import CustomPagination from 'src/components/CustomPagination'; 
+import AlertModal from 'src/components/modal/AlertModal';
 
 const PageContainer = styled(Container)(
   ({ theme }) => `
@@ -53,7 +54,7 @@ const WngCard = styled(Card)(({ theme }) => ({
 }));
 
 const Management = ({ }) => {
-  const imgSize = { maxHeight: "30%", maxWidth: "30%", cursor: "pointer", display: "flex" };
+  const imgSize = { maxHeight: "100%", maxWidth: "100%", cursor: "pointer", display: "flex" };
   const [gridState, setgridState] = useState(null); // Optional - for accessing Grid's API
   const [rowData, setRowData] = useState(itemList); // Set rowData to Array of Objects, one Object per Row
   const [selectedRow, setSelectedRow] = useState([]);
@@ -79,15 +80,15 @@ const Management = ({ }) => {
       checkboxSelection: true,
     },
     {
-      field: 'image', headerName: '대표 이미지', flex: 2, cellStyle: { textAlign: "center", 'white-space': 'normal' }, autoHeight: true,
+      field: 'image', headerName: '대표 이미지', flex: 2, cellStyle: { display: 'flex', justifyContent: 'center', alignItems: 'center', textAlign: "center", 'white-space': 'normal' }, autoHeight: true,
       cellRenderer: function (row) {
-        if (row.data.image) {
+        if (row.data.imageList && row.data.imageList.length > 0) {
           return (
-            <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}} onClick={(e) => { openPreviewModal(row) }}>
+            <div style={{width: '50px', height: '50px', display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}} onClick={(e) => { openPreviewModal(row.data) }}>
               <img
                 style={imgSize}
                 loading="lazy"
-                src={row.data.image}
+                src={row.data.imageList[0].imageSrc}
               />
             </div>
           );
@@ -130,6 +131,9 @@ const Management = ({ }) => {
   const [donorCountry, setDonorCountry] = useState("") //기증자국적
   const [pageCnt, setPageCnt] = useState(10); //그리드 갯수
   const [page, setPage] = useState(1); //이미지리스트 현재 페이지
+  const iamgeDetailBtn = useRef(null);
+  const [alertOpen, setAlertOpen] = useState(false);
+	const [content, setContent] = useState("");
 
   //재질 체크박스
   const [materialCheckItems, setMaterialCheckItems] = useState([]);
@@ -181,8 +185,27 @@ const Management = ({ }) => {
   //페이지 갯수 바꾸면 1페이지로 초기화
   useEffect(()=>{
     setPage(1);
-  },[pageCnt])
+  },[pageCnt]);
 
+  //외부 클릭 감지
+  useEffect(() => {
+    function handleClickOutside(e) {
+      if(e.target.className !== 'more-icon' && iamgeDetailBtn.current){
+        let tempData= [...imageList];
+        for(let i=0; i<tempData.length; i++){
+          tempData[i].openMoreFlag = false;
+        }
+        setImageList(tempData);
+      }
+    }
+
+    document.addEventListener('click', handleClickOutside);
+    return () => {
+      document.removeEventListener('click', handleClickOutside);
+    };
+  }, [iamgeDetailBtn, imageList]);
+
+  //체크박스 초기화
   const resetImageCheckbox = () =>{
     setImageListChckItems([]);
   }
@@ -253,8 +276,13 @@ const Management = ({ }) => {
   }
 
   const openPreviewModal = (row) => {
-    setSingleCurrRowData(row.data);
-    setOpenPreview(true);
+    setSingleCurrRowData(row);
+    if(row.imageList.length > 0){
+      setOpenPreview(true);
+    }else{
+      setContent("등록된 이미지가 없습니다.");
+      setAlertOpen(true);
+    }
   }
 
   const closePreviewModal = () => {
@@ -267,6 +295,9 @@ const Management = ({ }) => {
   }
 
   const handleListType = (value) =>{
+    //체크박스 초기화
+    resetImageCheckbox();
+    
     if(value === "itemList"){
       setSearchType("itemList")
     }else if(value === "imgList"){
@@ -435,7 +466,13 @@ const Management = ({ }) => {
   const openDetailImageModal = (e, index) =>{
     console.log(index)
     console.log(imageList)
+    console.log(imageList[index])
+    openPreviewModal(imageList[index])
   }
+
+  const alertClose = () =>{
+		setAlertOpen(false);
+	}
 
   return (
     <div className='search-main'>
@@ -721,7 +758,7 @@ const Management = ({ }) => {
                         <div className='image-list-area-header-more'>
                           <div className='more-icon' onClick={(e)=>openMoreBtn(e, index)}>
                             {data.openMoreFlag ?
-                            <ul className='btn-more-ul' onClick={(e)=>openDetailImageModal(e, index)}>
+                            <ul ref={iamgeDetailBtn} className='btn-more-ul' onClick={(e)=>openDetailImageModal(e, index)}>
                               <li>
                                 <a>
                                   <span>이미지 더보기</span>
@@ -737,7 +774,7 @@ const Management = ({ }) => {
                       <div className='image-list-area-imageContainer'>
                         <img
                           loading="lazy"
-                          src={data.image}
+                          src={data.imageList.length > 0 ? data.imageList[0].imageSrc : '/img/empty-image.png'}
                         />
                       </div>
                       <div className='image-list-area-title'>
@@ -783,6 +820,13 @@ const Management = ({ }) => {
         closePreviewModal={closePreviewModal}
         singleCurrRowData={singleCurrRowData}
       />
+
+      {/* 알림창 */}
+      <AlertModal
+				open={alertOpen}
+				onClose={alertClose}
+				content={content}
+			/>
     </div>
   );
 };

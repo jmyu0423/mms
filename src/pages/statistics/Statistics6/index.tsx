@@ -54,13 +54,13 @@ const Statistics6 = ({}) => {
     {
       field: 'image', headerName: '대표 이미지', flex: 2.5, cellStyle: { textAlign: "center", 'white-space': 'normal' }, autoHeight: true,
       cellRenderer: function (row) {
-        if (row.data.image) {
+        if (row.data.imageList && row.data.imageList.length > 0) {
           return (
             <div className="" onClick={(e) => { openPreviewModal(row) }}>
               <img
                 style={imgSize}
                 loading="lazy"
-                src={row.data.image}
+                src={row.data.imageList[0].imageSrc}
               />
             </div>
           );

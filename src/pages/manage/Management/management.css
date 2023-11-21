@@ -241,12 +241,20 @@
   flex-direction: row;
   justify-content: center;
   align-items: center;
+  width: 100%;
+  height: 240px;
 
   >img{
     width: 80%;
     height: 80%;
     box-shadow: 2px 2px 2px 2px rgb(220, 220, 220);
   }
+}
+
+.image-list-area-empty{
+  width: 80%;
+  height: 80%;
+  box-shadow: 2px 2px 2px 2px rgb(220, 220, 220);
 }
 
 .image-list-area-header{

@@ -1,5 +1,4 @@
 import { Box, Modal, Dialog, DialogTitle, IconButton, DialogActions, styled, Button, DialogContent } from "@mui/material";
-import { GridCloseIcon } from "@mui/x-data-grid";
 
 const StyledButton = styled(Button)(({ theme }) => ({
     background: 'red',
