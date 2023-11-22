@@ -44,18 +44,13 @@ const ThumbItems = styled(Box)`
 const ImagePreviewModal = ({ openPreview, closePreviewModal, singleCurrRowData }) => {
     const slider1 = useRef(null);
     const slider2 = useRef(null);
-    const [preveiwList, setPreveiwList] = useState([]);
+    const [previewList, setPreviewList] = useState([]);
 
     useEffect(() => {
         if (openPreview) {
-            setPreveiwList(singleCurrRowData.imageList);
+            setPreviewList(singleCurrRowData.imageList);
         }
     }, [openPreview]);
-
-    useEffect(()=>{
-        console.log(slider1)
-        console.log(slider2)
-    },[slider1, slider2])
 
     return (
         <TemplateModal title="이미지 더보기" open={openPreview} onClose={closePreviewModal}>
@@ -68,8 +63,9 @@ const ImagePreviewModal = ({ openPreview, closePreviewModal, singleCurrRowData }
                         <Slider
                             asNavFor={slider2.current}
                             ref={slider1}
+                            arrows={false}
                         >
-                        {preveiwList.length > 0 && preveiwList.map((data, index)=>{
+                        {previewList.length > 0 && previewList.map((data, index)=>{
                             return(
                                 <SlickItems key={index}>
                                     <img src={data.imageSrc}/>
@@ -84,11 +80,11 @@ const ImagePreviewModal = ({ openPreview, closePreviewModal, singleCurrRowData }
                         <Slider
                             asNavFor={slider1.current}
                             ref={slider2}
-                            slidesToShow={preveiwList.length < 4 ? preveiwList.length : 3}
+                            slidesToShow={previewList.length < 4 ? previewList.length : 3}
                             swipeToSlide={true}
                             focusOnSelect={true}
                         >
-                        {preveiwList.length > 0 && preveiwList.map((data, index)=>{
+                        {previewList.length > 0 && previewList.map((data, index)=>{
                             return(
                                 <div className="thumb-item">
                                     <ThumbItems key={index}>

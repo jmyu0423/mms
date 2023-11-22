@@ -20,7 +20,6 @@ const MainToolbar = () => {
         second = second >= 10 ? second : '0' + second;
 
         today = date.getFullYear() + '-' + month + '-' + day + ' ' + hour + ':' + minute + ':' + second;
-        console.log(today)
         setCurrentDate(today)
     }, [])
 

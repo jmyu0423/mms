@@ -7,7 +7,7 @@ import { styled } from '@mui/material/styles';
 import AgGrid from "src/components/AgGrid";
 import ManagementRegistModal from "src/pages/manage/modal/ManagementRegistModal"
 import ManagementUpdateModal from "src/pages/manage/modal/ManagementUpdateModal"
-import ImagePreviewModal from "src/pages/manage/modal/ImagePreviewModal";
+import PreviewModal from "src/pages/manage/modal/PreviewModal";
 import { NormalButton, BaseButton, AddButton } from 'src/components/CustomButton';
 import CustomDatePicker from 'src/components/CustomDatePicker';
 import dayjs from 'dayjs';
@@ -50,38 +50,27 @@ const PageContainer = styled(Container)(
 const SingleRegister = ({ }) => {
   const [rowData, setRowData] = useState(itemList); // Set rowData to Array of Objects, one Object per Row
 
-  //등록모달 컨트롤 state
-  const [openRegist, setOpenRegist] = useState(false);
-
-  //수정모달 컨트롤 state
-  const [openUpdate, setOpenUpdate] = useState(false);
-  const [singleCurrRowData, setSingleCurrRowData] = useState({});
+  const [singleCurrRowData, setSingleCurrRowData] = useState(""); //최근 선택한 이미지 url
 
   //이미지 미리보기 컨트롤 state
   const [openPreview, setOpenPreview] = useState(false);
-
   const [today, setToday] = useState(dayjs(new Date()).format('YYYY-MM-DD'));
-  const [startDt, setStartDt] = useState(dayjs(new Date()).subtract(1, "month"))
-  const [endDt, setEndDt] = useState(dayjs(new Date()));
-
   const [organization1, setOrganization1] = useState(""); //기관1
   const [organization2, setOrganization2] = useState(""); //기관2
   const [mainNumber, setMainNumber] = useState(""); //주수량
   const [subNumber, setSubNumber] = useState(""); //부수량
   const [useYn, setUseYn] = useState("N");
-  
   const [alertOpen, setAlertOpen] = useState(false);
 	const [content, setContent] = useState("");
+  const addImageInput = useRef(null); //이미지 정보 넘길 ref
+  const [imageList, setImageList] = useState([]); //이미지 리스트
+  const [imageListUrl, setImageListUrl] = useState([]); //미리보기 이미지 리스트
+  const [iamgeCount, setImageCount] = useState(0);
 
-  const openPreviewModal = (row) => {
-    setSingleCurrRowData(row);
-    if(row.imageList.length > 0){
-      setOpenPreview(true);
-    }else{
-      setContent("등록된 이미지가 없습니다.");
-      setAlertOpen(true);
-    }
-  }
+  useEffect(()=>{
+    //미리보기 이미지 갯수 최신화 하기 위함
+    setImageCount(imageListUrl.length)
+  },[imageListUrl])
 
   const closePreviewModal = () => {
     setOpenPreview(false);
@@ -99,8 +88,95 @@ const SingleRegister = ({ }) => {
     }
   }
 
+  //딸림자료 유/무
   const changeUseYn = (e) =>{
     setUseYn(e.target.value)
+  }
+
+  //미리보기 이미지 업로드 버튼
+  const addPrevImage = (e) =>{
+    addImageInput.current.click();
+  }
+
+  //미리보기 이미지 업로드
+  const imageUpload = (e) =>{
+    let files = addImageInput.current.files;
+    let tempList = [...imageList];
+    let tempUrlList = [...imageListUrl];
+
+    let imageListCnt = tempList.length; //기존 이미지 리스트 갯수
+    let addImageListCnt = files.length; //추가된 이미지 리스트 갯수
+
+    
+
+    if(imageListCnt + addImageListCnt > 10){
+      setContent("최대 등록 가능한 이미지 갯수를 초과 하였습니다.");
+      setAlertOpen(true);
+      e.target.value = ''; //값 초기화
+      return false;
+    }
+
+    for(let i=0; i<files.length; i++){
+      tempUrlList.push(URL.createObjectURL(addImageInput.current.files[i]));
+      tempList.push(addImageInput.current.files[i])
+    }
+    setImageList(tempList);
+    setImageListUrl(tempUrlList);
+
+    e.target.value = ''; //값 초기화
+  }
+
+  //미리보기 이미지 클릭
+  const selectPreviewImage =(e, data) =>{
+    setSingleCurrRowData(data);
+    setOpenPreview(true);
+  }
+
+  //미리보기 이미지 제거
+  const removePreviewImage= (e, index) =>{
+    e.stopPropagation();
+
+    let tempList = [...imageList];
+    let tempUrlList = [...imageListUrl];
+
+    tempList.splice(index, 1);
+    tempUrlList.splice(index, 1);
+    setImageList(tempList);
+    setImageListUrl(tempUrlList);
+  }
+
+  //미리보기 이미지 다운로드
+  const downloadImage = (e) =>{
+
+    if(imageListUrl.length > 0){
+      for(let i=0; i<imageListUrl.length; i++){
+        let url = imageListUrl[i];
+        let fileNm = imageList[i].name;
+
+        fetch(url, { method: 'GET' })
+        .then((res) => {
+            return res.blob();
+        })
+        .then((blob) => {
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = fileNm;
+            document.body.appendChild(a);
+            a.click();
+            setTimeout((_) => {
+                window.URL.revokeObjectURL(url);
+            }, 60000);
+            a.remove();
+        })
+        .catch((err) => {
+            console.error('err: ', err);
+        });
+      }
+    }else{
+      setContent("다운로드할 이미지가 없습니다.");
+      setAlertOpen(true);
+    }
   }
 
   return (
@@ -267,12 +343,39 @@ const SingleRegister = ({ }) => {
       <div className={styles.preview_image_title}>
         <ul>
           <li>
-            <span>사진 정보</span>
+            <div>
+              <span style={{marginRight: '10px'}}>사진 정보</span>
+              <NormalButton onClick={(e)=>{downloadImage(e)}}>다운로드</NormalButton>
+            </div>
           </li>
         </ul>
       </div>
+      <div className={styles.preview_image_container}>
+        <div className={styles.preview_image_list}>
+          <div className={styles.preview_image_add} onClick={(e)=>addPrevImage(e)}>
+            <div style={{textAlign: 'center'}}>
+              <div className={styles.camera_image}></div>
+              <span style={{fontSize: '20px'}}>{iamgeCount}/10</span>
+              <input onChange={imageUpload} ref={addImageInput} type="file" multiple hidden accept="image/*"/>
+            </div>
+          </div>
+          {imageListUrl.length > 0 && imageListUrl.map((data, index)=>{
+              return(
+                <div className={styles.preview_image_add} onClick={(e)=>selectPreviewImage(e, data)}>
+                  <div className={styles.preview_image_remove} onClick={(e)=>removePreviewImage(e, index)}></div>
+                  <img
+                    style={{width:'auto', maxWidth: '100%', height: 'auto', maxHeight: '100%'}}
+                    src={data}
+                    alt="img"
+                  />
+                </div>
+              )
+            })}
+        </div>
+      </div>
 
-      <ImagePreviewModal
+      {/* 이미지 미리보기 */}
+      <PreviewModal
         openPreview={openPreview}
         closePreviewModal={closePreviewModal}
         singleCurrRowData={singleCurrRowData}

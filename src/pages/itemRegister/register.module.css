@@ -385,3 +385,59 @@
       top: 1px;
     }
   }
+
+  .preview_image_title{
+    border-bottom: 1px solid gray;
+
+    >ul{
+        margin-bottom: 5px;
+    }
+  }
+
+  .preview_image_container{
+    width: 100%;
+  }
+
+  .preview_image_list{
+    padding: 10px;
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .preview_image_add{
+    position: relative;
+    width: 180px;
+    height: 180px;
+    border: 1px solid black;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    margin: 5px;
+    background-color: white;
+    cursor: pointer;
+  }
+
+  .preview_image_add:active{
+    background-color: lightgray;
+  }
+
+  .camera_image{
+    background-image: url("/public/img/camera.png");
+    background-size: cover;
+    background-repeat: no-repeat;
+    width: 50px;
+    height: 50px;
+  }
+
+  .preview_image_remove{
+    position: absolute;
+    top: 3px;
+    right: 3px;
+    background-image: url("/public/img/delete-contents.png");
+    background-size: cover;
+    background-repeat: no-repeat;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+  }

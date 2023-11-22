@@ -18,7 +18,8 @@ const AlertModal = ({open, onClose, content}) =>{
                 display: 'flex', 
                 flexDirection: 'row',
                 justifyContent: 'center',
-                alignItems: 'center'
+                alignItems: 'center',
+                padding: '10px'
             }}>
                 {content}
             </div>
