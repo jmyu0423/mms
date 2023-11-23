@@ -1,15 +1,8 @@
 import styles from "../register.module.css";
 import React, { useEffect, useRef, useMemo, useState, useLayoutEffect } from 'react';
-import PageTitleWrapper from "src/components/layout/PageTitleWrapper";
 import { Box, Button, Card, CardActions, CardContent, Container, FormControlLabel, Grid, MenuItem, TextField, Typography } from "@mui/material";
-import PageTitle from 'src/components/layout/PageTitle';
 import { styled } from '@mui/material/styles';
-import AgGrid from "src/components/AgGrid";
-import ManagementRegistModal from "src/pages/manage/modal/ManagementRegistModal"
-import ManagementUpdateModal from "src/pages/manage/modal/ManagementUpdateModal"
-import PreviewModal from "src/pages/manage/modal/PreviewModal";
 import { NormalButton, BaseButton, AddButton } from 'src/components/CustomButton';
-import CustomDatePicker from 'src/components/CustomDatePicker';
 import dayjs from 'dayjs';
 import { ItemGroup, PopupFormControlLabel, ComboControlLabel } from 'src/components/modal/ItemGroup';
 import CustomCombo from 'src/components/combobox/CustomCombo';
@@ -24,8 +17,9 @@ import {
   broughtReasonData,
   relatedTopicData
 } from 'src/jsonData';
-import CustomPagination from 'src/components/CustomPagination'; 
 import AlertModal from 'src/components/modal/AlertModal';
+import PreviewModal from "src/pages/manage/modal/PreviewModal";
+import SimpleSearchModal from "src/pages/manage/modal/SimpleSearchModal";
 
 const PageContainer = styled(Container)(
   ({ theme }) => `
@@ -53,7 +47,9 @@ const SingleRegister = ({ }) => {
   const [singleCurrRowData, setSingleCurrRowData] = useState(""); //최근 선택한 이미지 url
 
   //이미지 미리보기 컨트롤 state
-  const [openPreview, setOpenPreview] = useState(false);
+  const [openPreview, setOpenPreview] = useState(false); //미리보기 모달 오픈
+  const [simpleSearchModal, setSimpleSearchModal] = useState(false); //간단조회 모달 오픈
+
   const [today, setToday] = useState(dayjs(new Date()).format('YYYY-MM-DD'));
   const [organization1, setOrganization1] = useState(""); //기관1
   const [organization2, setOrganization2] = useState(""); //기관2
@@ -79,6 +75,10 @@ const SingleRegister = ({ }) => {
   const alertClose = () =>{
 		setAlertOpen(false);
 	}
+
+  const closeSimpleSearchModal = () =>{
+    setSimpleSearchModal(false);
+  }
 
   const setFirstValue = (cd, targetData) => {
     if(targetData === "organization1"){
@@ -106,8 +106,6 @@ const SingleRegister = ({ }) => {
 
     let imageListCnt = tempList.length; //기존 이미지 리스트 갯수
     let addImageListCnt = files.length; //추가된 이미지 리스트 갯수
-
-    
 
     if(imageListCnt + addImageListCnt > 10){
       setContent("최대 등록 가능한 이미지 갯수를 초과 하였습니다.");
@@ -179,6 +177,10 @@ const SingleRegister = ({ }) => {
     }
   }
 
+  const simpleSearch = (e) =>{
+    setSimpleSearchModal(true)
+  }
+
   return (
     <div className={styles.search_main}>
       <div className={styles.page_state}>
@@ -195,7 +197,7 @@ const SingleRegister = ({ }) => {
             1. 박물 조회
           </div>
           <div>
-            <BaseButton>간단조회</BaseButton>
+            <BaseButton onClick={(e)=>simpleSearch(e)}>간단조회</BaseButton>
           </div>
         </div>
         <div className={styles.search_controller_container}>
@@ -387,6 +389,12 @@ const SingleRegister = ({ }) => {
 				onClose={alertClose}
 				content={content}
 			/>
+
+      {/* 이미지 미리보기 */}
+      <SimpleSearchModal
+        open={simpleSearchModal}
+        onClose={closeSimpleSearchModal}
+      />
     </div>
   );
 };

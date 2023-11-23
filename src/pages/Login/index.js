@@ -79,7 +79,7 @@ const Login = () => {
     return (
         <ThemeProvider theme={defaultTheme}>
             <CssBaseline />
-            <Box sx={{ display: 'flex', height: '1050px' }}>
+            <Box sx={{ display: 'flex', height: '1050px', userSelect: 'none' }}>
                 <Box sx={{
                     width: '50%',
                     display: 'flex',

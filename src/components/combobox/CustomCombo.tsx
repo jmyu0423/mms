@@ -18,13 +18,16 @@ const MenuProps = {
     }
 };
 
-const CustomTextField = styled(TextField)(({ theme }) => ({
-    '& .MuiOutlinedInput-root': {
-        height: '30px'
-    },
-}));
+
 
 function CustomCombo(props){
+
+    const CustomTextField = styled(TextField)(({ theme }) => ({
+        '& .MuiOutlinedInput-root': {
+            height: `${props.height == undefined ? '30px' : props.height}`,
+            backgroundColor: 'white'
+        },
+    }));
 
     useEffect(()=>{
         selectList();
@@ -89,7 +92,8 @@ CustomCombo.propTypes = {
         PropTypes.any
     ]),
     targetData: PropTypes.string, 
-    dataList: PropTypes.array
+    dataList: PropTypes.array,
+    height: PropTypes.string,
 };
 
 export default CustomCombo;

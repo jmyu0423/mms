@@ -86,3 +86,70 @@
   justify-content: center;
   margin-top: 20px;
 }
+
+.searchGlass-container{
+  width: 30px;
+  height: 30px;
+  padding: 5px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.searchGlass_icon{
+  background-image: url("/public/img/magnifying-glass.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+  width: 100%;
+  height: 100%;
+}
+
+.searchGlass-container:active{
+  background-color: lightgray;
+}
+
+.simple-search-info{
+  width: 100%;
+  height: 180px;
+  background-color: #f7f7f7;
+}
+
+.simple-search-list{
+  margin-top: 10px;
+  width: 100%;
+  height: 330px;
+}
+
+.simple-search-items{
+  width: 100%;
+  height: 300px;
+  display: flex;
+  flex-wrap: wrap;
+  overflow-y:scroll;
+
+  -ms-overflow-style: none; /* 인터넷 익스플로러 */
+  scrollbar-width: none; /* 파이어폭스 */
+}
+
+.simple-search-items::-webkit-scrollbar {
+  display: none; /* 크롬, 사파리, 오페라, 엣지 */
+}
+
+.simple-search-itemContainer{
+  width: 105px;
+  height: 125px;
+  margin: 5px;
+  border: 1px solid lightgray;
+  padding: 2px;
+}
+
+.simple-search-imageContainer{
+  width: 100%;
+  height: 99px;
+}
+
+.simple-search-itemTitle{
+  width: 100%;
+  height: 20px;
+  font-size: 14px;
+  text-align: center;
+}
