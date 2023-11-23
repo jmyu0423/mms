@@ -441,3 +441,27 @@
     height: 20px;
     cursor: pointer;
   }
+
+  .register_container{
+    width: 1650px;
+    height: 100%;
+    background-color: white;
+    margin: auto;
+  }
+
+  .step_table_container{
+    padding: 10px;
+  }
+
+  .step_table{
+    width: 100%;
+
+    >tr >td{
+      padding: 3px;
+    }
+  }
+
+  .step_table, tr, td{
+    border-collapse: collapse;
+    border: 1px;
+  }

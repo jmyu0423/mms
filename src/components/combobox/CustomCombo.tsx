@@ -66,8 +66,9 @@ function CustomCombo(props){
                     : null
             }
             {props.dataList.map((option) => (
-                <MenuItem key={option.cd} value={option.title}>
-                    {option.title}
+                
+                <MenuItem key={option.cd} value={option.title !== undefined ? option.title : option.name}>
+                    {option.title !== undefined ? option.title : option.name}
                 </MenuItem>
             ))}
         </CustomTextField>

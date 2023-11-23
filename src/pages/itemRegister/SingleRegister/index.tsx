@@ -20,6 +20,7 @@ import {
 import AlertModal from 'src/components/modal/AlertModal';
 import PreviewModal from "src/pages/manage/modal/PreviewModal";
 import SimpleSearchModal from "src/pages/manage/modal/SimpleSearchModal";
+import CountrySimpleSearchModal from "src/pages/manage/modal/CountrySimpleSearchModal";
 
 const PageContainer = styled(Container)(
   ({ theme }) => `
@@ -49,6 +50,7 @@ const SingleRegister = ({ }) => {
   //이미지 미리보기 컨트롤 state
   const [openPreview, setOpenPreview] = useState(false); //미리보기 모달 오픈
   const [simpleSearchModal, setSimpleSearchModal] = useState(false); //간단조회 모달 오픈
+  const [countrySimpleSearchModal, setCountrySimpleSearchModal] = useState(false); //나라명 간단조회 모달 오픈
 
   const [today, setToday] = useState(dayjs(new Date()).format('YYYY-MM-DD'));
   const [organization1, setOrganization1] = useState(""); //기관1
@@ -62,6 +64,8 @@ const SingleRegister = ({ }) => {
   const [imageList, setImageList] = useState([]); //이미지 리스트
   const [imageListUrl, setImageListUrl] = useState([]); //미리보기 이미지 리스트
   const [iamgeCount, setImageCount] = useState(0);
+  const [continent, setContinent] = useState(""); //대륙
+  const [country, setCountry] = useState(""); //나라
 
   useEffect(()=>{
     //미리보기 이미지 갯수 최신화 하기 위함
@@ -80,11 +84,19 @@ const SingleRegister = ({ }) => {
     setSimpleSearchModal(false);
   }
 
+  const closeCountrySimpleSearchModal = () =>{
+    setCountrySimpleSearchModal(false);
+  }
+
   const setFirstValue = (cd, targetData) => {
     if(targetData === "organization1"){
       setOrganization1(organization1List[cd].title)
     }else if(targetData === "organization2"){
       setOrganization2(organization2List[cd].title)
+    }else if(targetData === "continent"){
+      setContinent(countryData[cd].name);
+    }else if(targetData === "country"){
+      setCountry(countryList[cd].title);
     }
   }
 
@@ -179,6 +191,10 @@ const SingleRegister = ({ }) => {
 
   const simpleSearch = (e) =>{
     setSimpleSearchModal(true)
+  }
+
+  const countrySimpleSearch = (e) =>{
+    setCountrySimpleSearchModal(true);
   }
 
   return (
@@ -375,6 +391,150 @@ const SingleRegister = ({ }) => {
             })}
         </div>
       </div>
+      <div className={styles.register_step_title}>
+        <div style={{ display: 'flex', justifyContent: 'center', flexDirection: 'column'}}>
+          2. 배경 정보
+        </div>
+        <div>
+          <NormalButton>임시저장</NormalButton>
+        </div>
+      </div>
+      <div className={styles.search_controller_container}>
+        <div className={styles.search_controller}>
+          <div className={styles.search_list}>
+            <table className={styles.search_table}>
+              <tr>
+                <td style={{width: '10%', textAlign: 'center'}}>박물국적</td>
+                <td colSpan={4} style={{width: '90%'}}>
+                  <ComboControlLabel
+                    control={<CustomCombo size="small" type="none" setData={setFirstValue} dataList={countryData} value={continent} targetData={"continent"} codeChange={(e) => setContinent(e.target.value)} />}
+                    label=""
+                    labelPlacement="start"
+                  />
+                  <ComboControlLabel
+                    control={<CustomCombo size="small" type="none" setData={setFirstValue} dataList={countryList} value={country} targetData={"country"} codeChange={(e) => setCountry(e.target.value)} />}
+                    label=""
+                    labelPlacement="start"
+                  />
+                  <AddButton onClick={(e)=>countrySimpleSearch(e)}>간편 조회</AddButton>
+                </td>
+              </tr>
+              <tr>
+                <td style={{width: '10%', textAlign: 'center'}}>제작 시기</td>
+                <td style={{width: '10%', textAlign: 'center', backgroundColor: '#deebff'}}>년도 유형</td>
+                <td style={{width: '30%'}}>
+                  <Box sx={{width: '80%'}}>
+                    <TextField fullWidth inputProps={{style: {height: '0px', fontSize: 14, backgroundColor: 'white'}}} placeholder='text'/>
+                  </Box>
+                </td>
+                <td style={{width: '10%', textAlign: 'center', backgroundColor: '#deebff'}}>제작시기</td>
+                <td style={{width: '30%'}}>
+                  <Box sx={{width: '80%'}}>
+                    <TextField fullWidth inputProps={{style: {height: '0px', fontSize: 14, backgroundColor: 'white'}}} placeholder='text'/>
+                  </Box>
+                </td>
+              </tr>
+              <tr>
+                <td style={{textAlign: 'center'}}>제작사</td>
+                <td colSpan={4}>
+                  <Box sx={{width: '80%'}}>
+                    <TextField fullWidth inputProps={{style: {height: '0px', fontSize: 14, backgroundColor: 'white'}}} placeholder='text'/>
+                  </Box>
+                </td>
+              </tr>
+              <tr>
+                <td style={{width: '10%', textAlign: 'center'}}>입수 연유</td>
+                <td style={{width: '10%', textAlign: 'center', backgroundColor: '#deebff'}}>입수 연유</td>
+                <td style={{width: '30%'}}>
+                  <Box sx={{width: '80%'}}>
+                    <TextField fullWidth inputProps={{style: {height: '0px', fontSize: 14, backgroundColor: 'white'}}} placeholder='text'/>
+                  </Box>
+                </td>
+                <td style={{width: '10%', textAlign: 'center', backgroundColor: '#deebff'}}>입수 년도</td>
+                <td style={{width: '30%'}}>
+                  <Box sx={{width: '80%'}}>
+                    <TextField fullWidth inputProps={{style: {height: '0px', fontSize: 14, backgroundColor: 'white'}}} placeholder='text'/>
+                  </Box>
+                </td>
+              </tr>
+              <tr>
+                <td style={{textAlign: 'center'}}>행사명</td>
+                <td colSpan={2}>
+                  <Box sx={{width: '80%'}}>
+                    <TextField fullWidth inputProps={{style: {height: '0px', fontSize: 14, backgroundColor: 'white'}}} placeholder='text'/>
+                  </Box>
+                </td>
+                <td style={{textAlign: 'center', backgroundColor: '#deebff'}}>차수</td>
+                <td>
+                  <Box sx={{width: '80%'}}>
+                    <TextField fullWidth inputProps={{style: {height: '0px', fontSize: 14, backgroundColor: 'white'}}} placeholder='text'/>
+                  </Box>
+                </td>
+              </tr>
+              <tr>
+                <td style={{width: '10%', textAlign: 'center'}}>장소/수상자</td>
+                <td style={{width: '10%', textAlign: 'center', backgroundColor: '#deebff'}}>입수 장소</td>
+                <td style={{width: '30%'}}>
+                  <Box sx={{width: '80%'}}>
+                    <TextField fullWidth inputProps={{style: {height: '0px', fontSize: 14, backgroundColor: 'white'}}} placeholder='text'/>
+                  </Box>
+                </td>
+                <td style={{width: '10%', textAlign: 'center', backgroundColor: '#deebff'}}>수상자</td>
+                <td style={{width: '30%'}}>
+                  <Box sx={{width: '80%'}}>
+                    <TextField fullWidth inputProps={{style: {height: '0px', fontSize: 14, backgroundColor: 'white'}}} placeholder='text'/>
+                  </Box>
+                </td>
+              </tr>
+              <tr>
+                <td rowSpan={3} style={{width: '10%', textAlign: 'center'}}>기증자 or 구입자</td>
+                <td style={{width: '10%', textAlign: 'center', backgroundColor: '#deebff'}}>기증자명</td>
+                <td style={{width: '30%'}}>
+                  <Box sx={{width: '80%'}}>
+                    <TextField fullWidth inputProps={{style: {height: '0px', fontSize: 14, backgroundColor: 'white'}}} placeholder='한글로 기재'/>
+                  </Box>
+                </td>
+                <td style={{width: '10%', textAlign: 'center', backgroundColor: '#deebff'}}>소속/직책</td>
+                <td style={{width: '30%'}}>
+                  <Box sx={{width: '80%'}}>
+                    <TextField fullWidth inputProps={{style: {height: '0px', fontSize: 14, backgroundColor: 'white'}}} placeholder='한글로 기재'/>
+                  </Box>
+                </td>
+              </tr>
+              <tr>
+                <td style={{width: '10%', textAlign: 'center', backgroundColor: '#deebff'}}>기증자명</td>
+                <td style={{width: '30%'}}>
+                  <Box sx={{width: '80%'}}>
+                    <TextField fullWidth inputProps={{style: {height: '0px', fontSize: 14, backgroundColor: 'white'}}} placeholder='영어로 기재'/>
+                  </Box>
+                </td>
+                <td style={{width: '10%', textAlign: 'center', backgroundColor: '#deebff'}}>소속/직책</td>
+                <td style={{width: '30%'}}>
+                  <Box sx={{width: '80%'}}>
+                    <TextField fullWidth inputProps={{style: {height: '0px', fontSize: 14, backgroundColor: 'white'}}} placeholder='영어로 기재'/>
+                  </Box>
+                </td>
+              </tr>
+              <tr>
+                <td style={{width: '10%', textAlign: 'center', backgroundColor: '#deebff'}}>중요등급</td>
+                <td style={{width: '30%'}}>
+                  <Box sx={{width: '80%'}}>
+                    <TextField fullWidth inputProps={{style: {height: '0px', fontSize: 14, backgroundColor: 'white'}}} placeholder='영어로 기재'/>
+                  </Box>
+                </td>
+                <td style={{width: '10%', textAlign: 'center', backgroundColor: '#deebff'}}></td>
+                <td style={{width: '30%'}}>
+                </td>
+              </tr>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div className={styles.register_step_title}>
+        <div style={{ display: 'flex', justifyContent: 'center', flexDirection: 'column'}}>
+          3. 설명 정보
+        </div>
+      </div>
 
       {/* 이미지 미리보기 */}
       <PreviewModal
@@ -390,10 +550,16 @@ const SingleRegister = ({ }) => {
 				content={content}
 			/>
 
-      {/* 이미지 미리보기 */}
+      {/* 간단조회 미리보기 */}
       <SimpleSearchModal
         open={simpleSearchModal}
         onClose={closeSimpleSearchModal}
+      />
+
+      {/* 나라명 간편조회 미리보기 */}
+      <CountrySimpleSearchModal
+        open={countrySimpleSearchModal}
+        onClose={closeCountrySimpleSearchModal}
       />
     </div>
   );

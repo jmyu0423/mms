@@ -1,0 +1,18 @@
+.help_button{
+    width: auto;
+    min-width: 160px;
+    height: 35px;
+    font-size: 15px;
+    display: flex;
+    text-align: center;
+    border-radius: 20px;
+    box-shadow: 1px 1px 1px 1px gray;
+    background-color: white;
+    color: #1e88e5;
+    border: solid 1px #1e88e5;
+}
+
+.help_button:active{
+    background-color: skyblue;
+    color: white;
+}
