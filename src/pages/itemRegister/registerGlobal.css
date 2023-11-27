@@ -1,0 +1,30 @@
+.multi_excel_upload{
+    width: 500px;
+    padding: 5px;
+    height: 150px;
+    background-color: #fff;
+    border-radius: 5px;
+    border: 3px dashed #eee;
+    padding: 70px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+  }
+
+  .multi_excel_upload.active{
+    background-color: #efeef3;
+    border-color: #111;
+  }
+
+  .multi_excel_upload:hover{
+    border-color: #111;
+  }
+
+  .multi_excel_upload_msg {
+    font-weight: 500;
+    font-size: 18px;
+    margin: 20px 0 10px;
+    pointer-events: none;
+  }

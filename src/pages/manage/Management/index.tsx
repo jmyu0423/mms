@@ -115,7 +115,7 @@ const Management = ({ }) => {
   ]);
 
   //검색 테이블 on/off
-  const [searchTable, setSearchTable] = useState(true);
+  const [searchTable, setSearchTable] = useState(false);
   const [seachType, setSearchType] = useState("itemList");
   const [startDt, setStartDt] = useState(dayjs(new Date()).subtract(1, "month"))
   const [endDt, setEndDt] = useState(dayjs(new Date()));

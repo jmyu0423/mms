@@ -1,4 +1,5 @@
 import styles from "../register.module.css";
+import "../registerGlobal.css";
 import React, { useEffect, useRef, useMemo, useState, useLayoutEffect } from 'react';
 import PageTitleWrapper from "src/components/layout/PageTitleWrapper";
 import { Box, Button, Card, CardActions, CardContent, Container, FormControlLabel, Grid, MenuItem, TextField, Typography } from "@mui/material";
@@ -53,9 +54,49 @@ const MultiRegister = ({ }) => {
   const [alertOpen, setAlertOpen] = useState(false);
 	const [content, setContent] = useState("");
 
+  const [isActive, setActive] = useState(false);
+  const [uploadedInfo, setUploadedInfo] = useState(null);
+
+  const handleDragStart = () => setActive(true);
+  const handleDragEnd = () => {
+    setActive(false);
+  }
+  const handleDragOver = (event) => {
+    event.preventDefault();
+  };
+
+  const setFileInfo = (file) => {
+    const { name, size: byteSize, type } = file;
+    const size = (byteSize / (1024 * 1024)).toFixed(2) + 'mb';
+    setUploadedInfo({ name, size, type }); // name, size, type 정보를 uploadedInfo에 저장
+  };
+
+  const handleDrop = (event) => {
+    event.preventDefault();
+    setActive(false);
+
+    const file = event.dataTransfer.files[0];
+    setFileInfo(file);
+  };
+
+  const handleUpload = ({ target }) => {
+    const file = target.files[0];
+    setFileInfo(file);
+  };
+
   const alertClose = () =>{
 		setAlertOpen(false);
 	}
+
+  const FileInfo = ({ uploadedInfo }) => (
+    <ul className="preview_info">
+      {Object.entries(uploadedInfo).map(([key, value]) => (
+        <li key={key}>
+          <span className="info_key">{key}</span>
+        </li>
+      ))}
+    </ul>
+  );
 
   return (
     <div className={styles.search_main}>
@@ -129,14 +170,21 @@ const MultiRegister = ({ }) => {
                       <NormalButton>파일 업로드</NormalButton>
                     </div>
                   </div>
-                  <div style={{
-                    padding: '5px', 
-                    width: '500px',
-                    height: '150px',
-                    border: '2px dashed lightgray',
-                  }}>
-                    파일을 이쪽으로 드래그하여 업로드 하세요.
-                  </div>
+                  <label
+                    className={'multi_excel_upload' + `${isActive ? ' active' : ''}`}
+                    onDragEnter={handleDragStart}
+                    onDragOver={handleDragOver}
+                    onDragLeave={handleDragEnd}
+                    onDrop={handleDrop}
+                  >
+                    <input type="file" className="file" onChange={handleUpload} />
+                    {uploadedInfo && <FileInfo uploadedInfo={uploadedInfo} />}
+                    {!uploadedInfo && (
+                      <>
+                        <p className="multi_excel_upload_msg">파일을 이쪽으로 드래그하여 업로드 하세요.</p>
+                      </>
+                    )}
+                  </label>
                 </td>
               </tr>
               <tr>

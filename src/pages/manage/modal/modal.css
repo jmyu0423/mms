@@ -156,22 +156,21 @@
 
 .country-simple-search-info{
   width: 100%;
-  height: 250px;
   background-color: #f7f7f7;
 }
 
 .country-simple-search-list{
   margin-top: 10px;
   width: 100%;
-  height: 260px;
 }
 
 .country-simple-search-items{
   width: 100%;
+  height: 300px;
+
   display: flex;
   flex-wrap: wrap;
   overflow-y:scroll;
-
   -ms-overflow-style: none; /* 인터넷 익스플로러 */
   scrollbar-width: none; /* 파이어폭스 */
 }
@@ -196,4 +195,40 @@
   display: flex;
   align-items: center;
   padding: 2px;
+}
+
+.personnel-search-modal{
+  width: 500px;
+  height: 620px;
+  border-top: 1px solid lightgray;
+  margin: auto;
+}
+
+.personnel-search-container{
+  width: 100%;
+  height: 100px;
+  background-color: #f7f7f7;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 10px;
+}
+
+.personnel-search-list{
+  padding: 20px;
+}
+
+.person-search-items{
+  width: 100%;
+  height: 330px;
+
+  display: flex;
+  flex-wrap: wrap;
+  overflow-y:scroll;
+  -ms-overflow-style: none; /* 인터넷 익스플로러 */
+  scrollbar-width: none; /* 파이어폭스 */
+}
+
+.person-search-items::-webkit-scrollbar {
+  display: none; /* 크롬, 사파리, 오페라, 엣지 */
 }

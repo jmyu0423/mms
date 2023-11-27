@@ -22,6 +22,7 @@ import AlertModal from 'src/components/modal/AlertModal';
 import PreviewModal from "src/pages/manage/modal/PreviewModal";
 import SimpleSearchModal from "src/pages/manage/modal/SimpleSearchModal";
 import CountrySimpleSearchModal from "src/pages/manage/modal/CountrySimpleSearchModal";
+import PersonnelSearchModal from "src/pages/manage/modal/PersonnelSearchModal";
 import AgGrid from "src/components/AgGrid";
 
 const PageContainer = styled(Container)(
@@ -56,6 +57,7 @@ const SingleRegister = ({ }) => {
   const [openPreview, setOpenPreview] = useState(false); //미리보기 모달 오픈
   const [simpleSearchModal, setSimpleSearchModal] = useState(false); //간단조회 모달 오픈
   const [countrySimpleSearchModal, setCountrySimpleSearchModal] = useState(false); //나라명 간단조회 모달 오픈
+  const [personnelSearchModal, setPersonnelSearchModal] = useState(false); //인사검색 모달
 
   const [today, setToday] = useState(dayjs(new Date()).format('YYYY-MM-DD'));
   const [organization1, setOrganization1] = useState(""); //기관1
@@ -266,6 +268,16 @@ const SingleRegister = ({ }) => {
 
   //그리드 row 클릭
   const onRowClicked = (row: any) => {
+  }
+
+  //인사검색 모달 닫기
+  const closePersonnelSearchModal = () =>{
+    setPersonnelSearchModal(false);
+  }
+
+  //인사검색 모달 열기
+  const personnelSearch = (e) =>{
+    setPersonnelSearchModal(true);
   }
 
   return (
@@ -570,7 +582,7 @@ const SingleRegister = ({ }) => {
               </tr>
               <tr>
                 <td rowSpan={4} style={{width: '10%', textAlign: 'center'}}>기증자 or 구입자
-                  <AddButton >인사 검색</AddButton>
+                  <AddButton onClick={(e)=>personnelSearch(e)}>인사 검색</AddButton>
                 </td>
                 <td style={{width: '10%', textAlign: 'center', backgroundColor: '#deebff'}}>기증자명</td>
                 <td style={{width: '30%'}}>
@@ -868,10 +880,16 @@ const SingleRegister = ({ }) => {
         onClose={closeSimpleSearchModal}
       />
 
-      {/* 나라명 간편조회 미리보기 */}
+      {/* 나라명 간편조회 */}
       <CountrySimpleSearchModal
         open={countrySimpleSearchModal}
         onClose={closeCountrySimpleSearchModal}
+      />
+
+      {/* 인사검색 */}
+      <PersonnelSearchModal
+        open={personnelSearchModal}
+        onClose={closePersonnelSearchModal}
       />
     </div>
   );
