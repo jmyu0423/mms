@@ -166,6 +166,7 @@
 .item_list_button_controller{
   display: flex;
   margin-bottom: 10px;
+  justify-content: space-between;
 
   .float-right{
     margin-left: auto;
@@ -323,6 +324,10 @@
 
 .float_left{
   display: flex;
+}
+
+.float_right{
+  
 }
 
 .image_list_all_checkbox{

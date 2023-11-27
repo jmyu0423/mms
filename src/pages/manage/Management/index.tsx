@@ -26,6 +26,7 @@ import {
 } from 'src/jsonData';
 import CustomPagination from 'src/components/CustomPagination'; 
 import AlertModal from 'src/components/modal/AlertModal';
+import BatchUpdateModal from "src/pages/manage/modal/BatchUpdateModal";
 
 const PageContainer = styled(Container)(
   ({ theme }) => `
@@ -149,6 +150,8 @@ const Management = ({ }) => {
   const [imageListChckItems, setImageListChckItems] = useState([]);
   //이미지 리스트
   const [imageList, setImageList] = useState([]);
+  //선택 일괄수정
+  const [batchUpdateModal, setBatchUpdateModal] = useState(false);
 
   //체크박스 default 전체 선택
   useEffect(()=>{
@@ -471,6 +474,14 @@ const Management = ({ }) => {
 		setAlertOpen(false);
 	}
 
+  const batchUpdate = (e) =>{
+    setBatchUpdateModal(true);
+  }
+
+  const closeBatchUpdateModal = () =>{
+    setBatchUpdateModal(false);
+  }
+
   return (
     <div className={styles.search_main}>
       
@@ -719,7 +730,7 @@ const Management = ({ }) => {
                 <NormalButton >검색항목 추가/수정</NormalButton>
               </div>
               <div className={styles.float_right}>            
-                <NormalButton >선택 일괄수정</NormalButton>
+                <NormalButton onClick={(e)=>batchUpdate(e)}>선택 일괄수정</NormalButton>
                 <NormalButton >인쇄</NormalButton>
                 <NormalButton >다운로드</NormalButton>
                 <select className={styles.ag_pageCnt_select} onChange={onChangePageSize} value={pageCnt}>
@@ -812,10 +823,17 @@ const Management = ({ }) => {
         updateRow={updateRow}
       />
 
+      {/* 이미지 미리보기 모달 */}
       <ImagePreviewModal
         openPreview={openPreview}
         closePreviewModal={closePreviewModal}
         singleCurrRowData={singleCurrRowData}
+      />
+
+      {/* 선택 일괄수정 모달 */}
+      <BatchUpdateModal
+        open={batchUpdateModal}
+        onClose={closeBatchUpdateModal}
       />
 
       {/* 알림창 */}
