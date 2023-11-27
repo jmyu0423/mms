@@ -612,3 +612,18 @@ export const relatedTopicData = ([
     cd: "3"
   }
 ])
+
+export const historyData = ([
+  {
+    updDt: '2023-11-27 13:33:27.000',
+    updContents: '수정한 내용을 텍스트로 입력한 내용이 노출됨11111111',
+    updNm: '홍길동',
+    regNm: '최민호'
+  },
+  {
+    updDt: '2023-11-27 13:34:11.000',
+    updContents: '수정한 내용을 텍스트로 입력한 내용이 노출됨22222222',
+    updNm: '이순신',
+    regNm: '유관순'
+  },
+])

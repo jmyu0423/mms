@@ -190,7 +190,7 @@ const Statistics5 = ({}) => {
                   rowData={rowData} // Row Data for Rows
                   columnDefs={columnDefs} // Column Defs for Columns
                   onRowClicked={onRowClicked}
-                  heightVal={495}
+                  heightVal={485}
                 />
               </Box>
             </WngCard>

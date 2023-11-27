@@ -406,8 +406,8 @@
 
   .preview_image_add{
     position: relative;
-    width: 180px;
-    height: 180px;
+    width: 120px;
+    height: 120px;
     border: 1px solid black;
     display: flex;
     flex-direction: row;
@@ -428,6 +428,20 @@
     background-repeat: no-repeat;
     width: 50px;
     height: 50px;
+  }
+
+  .preview_first_icon{
+    position: absolute;
+    top: 4px;
+    left: 3px;
+    width: 40px;
+    height: 22px;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #064bfc;
+    border-radius: 10px;
   }
 
   .preview_image_remove{
@@ -464,4 +478,30 @@
   .step_table, tr, td{
     border-collapse: collapse;
     border: 1px;
+  }
+
+  .preview_person_image_add{
+    position: relative;
+    width: 100px;
+    height: 100px;
+    border: 1px solid black;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    margin: 5px;
+    background-color: white;
+    cursor: pointer;
+  }
+
+  .preview_person_image_add:active{
+    background-color: lightgray;
+  }
+
+  .camera_person_image{
+    background-image: url("/public/img/camera.png");
+    background-size: cover;
+    background-repeat: no-repeat;
+    width: 30px;
+    height: 30px;
   }

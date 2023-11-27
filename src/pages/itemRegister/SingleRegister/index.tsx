@@ -15,12 +15,14 @@ import {
   materialList,
   countryList,
   broughtReasonData,
-  relatedTopicData
+  relatedTopicData,
+  historyData
 } from 'src/jsonData';
 import AlertModal from 'src/components/modal/AlertModal';
 import PreviewModal from "src/pages/manage/modal/PreviewModal";
 import SimpleSearchModal from "src/pages/manage/modal/SimpleSearchModal";
 import CountrySimpleSearchModal from "src/pages/manage/modal/CountrySimpleSearchModal";
+import AgGrid from "src/components/AgGrid";
 
 const PageContainer = styled(Container)(
   ({ theme }) => `
@@ -43,7 +45,10 @@ const PageContainer = styled(Container)(
 );
 
 const SingleRegister = ({ }) => {
-  const [rowData, setRowData] = useState(itemList); // Set rowData to Array of Objects, one Object per Row
+  const [gridState, setgridState] = useState(null); // Optional - for accessing Grid's API
+  const [pageCnt, setPageCnt] = useState(10); //그리드 갯수
+
+  const [rowData, setRowData] = useState(historyData); // Set rowData to Array of Objects, one Object per Row
 
   const [singleCurrRowData, setSingleCurrRowData] = useState(""); //최근 선택한 이미지 url
 
@@ -66,11 +71,25 @@ const SingleRegister = ({ }) => {
   const [iamgeCount, setImageCount] = useState(0);
   const [continent, setContinent] = useState(""); //대륙
   const [country, setCountry] = useState(""); //나라
+  const addPersonImageInput = useRef(null); //인사정보 이미지 넘길 ref
+  const [personImageList, setPersonImageList] = useState([]); //인사정보 이미지 리스트
+  const [personImageListUrl, setPersonImageListUrl] = useState([]); //인사정보 미리보기 이미지 리스트
+  
+  const [columnDefs, setColumnDefs] = useState([
+    { field: 'updDt', headerName: '수정일', flex: 2.5, cellStyle: { textAlign: "center", 'white-space': 'normal' }, autoHeight: true },
+    { field: 'updContents', headerName: '수정 내용', flex: 10, cellStyle: { textAlign: "center", 'white-space': 'normal' }, autoHeight: true },
+    { field: 'updNm', headerName: '수정자', flex: 2, cellStyle: { textAlign: "center", 'white-space': 'normal' }, autoHeight: true },
+    { field: 'regNm', headerName: '승인자', flex: 2, cellStyle: { textAlign: "center", 'white-space': 'normal' }, autoHeight: true },
+  ]);
 
   useEffect(()=>{
     //미리보기 이미지 갯수 최신화 하기 위함
     setImageCount(imageListUrl.length)
   },[imageListUrl])
+
+  useEffect(()=>{
+    console.log(personImageListUrl)
+  },[personImageListUrl])
 
   const closePreviewModal = () => {
     setOpenPreview(false);
@@ -195,6 +214,58 @@ const SingleRegister = ({ }) => {
 
   const countrySimpleSearch = (e) =>{
     setCountrySimpleSearchModal(true);
+  }
+
+  const firstIcon = (e, index) =>{
+    e.stopPropagation();
+  }
+
+   //인사 이미지 업로드 버튼
+   const addPrevPersonImage = (e) =>{
+    addPersonImageInput.current.click();
+  }
+
+  //인사정보 사진 업로드
+  const personImageUpload = (e) =>{
+    let files = addPersonImageInput.current.files;
+    let tempList = [...personImageList];
+    let tempUrlList = [...personImageListUrl];
+
+    let imageListCnt = tempList.length; //기존 이미지 리스트 갯수
+    let addImageListCnt = files.length; //추가된 이미지 리스트 갯수
+
+    if(imageListCnt > 0){
+      setContent("이미 등록된 이미지가 있습니다.");
+      setAlertOpen(true);
+      e.target.value = ''; //값 초기화
+      return false;
+    }
+
+    for(let i=0; i<files.length; i++){
+      tempUrlList.push(URL.createObjectURL(addPersonImageInput.current.files[i]));
+      tempList.push(addPersonImageInput.current.files[i])
+    }
+    setPersonImageList(tempList);
+    setPersonImageListUrl(tempUrlList);
+
+    e.target.value = ''; //값 초기화
+  }
+
+  //인사정보 미리보기 이미지 제거
+  const removePreviewPersonImage= (e, index) =>{
+    e.stopPropagation();
+
+    let tempList = [...personImageList];
+    let tempUrlList = [...personImageListUrl];
+
+    tempList.splice(index, 1);
+    tempUrlList.splice(index, 1);
+    setPersonImageList(tempList);
+    setPersonImageListUrl(tempUrlList);
+  }
+
+  //그리드 row 클릭
+  const onRowClicked = (row: any) => {
   }
 
   return (
@@ -379,6 +450,17 @@ const SingleRegister = ({ }) => {
           </div>
           {imageListUrl.length > 0 && imageListUrl.map((data, index)=>{
               return(
+                index === 0 ?
+                <div className={styles.preview_image_add} onClick={(e)=>selectPreviewImage(e, data)}>
+                  <div className={styles.preview_first_icon} onClick={(e)=>firstIcon(e, index)}>대표</div>
+                  <div className={styles.preview_image_remove} onClick={(e)=>removePreviewImage(e, index)}></div>
+                  <img
+                    style={{width:'auto', maxWidth: '100%', height: 'auto', maxHeight: '100%'}}
+                    src={data}
+                    alt="img"
+                  />
+                </div>
+                :
                 <div className={styles.preview_image_add} onClick={(e)=>selectPreviewImage(e, data)}>
                   <div className={styles.preview_image_remove} onClick={(e)=>removePreviewImage(e, index)}></div>
                   <img
@@ -487,7 +569,9 @@ const SingleRegister = ({ }) => {
                 </td>
               </tr>
               <tr>
-                <td rowSpan={3} style={{width: '10%', textAlign: 'center'}}>기증자 or 구입자</td>
+                <td rowSpan={4} style={{width: '10%', textAlign: 'center'}}>기증자 or 구입자
+                  <AddButton >인사 검색</AddButton>
+                </td>
                 <td style={{width: '10%', textAlign: 'center', backgroundColor: '#deebff'}}>기증자명</td>
                 <td style={{width: '30%'}}>
                   <Box sx={{width: '80%'}}>
@@ -526,6 +610,34 @@ const SingleRegister = ({ }) => {
                 <td style={{width: '30%'}}>
                 </td>
               </tr>
+              <tr>
+                <td style={{width: '10%', textAlign: 'center', backgroundColor: '#deebff'}}>사진</td>
+                <td style={{width: '30%'}}>
+                  <div style={{display: 'flex'}}>
+                    <div className={styles.preview_person_image_add} onClick={(e)=>addPrevPersonImage(e)}>
+                      <div style={{textAlign: 'center'}}>
+                        <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'center', marginBottom: '5px'}}>
+                          <div className={styles.camera_person_image}></div>
+                        </div>
+                        <span style={{fontSize: '14px'}}>사진 등록</span>
+                        <input onChange={personImageUpload} ref={addPersonImageInput} type="file" hidden accept="image/*"/>
+                      </div>
+                    </div>
+                    {personImageListUrl.length > 0 && personImageListUrl.map((data, index)=>{
+                      return(
+                        <div className={styles.preview_person_image_add} onClick={(e)=>selectPreviewImage(e, data)}>
+                          <div className={styles.preview_image_remove} onClick={(e)=>removePreviewPersonImage(e, index)}></div>
+                          <img
+                            style={{width:'auto', maxWidth: '100%', height: 'auto', maxHeight: '100%'}}
+                            src={data}
+                            alt="img"
+                          />
+                        </div>
+                      )
+                    })}
+                  </div>
+                </td>
+              </tr>
             </table>
           </div>
         </div>
@@ -534,6 +646,206 @@ const SingleRegister = ({ }) => {
         <div style={{ display: 'flex', justifyContent: 'center', flexDirection: 'column'}}>
           3. 설명 정보
         </div>
+      </div>
+      <div className={styles.search_controller_container}>
+        <div className={styles.search_controller}>
+          <div className={styles.search_list}>
+            <table className={styles.search_table}>
+              <tr>
+                <td style={{width: '11%', textAlign: 'center'}}>
+                  <div>
+                    소장품 설명
+                  </div>
+                  <div>
+                    (용도, 의미 등)
+                  </div>
+                </td>
+                <td colSpan={4} style={{width: '90%'}}>
+                  <Box sx={{width: '100%'}}>
+                    <TextField multiline rows={3} fullWidth inputProps={{style: {padding: 0, fontSize: 14, backgroundColor: 'white'}}} placeholder='text area'/>
+                  </Box>
+                </td>
+              </tr>
+              <tr>
+                <td style={{width: '10%', textAlign: 'center'}}>
+                  소장품 가치 등급
+                </td>
+                <td colSpan={4} style={{width: '90%'}}>
+                  <Box sx={{width: '20%'}}>
+                    <TextField fullWidth inputProps={{style: {height: '0px', fontSize: 14, backgroundColor: 'white'}}} placeholder='선택'/>
+                  </Box>
+                </td>
+              </tr>
+              <tr>
+                <td style={{width: '10%', textAlign: 'center'}}>
+                  딸림자료 정보
+                </td>
+                <td colSpan={4} style={{width: '90%'}}>
+                  <Box sx={{width: '100%'}}>
+                    <TextField multiline rows={3} fullWidth inputProps={{style: {padding: 0, fontSize: 14, backgroundColor: 'white'}}} placeholder='text area'/>
+                  </Box>
+                </td>
+              </tr>
+              <tr>
+                <td style={{width: '10%', textAlign: 'center'}}>
+                  셋트 소장품 여부
+                </td>
+                <td colSpan={4} style={{width: '90%'}}>
+                  <AddButton >간편 조회</AddButton>
+                </td>
+              </tr>
+              <tr>
+                <td style={{width: '10%', textAlign: 'center'}}>
+                  기타
+                </td>
+                <td colSpan={4} style={{width: '90%'}}>
+                  <Box sx={{width: '100%'}}>
+                    <TextField rows={1} fullWidth inputProps={{style: {fontSize: 14, backgroundColor: 'white'}}} placeholder='text area'/>
+                  </Box>
+                </td>
+              </tr>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div className={styles.register_step_title}>
+        <div style={{ display: 'flex', justifyContent: 'center', flexDirection: 'column'}}>
+          4. 보관 / 보존정보
+        </div>
+        <div>
+          <NormalButton>임시저장</NormalButton>
+        </div>
+      </div>
+      <div className={styles.search_controller_container}>
+        <div className={styles.search_controller}>
+          <div className={styles.search_list}>
+            <table className={styles.search_table}>
+              <tr>
+                <td style={{width: '10%', textAlign: 'center'}}>보관구분</td>
+                <td colSpan={4} style={{width: '90%'}}>
+                  <ComboControlLabel
+                    control={<CustomCombo size="small" type="none" setData={setFirstValue} dataList={countryData} value={continent} targetData={"continent"} codeChange={(e) => setContinent(e.target.value)} />}
+                    label=""
+                    labelPlacement="start"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td style={{width: '10%', textAlign: 'center'}}>보관처</td>
+                <td style={{width: '10%', textAlign: 'center', backgroundColor: '#deebff'}}>보관처1</td>
+                <td style={{width: '10%'}}>
+                  <ComboControlLabel
+                    control={<CustomCombo size="small" type="none" setData={setFirstValue} dataList={countryData} value={continent} targetData={"continent"} codeChange={(e) => setContinent(e.target.value)} />}
+                    label=""
+                    labelPlacement="start"
+                  />
+                </td>
+                <td style={{width: '10%', textAlign: 'center', backgroundColor: '#deebff'}}>보관처2</td>
+                <td style={{width: '10%'}}>
+                  <ComboControlLabel
+                    control={<CustomCombo size="small" type="none" setData={setFirstValue} dataList={countryData} value={continent} targetData={"continent"} codeChange={(e) => setContinent(e.target.value)} />}
+                    label=""
+                    labelPlacement="start"
+                  />
+                </td>
+                <td style={{width: '10%', textAlign: 'center', backgroundColor: '#deebff'}}>보관처3</td>
+                <td style={{width: '10%'}}>
+                  <ComboControlLabel
+                    control={<CustomCombo size="small" type="none" setData={setFirstValue} dataList={countryData} value={continent} targetData={"continent"} codeChange={(e) => setContinent(e.target.value)} />}
+                    label=""
+                    labelPlacement="start"
+                  />
+                </td>
+                <td style={{width: '10%', textAlign: 'center', backgroundColor: '#deebff'}}>보관처4</td>
+                <td style={{width: '10%'}}>
+                  <ComboControlLabel
+                    control={<CustomCombo size="small" type="none" setData={setFirstValue} dataList={countryData} value={continent} targetData={"continent"} codeChange={(e) => setContinent(e.target.value)} />}
+                    label=""
+                    labelPlacement="start"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td style={{width: '10%', textAlign: 'center'}}>
+                  <div>
+                    보존상태
+                  </div>
+                  <div>
+                    / 보존상태
+                  </div>
+                </td>
+                <td colSpan={4} style={{width: '90%'}}>
+                  <AddButton>추가 생성</AddButton>
+                </td>
+              </tr>
+              <tr>
+                <td style={{width: '10%', textAlign: 'center'}}>
+                  상태
+                </td>
+                <td colSpan={4} style={{width: '90%'}}>
+                  <ComboControlLabel
+                    control={<CustomCombo size="small" type="none" setData={setFirstValue} dataList={countryData} value={continent} targetData={"continent"} codeChange={(e) => setContinent(e.target.value)} />}
+                    label=""
+                    labelPlacement="start"
+                  />
+                </td>
+              </tr>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div className={styles.register_step_title}>
+        <div style={{ display: 'flex', justifyContent: 'center', flexDirection: 'column'}}>
+          5. 등록자 정보
+        </div>
+      </div>
+      <div className={styles.search_controller_container}>
+        <div className={styles.search_controller}>
+          <div className={styles.search_list}>
+            <table className={styles.search_table}>
+              <tr>
+                <td style={{width: '10%', textAlign: 'center'}}>등록자</td>
+                <td colSpan={4} style={{width: '90%'}}>
+                  <Box sx={{width: '20%'}}>
+                    <TextField fullWidth inputProps={{style: {height: '0px', fontSize: 14, backgroundColor: 'white'}}} placeholder='등록자'/>
+                  </Box>
+                </td>
+              </tr>
+              <tr>
+                <td style={{width: '10%', textAlign: 'center'}}>소속/직책</td>
+                <td style={{width: '10%', textAlign: 'center', backgroundColor: '#deebff'}}>소속</td>
+                <td style={{width: '30%'}}>
+                </td>
+                <td style={{width: '10%', textAlign: 'center', backgroundColor: '#deebff'}}>직책</td>
+                <td style={{width: '30%'}}>
+                </td>
+              </tr>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div className={styles.register_step_title}>
+        <div style={{ display: 'flex', justifyContent: 'center', flexDirection: 'column'}}>
+          6. History
+        </div>
+      </div>
+      <div className={styles.search_controller_container}>
+        <div className={styles.search_controller}>
+          <div className={styles.search_list}>
+            <AgGrid
+              setRef={setgridState} // Ref for accessing Grid's API
+              rowData={rowData} // Row Data for Rows
+              columnDefs={columnDefs} // Column Defs for Columns
+              onRowClicked={onRowClicked}
+              heightVal={300}
+              pageCnt={pageCnt}
+            />
+          </div>
+        </div>
+      </div>
+      <div className={styles.register_step_title}>
+          <NormalButton sx={{backgroundColor: 'gray', width: '100px'}}>수정</NormalButton>
+          <BaseButton sx={{width: '100px'}}>등록</BaseButton>
       </div>
 
       {/* 이미지 미리보기 */}
