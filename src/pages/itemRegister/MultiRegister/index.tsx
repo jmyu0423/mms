@@ -54,23 +54,23 @@ const MultiRegister = ({ }) => {
   const [alertOpen, setAlertOpen] = useState(false);
 	const [content, setContent] = useState("");
 
-  const [isActive, setActive] = useState(false);
-  const [uploadedInfo, setUploadedInfo] = useState(null);
+  const [isActive, setActive] = useState(false); //엑셀양식 업로드 여부
+  const [uploadedInfo, setUploadedInfo] = useState(null); //엑셀양식 업로드 정보
 
+  const [isActiveImg, setActiveImg] = useState(false); //사진 대량 업로드 여부
+  const [uploadedImgInfo, setUploadedImgInfo] = useState(null); //사진 대량 업로드 정보
+
+  const excelUploadRef = useRef(null);
+  const imgUploadRef = useRef(null);
+
+  useEffect(()=>{
+  },[uploadedInfo, isActive])
+
+
+  // ----------------------------------------------------------------------------------------
   const handleDragStart = () => setActive(true);
-  const handleDragEnd = () => {
-    setActive(false);
-  }
-  const handleDragOver = (event) => {
-    event.preventDefault();
-  };
-
-  const setFileInfo = (file) => {
-    const { name, size: byteSize, type } = file;
-    const size = (byteSize / (1024 * 1024)).toFixed(2) + 'mb';
-    setUploadedInfo({ name, size, type }); // name, size, type 정보를 uploadedInfo에 저장
-  };
-
+  const handleDragEnd = () => setActive(false);
+  const handleDragOver = (event) => event.preventDefault();
   const handleDrop = (event) => {
     event.preventDefault();
     setActive(false);
@@ -79,23 +79,93 @@ const MultiRegister = ({ }) => {
     setFileInfo(file);
   };
 
-  const handleUpload = ({ target }) => {
-    const file = target.files[0];
-    setFileInfo(file);
+  const setFileInfo = (file) => {
+    const { name, size: byteSize, type } = file;
+    const size = (byteSize / (1024 * 1024)).toFixed(2) + 'mb';
+    setUploadedInfo({ name, size, type }); // name, size, type 정보를 uploadedInfo에 저장
   };
+
+  const handleUpload = ({ target }) => {
+    let file = {};
+    if(target.files.length > 0){
+      file = target.files[0];
+      setFileInfo(file);
+    }
+  };
+
+  // ----------------------------------------------------------------------------------------
+  
+  // ----------------------------------------------------------------------------------------
+  const ImghandleDragStart = () => setActiveImg(true);
+  const ImghandleDragEnd = () => setActiveImg(false);
+  const ImghandleDragOver = (event) => event.preventDefault();
+  const ImghandleDrop = (event) => {
+    event.preventDefault();
+    setActiveImg(false);
+
+    const file = event.dataTransfer.files;
+    setImgFileInfo(file);
+  };
+
+  const setImgFileInfo = (files) => {
+    let tempFileList = [];
+    let byteSize = '';
+    for(let i=0; i<files.length; i++){
+      byteSize = (files[i].size / (1024 * 1024)).toFixed(2) + 'mb';
+
+      tempFileList.push({name: files[i].name, size: byteSize, type: files[i].type})
+    }
+    setUploadedImgInfo(tempFileList); // name, size, type 정보를 uploadedInfo에 저장
+  };
+
+  const ImghandleUpload = ({ target }) => {
+    let files = [];
+    if(target.files.length > 0){
+      files = target.files;
+      setImgFileInfo(files);
+    }
+  };
+  // ----------------------------------------------------------------------------------------
 
   const alertClose = () =>{
 		setAlertOpen(false);
 	}
 
   const FileInfo = ({ uploadedInfo }) => (
-    <ul className="preview_info">
-      {Object.entries(uploadedInfo).map(([key, value]) => (
-        <li key={key}>
-          <span className="info_key">{key}</span>
-        </li>
-      ))}
+    <ul className="multi_excel_upload_info">
+      {Object.entries(uploadedInfo).map(([key, value]) => {
+        return(
+          <li className='info_items' key={key}>
+            <span className="info_key">{key}</span>
+            <span className="info_value">{value as string}</span>
+          </li>
+        )
+      })}
     </ul>
+  );
+
+  const ImgFileInfo = ({ uploadedInfo }) => (
+    <div style={{height: '100%'}}>
+      <ul className="multi_img_upload_info">
+        {uploadedInfo.length > 0 && uploadedInfo.map((data, index)=>{
+          return(
+            <div key={index} style={{display: 'flex'}}>
+              <div style={{marginRight: '5px'}}>{index + 1 + "."}</div>
+              <div className='info_container'>
+              {Object.entries(data).map(([key, value])=>{
+                return(
+                  <li className='info_items' key={key}>
+                    <span className="info_key">{key as string}</span>
+                    <span className="info_value">{value as string}</span>
+                  </li>
+                )
+              })}
+              </div>
+            </div>
+          )
+        })}
+      </ul>
+    </div>
   );
 
   return (
@@ -167,7 +237,7 @@ const MultiRegister = ({ }) => {
                       엑셀양식 업로드하기
                     </div>
                     <div style={{padding: '5px'}}>
-                      <NormalButton>파일 업로드</NormalButton>
+                      <NormalButton onClick={()=>excelUploadRef.current.click()}>파일 업로드</NormalButton>
                     </div>
                   </div>
                   <label
@@ -177,7 +247,7 @@ const MultiRegister = ({ }) => {
                     onDragLeave={handleDragEnd}
                     onDrop={handleDrop}
                   >
-                    <input type="file" className="file" onChange={handleUpload} />
+                    <input type="file" className="file" ref={excelUploadRef} onChange={handleUpload} />
                     {uploadedInfo && <FileInfo uploadedInfo={uploadedInfo} />}
                     {!uploadedInfo && (
                       <>
@@ -220,17 +290,24 @@ const MultiRegister = ({ }) => {
                       사진 대량 업로드하기
                     </div>
                     <div style={{padding: '5px'}}>
-                      <NormalButton>파일 업로드</NormalButton>
+                      <NormalButton onClick={()=>imgUploadRef.current.click()}>파일 업로드</NormalButton>
                     </div>
                   </div>
-                  <div style={{
-                    padding: '5px', 
-                    width: '500px',
-                    height: '150px',
-                    border: '2px dashed lightgray',
-                  }}>
-                    파일을 이쪽으로 드래그하여 업로드 하세요.
-                  </div>
+                  <label
+                    className={'multi_img_upload' + `${isActiveImg ? ' active' : ''}`}
+                    onDragEnter={ImghandleDragStart}
+                    onDragOver={ImghandleDragOver}
+                    onDragLeave={ImghandleDragEnd}
+                    onDrop={ImghandleDrop}
+                  >
+                    <input type="file" className="file" style={{display: 'none'}} ref={imgUploadRef} multiple onChange={ImghandleUpload} />
+                    {uploadedImgInfo && <ImgFileInfo uploadedInfo={uploadedImgInfo} />}
+                    {!uploadedImgInfo && (
+                      <>
+                        <p className="multi_excel_upload_msg">파일을 이쪽으로 드래그하여 업로드 하세요.</p>
+                      </>
+                    )}
+                  </label>
                 </td>
               </tr>
             </tbody>

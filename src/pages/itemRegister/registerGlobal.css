@@ -28,3 +28,87 @@
     margin: 20px 0 10px;
     pointer-events: none;
   }
+
+  .multi_excel_upload_info {
+    width: 100%;
+    list-style: none;
+    padding: 0;
+    gap: 16px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .multi_excel_upload_info .info_items{
+    display: flex;
+  }
+
+  .multi_excel_upload_info .info_key {
+    display: block;
+    font-weight: 500;
+    font-size: 14px;
+    margin-bottom: 4px;
+    margin-right: 20px;
+  }
+
+  .multi_excel_upload_info .info_value {
+    font-size: 14px;
+  }
+
+  .multi_img_upload_info{
+    width: 100%;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .multi_img_upload_info .info_container{
+    margin-bottom: 10px;
+  }
+
+  .multi_img_upload{
+    width: 500px;
+    padding: 5px;
+    height: 150px;
+    background-color: #fff;
+    border-radius: 5px;
+    border: 3px dashed #eee;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    overflow-y: auto;
+    -ms-overflow-style: none; /* 인터넷 익스플로러 */
+	  scrollbar-width: none; /* 파이어폭스 */
+  }
+
+  .multi_img_upload::-webkit-scrollbar {
+    display: none;
+  }
+
+  .multi_img_upload.active{
+    background-color: #efeef3;
+    border-color: #111;
+  }
+
+  .multi_img_upload:hover{
+    border-color: #111;
+  }
+
+  .multi_img_upload_info .info_items{
+    display: flex;
+  }
+
+  .multi_img_upload_info .info_key {
+    display: block;
+    font-weight: 500;
+    font-size: 14px;
+    margin-bottom: 4px;
+    margin-right: 20px;
+  }
+
+  .multi_img_upload_info .info_value {
+    font-size: 14px;
+  }
