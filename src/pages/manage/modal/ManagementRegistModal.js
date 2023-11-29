@@ -189,133 +189,133 @@ const ManagementRegistModal = ({ openRegist, closeRegistModal, setRowData, rowDa
         <RegistModal title="물품등록" open={openRegist} onClose={closeRegistModal} onOk={insertItem} >
             <DialogContent dividers sx={{ flexGrow: 1, maxWidth: "1200px" }}>
                 <Grid container spacing={2}>
-                    <Grid xs={4} display={'flex'} justifyContent={'right'}>
+                    <Grid item={true} xs={4} display={'flex'} justifyContent={'right'}>
                         <PopupFormControlLabel
                             control={<TextField fullWidth size="small" value={title} inputProps={{ maxLength: 20 }} onChange={(e) => setTitle(e.target.value)} error={paramError.title === '' ? false : true} helperText={paramError.title} />}
                             label="제목"
                             labelPlacement="start"
                         />
                     </Grid>
-                    <Grid xs={4} display={'flex'} justifyContent={'right'}>
+                    <Grid item={true} xs={4} display={'flex'} justifyContent={'right'}>
                         <PopupFormControlLabel
                             control={<TextField fullWidth size="small" value={itemNm} inputProps={{ maxLength: 20 }} onChange={(e) => setItemNm(e.target.value)} error={paramError.itemNm === '' ? false : true} helperText={paramError.itemNm} />}
                             label="명칭"
                             labelPlacement="start"
                         />
                     </Grid>
-                    <Grid xs={4} display={'flex'} justifyContent={'right'}>
+                    <Grid item={true} xs={4} display={'flex'} justifyContent={'right'}>
                         <PopupFormControlLabel
                             control={<StorageCombo fullWidth size="small" type="none" value={storage} codeChange={(e) => setStorage(e.target.value)} error={paramError.itemNm === '' ? false : true} helperText={paramError.itemNm} />}
                             label="보관장소"
                             labelPlacement="start"
                         />
                     </Grid>
-                    <Grid xs={4} display={'flex'} justifyContent={'right'}>
+                    <Grid item={true} xs={4} display={'flex'} justifyContent={'right'}>
                         <PopupFormControlLabel
                             control={<TextField fullWidth size="small" value={texture} inputProps={{ maxLength: 20 }} onChange={(e) => setTexture(e.target.value)} error={paramError.itemNm === '' ? false : true} helperText={paramError.itemNm} />}
                             label="재질"
                             labelPlacement="start"
                         />
                     </Grid>
-                    <Grid xs={4} display={'flex'} justifyContent={'right'}>
+                    <Grid item={true} xs={4} display={'flex'} justifyContent={'right'}>
                         <PopupFormControlLabel
                             control={<TextField fullWidth size="small" value={count} inputProps={{ maxLength: 20 }} onChange={(e) => setCount(e.target.value)} error={paramError.itemNm === '' ? false : true} helperText={paramError.itemNm} />}
                             label="건"
                             labelPlacement="start"
                         />
                     </Grid>
-                    <Grid xs={4} display={'flex'} justifyContent={'right'}>
+                    <Grid item={true} xs={4} display={'flex'} justifyContent={'right'}>
                         <PopupFormControlLabel
                             control={<TextField fullWidth size="small" value={piece} inputProps={{ maxLength: 20 }} onChange={(e) => setPiece(e.target.value)} error={paramError.itemNm === '' ? false : true} helperText={paramError.itemNm} />}
                             label="점"
                             labelPlacement="start"
                         />
                     </Grid>
-                    <Grid xs={4} display={'flex'} justifyContent={'right'}>
+                    <Grid item={true} xs={4} display={'flex'} justifyContent={'right'}>
                         <PopupFormControlLabel
                             control={<TextField fullWidth size="small" value={sizeA} inputProps={{ maxLength: 20 }} onChange={(e) => setSizeA(e.target.value)} error={paramError.itemNm === '' ? false : true} helperText={paramError.itemNm} />}
                             label="가로(지름)mm"
                             labelPlacement="start"
                         />
                     </Grid>
-                    <Grid xs={4} display={'flex'} justifyContent={'right'}>
+                    <Grid item={true} xs={4} display={'flex'} justifyContent={'right'}>
                         <PopupFormControlLabel
                             control={<TextField fullWidth size="small" value={sizeB} inputProps={{ maxLength: 20 }} onChange={(e) => setSizeB(e.target.value)} error={paramError.itemNm === '' ? false : true} helperText={paramError.itemNm} />}
                             label="세로mm"
                             labelPlacement="start"
                         />
                     </Grid>
-                    <Grid xs={4} display={'flex'} justifyContent={'right'}>
+                    <Grid item={true} xs={4} display={'flex'} justifyContent={'right'}>
                         <PopupFormControlLabel
                             control={<TextField fullWidth size="small" value={sizeC} inputProps={{ maxLength: 20 }} onChange={(e) => setSizeC(e.target.value)} error={paramError.itemNm === '' ? false : true} helperText={paramError.itemNm} />}
                             label="높이(두께)mm"
                             labelPlacement="start"
                         />
                     </Grid>
-                    <Grid xs={4} display={'flex'} justifyContent={'right'}>
+                    <Grid item={true} xs={4} display={'flex'} justifyContent={'right'}>
                         <PopupFormControlLabel
                             control={<CustomDatePicker dateFormat="yyyy/MM/dd" selected={presdate} onChange={(date) => setPresdate(date)} />}
                             label="수여(증정)날짜"
                             labelPlacement="start"
                         />
                     </Grid>
-                    <Grid xs={4} display={'flex'} justifyContent={'right'}>
+                    <Grid item={true} xs={4} display={'flex'} justifyContent={'right'}>
                         <PopupFormControlLabel
                             control={<TextField fullWidth size="small" value={presplace} inputProps={{ maxLength: 20 }} onChange={(e) => setPresplace(e.target.value)} error={paramError.presplace === '' ? false : true} helperText={paramError.presplace} />}
                             label="수여(증정)장소"
                             labelPlacement="start"
                         />
                     </Grid>
-                    <Grid xs={4} display={'flex'} justifyContent={'right'}>
+                    <Grid item={true} xs={4} display={'flex'} justifyContent={'right'}>
                         <PopupFormControlLabel
                             control={<TextField fullWidth size="small" value={eventname} inputProps={{ maxLength: 20 }} onChange={(e) => setEventname(e.target.value)} error={paramError.eventname === '' ? false : true} helperText={paramError.eventname} />}
                             label="행사명"
                             labelPlacement="start"
                         />
                     </Grid>
-                    <Grid xs={4} display={'flex'} justifyContent={'right'}>
+                    <Grid item={true} xs={4} display={'flex'} justifyContent={'right'}>
                         <PopupFormControlLabel
                             control={<TextField fullWidth size="small" value={conferrer} inputProps={{ maxLength: 20 }} onChange={(e) => setConferrer(e.target.value)} error={paramError.conferrer === '' ? false : true} helperText={paramError.conferrer} />}
                             label="수여자"
                             labelPlacement="start"
                         />
                     </Grid>
-                    <Grid xs={4} display={'flex'} justifyContent={'right'}>
+                    <Grid item={true} xs={4} display={'flex'} justifyContent={'right'}>
                         <PopupFormControlLabel
                             control={<TextField fullWidth size="small" value={comment} inputProps={{ maxLength: 20 }} onChange={(e) => setComment(e.target.value)} error={paramError.itemNm === '' ? false : true} helperText={paramError.itemNm} />}
                             label="제작시대/용도기능"
                             labelPlacement="start"
                         />
                     </Grid>
-                    <Grid xs={4} display={'flex'} justifyContent={'right'}>
+                    <Grid item={true} xs={4} display={'flex'} justifyContent={'right'}>
                         <PopupFormControlLabel
                             control={<TextField fullWidth size="small" value={getReason} inputProps={{ maxLength: 20 }} onChange={(e) => setGetReason(e.target.value)} error={paramError.itemNm === '' ? false : true} helperText={paramError.itemNm} />}
                             label="입수연유"
                             labelPlacement="start"
                         />
                     </Grid>
-                    <Grid xs={4} display={'flex'} justifyContent={'right'}>
+                    <Grid item={true} xs={4} display={'flex'} justifyContent={'right'}>
                         <PopupFormControlLabel
                             control={<CountryCombo fullWidth size="small" type="none" value={country} codeChange={(e) => setCountry(e.target.value)} error={paramError.itemNm === '' ? false : true} helperText={paramError.itemNm} />}
                             label="증정자국적(코드)"
                             labelPlacement="start"
                         />
                     </Grid>
-                    <Grid xs={4} display={'flex'} justifyContent={'right'}>
+                    <Grid item={true} xs={4} display={'flex'} justifyContent={'right'}>
                         <PopupFormControlLabel
                             control={<TextField fullWidth size="small" value={giver} inputProps={{ maxLength: 20 }} onChange={(e) => setGiver(e.target.value)} error={paramError.itemNm === '' ? false : true} helperText={paramError.itemNm} />}
                             label="증정자이름/직책"
                             labelPlacement="start"
                         />
                     </Grid>
-                    <Grid xs={4} display={'flex'} justifyContent={'right'}>
+                    <Grid item={true} xs={4} display={'flex'} justifyContent={'right'}>
                         <PopupFormControlLabel
                             control={<TextField fullWidth size="small" value={characteristic} inputProps={{ maxLength: 20 }} onChange={(e) => setCharacteristic(e.target.value)} error={paramError.itemNm === '' ? false : true} helperText={paramError.itemNm} />}
                             label="특징"
                             labelPlacement="start"
                         />
                     </Grid>
-                    <Grid xs={8} display={'flex'} flexDirection={'column'} alignItems={'center'} marginTop={"80px"}>
+                    <Grid item={true} xs={8} display={'flex'} flexDirection={'column'} alignItems={'center'} marginTop={"80px"}>
                         <Box
                             style={{ width: WIDTH_SIZE }}
                             display={'flex'}
@@ -364,7 +364,7 @@ const ManagementRegistModal = ({ openRegist, closeRegistModal, setRowData, rowDa
                             </Box>
                         </Box>
                     </Grid>
-                    <Grid xs={4} display={'flex'} justifyContent={'center'} marginTop={"80px"}>
+                    <Grid item={true} xs={4} display={'flex'} justifyContent={'center'} marginTop={"80px"}>
                         <img
                             width="80%"
                             src={image}

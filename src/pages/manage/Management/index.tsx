@@ -504,191 +504,193 @@ const Management = ({ }) => {
             {searchTable ?
               <div className={styles.search_list}>
                 <table className={styles.search_table}>
-                  <tr>
-                    <td style={{width: '10%', textAlign: 'center'}}>등록일</td>
-                    <td colSpan={4} style={{width: '90%'}}>
-                    <CustomDatePicker startDt={startDt} endDt={endDt} setStartDt={setStartDt} setEndDt={setEndDt}/>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td style={{width: '10%', textAlign: 'center'}}>보관 소속</td>
-                    <td colSpan={4} style={{width: '90%'}}>
-                      <ComboControlLabel
-                        control={<CustomCombo size="small" type="none" setData={setFirstValue} dataList={organization1List} value={organization1} targetData={"organization1"} codeChange={(e) => setOrganization1(e.target.value)} />}
-                        label=""
-                        labelPlacement="start"
-                      />
-                      <ComboControlLabel
-                        control={<CustomCombo size="small" type="none" setData={setFirstValue} dataList={organization2List} value={organization2} targetData={"organization2"} codeChange={(e) => setOrganization2(e.target.value)} />}
-                        label=""
-                        labelPlacement="start"
-                      />
-                    </td>
-                  </tr>
-                  <tr>
-                    <td style={{width: '10%', textAlign: 'center'}}>소장품 번호</td>
-                    <td style={{width: '10%', textAlign: 'center', backgroundColor: '#deebff'}}>시작 번호</td>
-                    <td style={{width: '35%'}}>
-                      <ComboControlLabel
-                        control={<CustomCombo size="small" type="none" setData={setFirstValue} dataList={materialList} value={material1} targetData={"material1"} codeChange={(e) => setMaterial1(e.target.value)} />}
-                        label=""
-                        labelPlacement="start"
-                      />
-                      <ComboControlLabel
-                        control={<TextField fullWidth size="small" value={startNumber} inputProps={{ maxLength: 20, min: 0 }} onChange={(e) => setStartNumber(e.target.value)} type="number"/>}
-                        label=""
-                        labelPlacement="start"
-                      />
-                    </td>
-                    <td style={{width: '10%', textAlign: 'center', backgroundColor: '#deebff'}}>끝 번호</td>
-                    <td style={{width: '35%'}}>
-                      <ComboControlLabel
-                        control={<CustomCombo size="small" type="none" setData={setFirstValue} dataList={materialList} value={material2} targetData={"material2"} codeChange={(e) => setMaterial2(e.target.value)} />}
-                        label=""
-                        labelPlacement="start"
-                      />
-                      <ComboControlLabel
-                        control={<TextField fullWidth size="small" value={endNumber} inputProps={{ maxLength: 20, min: 0 }} onChange={(e) => setEndNumber(e.target.value)} type="number"/>}
-                        label=""
-                        labelPlacement="start"
-                      />
-                    </td>
-                  </tr>
-                  <tr>
-                    <td style={{width: '10%', textAlign: 'center'}}>재질</td>
-                    <td colSpan={4} style={{width: '90%'}}>
+                  <tbody>
+                    <tr>
+                      <td style={{width: '10%', textAlign: 'center'}}>등록일</td>
+                      <td colSpan={4} style={{width: '90%'}}>
+                      <CustomDatePicker startDt={startDt} endDt={endDt} setStartDt={setStartDt} setEndDt={setEndDt}/>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style={{width: '10%', textAlign: 'center'}}>보관 소속</td>
+                      <td colSpan={4} style={{width: '90%'}}>
+                        <ComboControlLabel
+                          control={<CustomCombo size="small" type="none" setData={setFirstValue} dataList={organization1List} value={organization1} targetData={"organization1"} codeChange={(e) => setOrganization1(e.target.value)} />}
+                          label=""
+                          labelPlacement="start"
+                        />
+                        <ComboControlLabel
+                          control={<CustomCombo size="small" type="none" setData={setFirstValue} dataList={organization2List} value={organization2} targetData={"organization2"} codeChange={(e) => setOrganization2(e.target.value)} />}
+                          label=""
+                          labelPlacement="start"
+                        />
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style={{width: '10%', textAlign: 'center'}}>소장품 번호</td>
+                      <td style={{width: '10%', textAlign: 'center', backgroundColor: '#deebff'}}>시작 번호</td>
+                      <td style={{width: '35%'}}>
+                        <ComboControlLabel
+                          control={<CustomCombo size="small" type="none" setData={setFirstValue} dataList={materialList} value={material1} targetData={"material1"} codeChange={(e) => setMaterial1(e.target.value)} />}
+                          label=""
+                          labelPlacement="start"
+                        />
+                        <ComboControlLabel
+                          control={<TextField fullWidth size="small" value={startNumber} inputProps={{ maxLength: 20, min: 0 }} onChange={(e) => setStartNumber(e.target.value)} type="number"/>}
+                          label=""
+                          labelPlacement="start"
+                        />
+                      </td>
+                      <td style={{width: '10%', textAlign: 'center', backgroundColor: '#deebff'}}>끝 번호</td>
+                      <td style={{width: '35%'}}>
+                        <ComboControlLabel
+                          control={<CustomCombo size="small" type="none" setData={setFirstValue} dataList={materialList} value={material2} targetData={"material2"} codeChange={(e) => setMaterial2(e.target.value)} />}
+                          label=""
+                          labelPlacement="start"
+                        />
+                        <ComboControlLabel
+                          control={<TextField fullWidth size="small" value={endNumber} inputProps={{ maxLength: 20, min: 0 }} onChange={(e) => setEndNumber(e.target.value)} type="number"/>}
+                          label=""
+                          labelPlacement="start"
+                        />
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style={{width: '10%', textAlign: 'center'}}>재질</td>
+                      <td colSpan={4} style={{width: '90%'}}>
 
-                    <label className={styles.normal_checkbox_lable}>
-                      <input type="checkbox" onClick={(e)=>onChangeMaterial(e)} value={""} checked={materialCheckItems.length === materialData.length ? true : false}/>
-                      전체
-                    </label>
-                    {
-                      materialData.length > 0 && materialData.map((data)=>{
-                        return(
-                          <label className={styles.normal_checkbox_lable}>
-                            <input type="checkbox" onClick={(e)=>onChangeMaterial(e)} value={data.cd} checked={materialCheckItems.includes(data.cd) ? true : false}/>
-                            {data.name}
-                          </label>
-                        )
-                      })
-                    }
-                    </td>
-                  </tr>
-                  <tr>
-                    <td style={{width: '10%', textAlign: 'center'}}>국적</td>
-                    <td style={{width: '10%', textAlign: 'center', backgroundColor: '#deebff'}}>국적 대륙</td>
-                    <td style={{width: '30%'}}>
-                    
-                    <label className={styles.normal_checkbox_lable}>
-                      <input type="checkbox" onClick={(e)=>onChangeCountry(e)} value={""} checked={countryCheckItems.length === countryData.length ? true : false}/>
-                      전체
-                    </label>
-                    {
-                      countryData.length > 0 && countryData.map((data)=>{
-                        return(
-                          <label className={styles.normal_checkbox_lable}>
-                            <input type="checkbox" onClick={(e)=>onChangeCountry(e)} value={data.cd} checked={countryCheckItems.includes(data.cd) ? true : false}/>
-                            {data.name}
-                          </label>
-                        )
-                      })
-                    }  
-                    </td>
-                    <td style={{width: '10%', textAlign: 'center', backgroundColor: '#deebff'}}>국적 나라</td>
-                    <td style={{width: '30%'}}>
-                      <ComboControlLabel
-                        control={<CustomCombo size="small" type="none" setData={setFirstValue} dataList={countryList} value={itemCountry} targetData={"itemCountry"} codeChange={(e) => setItemCountry(e.target.value)} />}
-                        label=""
-                        labelPlacement="start"
-                      />
-                    </td>
-                  </tr>
-                  <tr>
-                    <td style={{width: '10%', textAlign: 'center'}}>입수 연유</td>
-                    <td colSpan={4} style={{width: '90%'}}>
                       <label className={styles.normal_checkbox_lable}>
-                        <input type="checkbox" onClick={(e)=>onChangeBroughtReson(e)} value={""} checked={broughtReasonCheckItems.length === broughtReasonData.length ? true : false}/>
+                        <input type="checkbox" onChange={(e)=>onChangeMaterial(e)} value={""} checked={materialCheckItems.length === materialData.length ? true : false}/>
                         전체
                       </label>
                       {
-                        broughtReasonData.length > 0 && broughtReasonData.map((data)=>{
+                        materialData.length > 0 && materialData.map((data, index)=>{
                           return(
-                            <label className={styles.normal_checkbox_lable}>
-                              <input type="checkbox" onClick={(e)=>onChangeBroughtReson(e)} value={data.cd} checked={broughtReasonCheckItems.includes(data.cd) ? true : false}/>
+                            <label className={styles.normal_checkbox_lable} key={index}>
+                              <input type="checkbox" onChange={(e)=>onChangeMaterial(e)} value={data.cd} checked={materialCheckItems.includes(data.cd) ? true : false}/>
                               {data.name}
                             </label>
                           )
                         })
                       }
-                    </td>
-                  </tr>
-                  <tr>
-                    <td style={{width: '10%', textAlign: 'center'}}>입수 시기</td>
-                    <td colSpan={4} style={{width: '90%'}}>
-                      <CustomDatePicker startDt={broughtStartDt} endDt={broughtEndDt} setStartDt={setBroughtStartDt} setEndDt={setBroughtEndDt}/>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td style={{width: '10%', textAlign: 'center'}}>연관 주제</td>
-                    <td colSpan={4} style={{width: '90%'}}>
-                    {
-                      relatedTopicData.length > 0 && relatedTopicData.map((data)=>{
-                        return(
-                          <label className={styles.normal_checkbox_lable}>
-                            <input type="checkbox" onClick={(e)=>onChangeRelatedTopic(e)} value={data.cd} checked={relatedTopicCheckItems.includes(data.cd) ? true : false}/>
-                            {data.name}
-                            <label className={styles.normal_checkbox_lable}>
-                              <input type="number" min={0} />
-                              {data.cd === "3" ? "차" : "주년"}
-                            </label>
-                          </label>
-                          
-                        )
-                      })
-                    }
-                    </td>
-                  </tr>
-                  <tr>
-                    <td style={{width: '10%', textAlign: 'center'}}>기증자</td>
-                    <td style={{width: '10%', textAlign: 'center', backgroundColor: '#deebff'}}>국적 대륙</td>
-                    <td style={{width: '30%'}}>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style={{width: '10%', textAlign: 'center'}}>국적</td>
+                      <td style={{width: '10%', textAlign: 'center', backgroundColor: '#deebff'}}>국적 대륙</td>
+                      <td style={{width: '30%'}}>
+                      
                       <label className={styles.normal_checkbox_lable}>
-                        <input type="checkbox" onClick={(e)=>onChangeDonorCountry(e)} value={""} checked={donorCountryCheckItems.length === countryData.length ? true : false}/>
+                        <input type="checkbox" onChange={(e)=>onChangeCountry(e)} value={""} checked={countryCheckItems.length === countryData.length ? true : false}/>
                         전체
                       </label>
                       {
-                        countryData.length > 0 && countryData.map((data)=>{
+                        countryData.length > 0 && countryData.map((data, index)=>{
                           return(
-                            <label className={styles.normal_checkbox_lable}>
-                              <input type="checkbox" onClick={(e)=>onChangeDonorCountry(e)} value={data.cd} checked={donorCountryCheckItems.includes(data.cd) ? true : false}/>
+                            <label className={styles.normal_checkbox_lable} key={index}>
+                              <input type="checkbox" onChange={(e)=>onChangeCountry(e)} value={data.cd} checked={countryCheckItems.includes(data.cd) ? true : false}/>
                               {data.name}
                             </label>
                           )
                         })
                       }  
-                    </td>
-                    <td style={{width: '10%', textAlign: 'center', backgroundColor: '#deebff'}}>국적 나라</td>
-                    <td style={{width: '30%'}}>
-                      <ComboControlLabel
-                        control={<CustomCombo size="small" type="none" setData={setFirstValue} dataList={countryList} value={donorCountry} targetData={"donorCountry"} codeChange={(e) => setDonorCountry(e.target.value)} />}
-                        label=""
-                        labelPlacement="start"
-                      />
-                    </td>
-                  </tr>
-                  <tr>
-                    <td style={{width: '10%', textAlign: 'center'}}>검색어 입력</td>
-                    <td colSpan={4} style={{width: '90%'}}>
-                      <Box sx={{width: 300}}>
-                        <TextField fullWidth inputProps={{style: {height: '0px', fontSize: 14, backgroundColor: 'white'}}} placeholder='검색어를 입력하세요'/>
-                      </Box>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td colSpan={5} style={{backgroundColor: '#F7F7F7', textAlign: 'right'}}>
-                      <button className={styles.search_btn}>검색</button>
-                    </td>
-                  </tr>
+                      </td>
+                      <td style={{width: '10%', textAlign: 'center', backgroundColor: '#deebff'}}>국적 나라</td>
+                      <td style={{width: '30%'}}>
+                        <ComboControlLabel
+                          control={<CustomCombo size="small" type="none" setData={setFirstValue} dataList={countryList} value={itemCountry} targetData={"itemCountry"} codeChange={(e) => setItemCountry(e.target.value)} />}
+                          label=""
+                          labelPlacement="start"
+                        />
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style={{width: '10%', textAlign: 'center'}}>입수 연유</td>
+                      <td colSpan={4} style={{width: '90%'}}>
+                        <label className={styles.normal_checkbox_lable}>
+                          <input type="checkbox" onChange={(e)=>onChangeBroughtReson(e)} value={""} checked={broughtReasonCheckItems.length === broughtReasonData.length ? true : false}/>
+                          전체
+                        </label>
+                        {
+                          broughtReasonData.length > 0 && broughtReasonData.map((data, index)=>{
+                            return(
+                              <label className={styles.normal_checkbox_lable} key={index}>
+                                <input type="checkbox" onChange={(e)=>onChangeBroughtReson(e)} value={data.cd} checked={broughtReasonCheckItems.includes(data.cd) ? true : false}/>
+                                {data.name}
+                              </label>
+                            )
+                          })
+                        }
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style={{width: '10%', textAlign: 'center'}}>입수 시기</td>
+                      <td colSpan={4} style={{width: '90%'}}>
+                        <CustomDatePicker startDt={broughtStartDt} endDt={broughtEndDt} setStartDt={setBroughtStartDt} setEndDt={setBroughtEndDt}/>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style={{width: '10%', textAlign: 'center'}}>연관 주제</td>
+                      <td colSpan={4} style={{width: '90%'}}>
+                      {
+                        relatedTopicData.length > 0 && relatedTopicData.map((data, index)=>{
+                          return(
+                            <label className={styles.normal_checkbox_lable} key={index}>
+                              <input type="checkbox" onChange={(e)=>onChangeRelatedTopic(e)} value={data.cd} checked={relatedTopicCheckItems.includes(data.cd) ? true : false}/>
+                              {data.name}
+                              <label className={styles.normal_checkbox_lable}>
+                                <input type="number" min={0} />
+                                {data.cd === "3" ? "차" : "주년"}
+                              </label>
+                            </label>
+                            
+                          )
+                        })
+                      }
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style={{width: '10%', textAlign: 'center'}}>기증자</td>
+                      <td style={{width: '10%', textAlign: 'center', backgroundColor: '#deebff'}}>국적 대륙</td>
+                      <td style={{width: '30%'}}>
+                        <label className={styles.normal_checkbox_lable}>
+                          <input type="checkbox" onChange={(e)=>onChangeDonorCountry(e)} value={""} checked={donorCountryCheckItems.length === countryData.length ? true : false}/>
+                          전체
+                        </label>
+                        {
+                          countryData.length > 0 && countryData.map((data, index)=>{
+                            return(
+                              <label className={styles.normal_checkbox_lable} key={index}>
+                                <input type="checkbox" onChange={(e)=>onChangeDonorCountry(e)} value={data.cd} checked={donorCountryCheckItems.includes(data.cd) ? true : false}/>
+                                {data.name}
+                              </label>
+                            )
+                          })
+                        }  
+                      </td>
+                      <td style={{width: '10%', textAlign: 'center', backgroundColor: '#deebff'}}>국적 나라</td>
+                      <td style={{width: '30%'}}>
+                        <ComboControlLabel
+                          control={<CustomCombo size="small" type="none" setData={setFirstValue} dataList={countryList} value={donorCountry} targetData={"donorCountry"} codeChange={(e) => setDonorCountry(e.target.value)} />}
+                          label=""
+                          labelPlacement="start"
+                        />
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style={{width: '10%', textAlign: 'center'}}>검색어 입력</td>
+                      <td colSpan={4} style={{width: '90%'}}>
+                        <Box sx={{width: 300}}>
+                          <TextField fullWidth inputProps={{style: {height: '0px', fontSize: 14, backgroundColor: 'white'}}} placeholder='검색어를 입력하세요'/>
+                        </Box>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td colSpan={5} style={{backgroundColor: '#F7F7F7', textAlign: 'right'}}>
+                        <button className={styles.search_btn}>검색</button>
+                      </td>
+                    </tr>
+                  </tbody>
                 </table>
               </div>
               :
@@ -720,7 +722,7 @@ const Management = ({ }) => {
                 {seachType === "imgList" ?
                   <div className={styles.image_list_all_checkbox}>
                     <label className={styles.image_list_all_checkbox_label}>
-                      <input type="checkbox" onClick={(e)=>onChangeSelectImageList(e)} value={""} checked={imageListChckItems.length === imageList.length ? true : false}/>
+                      <input type="checkbox" onChange={(e)=>onChangeSelectImageList(e)} value={""} checked={imageListChckItems.length === imageList.length ? true : false}/>
                       전체선택
                     </label>
                   </div>
@@ -758,10 +760,10 @@ const Management = ({ }) => {
                 <ul>
                 {imageList.length > 0 && imageList.map((data, index)=>{
                   return(
-                    <li>
+                    <li key={index}>
                       <div className={styles.image_list_area_header}>
                         <div className={styles.image_list_area_header_checkbox}>
-                          <input type="checkbox" onClick={(e)=>onChangeSelectImageList(e)} value={data.seqNo} checked={imageListChckItems.includes(data.seqNo.toString()) ? true : false}/>
+                          <input type="checkbox" onChange={(e)=>onChangeSelectImageList(e)} value={data.seqNo} checked={imageListChckItems.includes(data.seqNo.toString()) ? true : false}/>
                         </div>
                         <div className={styles.image_list_area_header_more}>
                           <div className={styles.more_icon} onClick={(e)=>openMoreBtn(e, index)}>

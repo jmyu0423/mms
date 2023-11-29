@@ -80,9 +80,9 @@ const SimpleSearchModal = ({open, onClose}) =>{
                         <li><span>검색 결과</span></li>
                     </ul>
                     <div className='simple-search-items'>
-                    {rowData.length > 0 && rowData.map((data)=>{
+                    {rowData.length > 0 && rowData.map((data, index)=>{
                         return(
-                            <div className='simple-search-itemContainer'>
+                            <div className='simple-search-itemContainer' key={index}>
                                 <div className='simple-search-imageContainer'>
                                     <img
                                         style={{width: '100%', height: '100%'}}
