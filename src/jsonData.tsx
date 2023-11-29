@@ -627,3 +627,73 @@ export const historyData = ([
     regNm: '유관순'
   },
 ])
+
+export const authMenuData = ([
+  {
+    cd: '0',
+    title: 'statisctics',
+    name: '통계 조회'
+  },
+  {
+    cd: '1',
+    title: 'management',
+    name: '박물 조회'
+  },
+  {
+    cd: '2',
+    title: 'register',
+    name: '박물 등록'
+  },
+  {
+    cd: '3',
+    title: 'modify',
+    name: '박물 수정'
+  },
+  {
+    cd: '4',
+    title: 'userManager',
+    name: '관리자 계정관리'
+  },
+])
+
+export const userAuthData = ([
+  {
+    seq: 0,
+    userId: 'test1',
+    userNm: '홍길동',
+    statAuth: 'Y',
+    manageAuth: 'Y',
+    registerAuth: 'N',
+    updateAuth: 'N',
+    userManageAuth: 'N',
+    approvalAuth: 'N',
+    itemManageAtth: 'N',
+    regDt: '2023-10-15 13:34:11.000'
+  },
+  {
+    seq: 1,
+    userId: 'test2',
+    userNm: '이순신',
+    statAuth: 'Y',
+    manageAuth: 'Y',
+    registerAuth: 'N',
+    updateAuth: 'N',
+    userManageAuth: 'N',
+    approvalAuth: 'N',
+    itemManageAtth: 'N',
+    regDt: '2023-10-15 13:34:11.000'
+  },
+  {
+    seq: 2,
+    userId: 'test3',
+    userNm: '강감찬',
+    statAuth: 'Y',
+    manageAuth: 'Y',
+    registerAuth: 'Y',
+    updateAuth: 'Y',
+    userManageAuth: 'Y',
+    approvalAuth: 'Y',
+    itemManageAtth: 'Y',
+    regDt: '2023-11-15 13:34:11.000'
+  },
+])

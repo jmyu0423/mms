@@ -50,9 +50,9 @@ const Statistics3 = ({}) => {
   const [openUpdate, setOpenUpdate] = useState(false);
   const [selectedRow, setSelectedRow] = useState([]);
   const [columnDefs, setColumnDefs] = useState([
-    { field: 'number', headerName: 'No.', flex: 1.5, cellStyle: { textAlign: "center", 'white-space': 'normal' }, autoHeight: true },
+    { field: 'number', headerName: 'No.', flex: 1.5, cellStyle: { textAlign: "center", whiteSpace: 'normal' }, autoHeight: true },
     {
-      field: 'image', headerName: '대표 이미지', flex: 2, cellStyle: { textAlign: "center", 'white-space': 'normal' }, autoHeight: true,
+      field: 'image', headerName: '대표 이미지', flex: 2, cellStyle: { textAlign: "center", whiteSpace: 'normal' }, autoHeight: true,
       cellRenderer: function (row) {
         if (row.data.imageList && row.data.imageList.length > 0) {
           return (
@@ -67,12 +67,12 @@ const Statistics3 = ({}) => {
         } else return null;
       },
     },
-    { field: 'affiliation', headerName: '소장품 소속', flex: 2, cellStyle: { textAlign: "center", 'white-space': 'normal' }, autoHeight: true },
-    { field: 'number', headerName: '소장품 번호', flex: 2, cellStyle: { textAlign: "center", 'white-space': 'normal' }, autoHeight: true },
-    { field: 'detailNumber', headerName: '세부 번호', flex: 2, cellStyle: { textAlign: "center", 'white-space': 'normal' }, autoHeight: true },
-    { field: 'name', headerName: '명칭', flex: 2, cellStyle: { textAlign: "center", 'white-space': 'normal' }, autoHeight: true },
-    { field: 'mainCnt', headerName: '주수량', flex: 1.2, cellStyle: { textAlign: "center", 'white-space': 'normal' }, autoHeight: true },
-    { field: 'subCnt', headerName: '부수량', flex: 1.2, cellStyle: { textAlign: "center", 'white-space': 'normal' }, autoHeight: true },
+    { field: 'affiliation', headerName: '소장품 소속', flex: 2, cellStyle: { textAlign: "center", whiteSpace: 'normal' }, autoHeight: true },
+    { field: 'number', headerName: '소장품 번호', flex: 2, cellStyle: { textAlign: "center", whiteSpace: 'normal' }, autoHeight: true },
+    { field: 'detailNumber', headerName: '세부 번호', flex: 2, cellStyle: { textAlign: "center", whiteSpace: 'normal' }, autoHeight: true },
+    { field: 'name', headerName: '명칭', flex: 2, cellStyle: { textAlign: "center", whiteSpace: 'normal' }, autoHeight: true },
+    { field: 'mainCnt', headerName: '주수량', flex: 1.2, cellStyle: { textAlign: "center", whiteSpace: 'normal' }, autoHeight: true },
+    { field: 'subCnt', headerName: '부수량', flex: 1.2, cellStyle: { textAlign: "center", whiteSpace: 'normal' }, autoHeight: true },
     {
       field: '', headerName: 'action', flex: 2, cellStyle: { textAlign: "center" },
       cellRenderer: function (row) {

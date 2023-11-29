@@ -1,0 +1,88 @@
+.user-management-main{
+    user-select: none;
+}
+
+.user-management-state{
+    display: flex;
+    justify-content: space-between;
+    font-size: 20px;
+    font-weight: bold;
+    padding: 5px;
+    width: 98%;
+    margin: auto;
+}
+
+.user-management-container{
+    width: 98%;
+    height: 100%;
+    margin: auto;
+    font-size: 14px;
+}
+
+.user-management-item-area{
+    padding: 0px;
+    background-color: white;
+}
+
+.user-management-search-table{
+    width: 100%;
+    border: 1px solid lightgray;
+    border-collapse: collapse;
+  
+    >tbody{
+        >tr >td:first-child{
+            background-color: rgb(230, 230, 230);
+        }
+
+        >tr >td{
+            border: 1px solid lightgray;
+            border-collapse: collapse;
+        }
+    }
+  
+    >tbody{
+        >tr >td{
+          padding: 3px;
+        }
+    }
+}
+
+.user-management-checkbox{
+    margin-right: 5px;
+    display: inline-block;
+  
+    >input[type="checkbox"]{
+        width: 1.3em;
+        height: 1.3em;
+        background-color: white;
+        border-radius: 50%;
+        vertical-align: middle;
+        border: 1px solid #ddd;
+        appearance: none;
+        -webkit-appearance: none;
+        outline: none;
+        cursor: pointer;
+    }
+  
+    >input[type="number"]{
+      position: relative;
+      top: -1px;
+      width: 50px;
+      height: 20px;
+      text-align: center;
+      margin-left: 2px;
+    }
+
+    >input[type="checkbox"]:checked{
+        background-color: rgb(25, 118, 210);
+    }
+
+    >input:focus {
+      outline:none;
+    }
+}
+
+.user-management-float-right{
+    display: flex;
+    justify-content: flex-end;
+}
