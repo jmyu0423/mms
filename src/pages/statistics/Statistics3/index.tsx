@@ -52,7 +52,7 @@ const Statistics3 = ({}) => {
   const [columnDefs, setColumnDefs] = useState([
     { field: 'number', headerName: 'No.', flex: 1.5, cellStyle: { textAlign: "center", whiteSpace: 'normal' }, autoHeight: true },
     {
-      field: 'image', headerName: '대표 이미지', flex: 2, cellStyle: { textAlign: "center", whiteSpace: 'normal' }, autoHeight: true,
+      field: 'image', headerName: '대표 이미지', flex: 2.5, cellStyle: { textAlign: "center", whiteSpace: 'normal' }, autoHeight: true,
       cellRenderer: function (row) {
         if (row.data.imageList && row.data.imageList.length > 0) {
           return (
@@ -162,9 +162,9 @@ const Statistics3 = ({}) => {
       </PageTitleWrapper>
       <PageContainer>
         <Grid container direction="row" justifyContent="center" alignItems="stretch" spacing={3}>
-          <Grid item xs={12}>
+          <Grid item={true} xs={12}>
             <WngCard style={{ display: 'block', marginBottom: '10px' }}>
-              <Grid xs={12} style={{height: '220px'}}>
+              <Grid xs={12} style={{height: '220px'}} item={true}>
                 <BarChart options={options1} data={data1} />
               </Grid>
             </WngCard>
