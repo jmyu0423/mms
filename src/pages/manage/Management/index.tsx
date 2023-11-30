@@ -484,7 +484,6 @@ const Management = ({ }) => {
 
   return (
     <div className={styles.search_main}>
-      
       <div className={styles.search_container}>
         <div className={styles.search_title}>
           박물 조회

@@ -36,6 +36,7 @@ import ItemRegisterLayout from "src/pages/itemRegister/ItemRegisterLayout";
 import MultiRegister from "src/pages/itemRegister/MultiRegister";
 import SingleRegister from "src/pages/itemRegister/SingleRegister";
 import ItemRegister from "src/pages/itemRegister/ItemRegisterIndex";
+import TempStorage from "src/pages/itemRegister/TempStorage";
 
 const appRoutes: RouteType[] = [
   {
@@ -156,12 +157,20 @@ const appRoutes: RouteType[] = [
           displayText: "개별등록"
         },
       },
+      {
+        path: "/itemRegister/tempStorage",
+        element: <TempStorage />,
+        state: "itemRegister.tempStorage",
+        sidebarProps: {
+          displayText: "임시저장 리스트"
+        },
+      },
     ]
   },
   {
-    path: "/UserManagement",
+    path: "/userManagement",
     element: <UserManagement />,
-    state: "UserManagement",
+    state: "userManagement",
     sidebarProps: {
       displayText: "관리자계정 관리",
       icon: <ManageHistoryIcon />
