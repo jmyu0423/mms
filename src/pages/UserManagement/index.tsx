@@ -44,17 +44,14 @@ const User = () => {
 
     const [columnDefs, setColumnDefs] = useState([
         { 
-          field: 'seq', 
           headerName: 'No.', 
           flex: 1, 
           cellStyle: { textAlign: "center", whiteSpace: 'normal' }, 
           autoHeight: true,
           headerCheckboxSelection: false,
           checkboxSelection: false,
-          cellRenderer: function (row) {
-            return (
-              <div>{row.rowIndex + 1}</div>
-            )
+          valueGetter: (params) => {
+            return params.node.rowIndex + 1;
           }
         },
         { field: 'userNm', headerName: '관리자명', flex: 1.2, cellStyle: { textAlign: "center", whiteSpace: 'normal' }, autoHeight: true },
