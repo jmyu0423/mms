@@ -20,8 +20,8 @@ const SidebarToggleIcon = ({ sidebarToggleButton }) => {
         >
             <img
                 src={assets.images.slider}
-                width={24}
-                height={24}
+                width={30}
+                height={30}
                 alt="logo"
                 style={{ marginRight: "5px" }}
             />

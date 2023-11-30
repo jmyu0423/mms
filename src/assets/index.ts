@@ -4,7 +4,7 @@ const assets = {
     user: require("./images/user.png"),
     user2: require("./images/user2.png"),
     logout: require("./images/logout_icon.png"),
-    slider: require("./images/slider-tool.png"),
+    slider: require("./images/menu.png"),
   }
 };
 
