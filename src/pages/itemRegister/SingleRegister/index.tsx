@@ -88,11 +88,7 @@ const SingleRegister = ({ }) => {
     //미리보기 이미지 갯수 최신화 하기 위함
     setImageCount(imageListUrl.length)
   },[imageListUrl])
-
-  useEffect(()=>{
-    console.log(personImageListUrl)
-  },[personImageListUrl])
-
+  
   const closePreviewModal = () => {
     setOpenPreview(false);
   }

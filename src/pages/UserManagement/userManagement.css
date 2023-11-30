@@ -86,3 +86,8 @@
     display: flex;
     justify-content: flex-end;
 }
+
+.user-management-space-between{
+    display: flex;
+    justify-content: space-between;
+}

@@ -8,6 +8,8 @@ import {
 } from 'src/jsonData';
 import { styled } from '@mui/material/styles';
 import AgGrid from "src/components/AgGrid";
+import dayjs from 'dayjs';
+import { useNavigate } from "react-router-dom";
 
 const CustomTextField = styled(FormControlLabel)(({ theme }) => ({
     width: 'auto',
@@ -38,6 +40,7 @@ const User = () => {
     const [userData, setUserData] = useState([]); //사용자 리스트
     const [gridState, setgridState] = useState(null); // Optional - for accessing Grid's API
     const [pageCnt, setPageCnt] = useState(10); //그리드 갯수
+    const navigate = useNavigate(); //for redirect
 
     const [columnDefs, setColumnDefs] = useState([
         { 
@@ -62,7 +65,13 @@ const User = () => {
         { field: 'userManageAuth', headerName: '관리자 계정관리', flex: 1.5, cellStyle: { textAlign: "center", whiteSpace: 'normal' }, autoHeight: true },
         { field: 'approvalAuth', headerName: '수정 승인', flex: 1.2, cellStyle: { textAlign: "center", whiteSpace: 'normal' }, autoHeight: true },
         { field: 'itemManageAtth', headerName: '항목 관리', flex: 1.2, cellStyle: { textAlign: "center", whiteSpace: 'normal' }, autoHeight: true },
-        { field: 'regDt', headerName: '등록일', flex: 2, cellStyle: { textAlign: "center", whiteSpace: 'normal' }, autoHeight: true },
+        { field: 'regDt', headerName: '등록일', flex: 2, cellStyle: { textAlign: "center", whiteSpace: 'normal' }, autoHeight: true,
+        cellRenderer: function (row) {
+            return (
+              <div>{dayjs(row.value).format("YYYY-MM-DD")}</div>
+            )
+          }
+        },
         {
           field: '', headerName: 'action', flex: 1.5, cellStyle: { textAlign: "center" },
           cellRenderer: function (row) {
@@ -103,6 +112,11 @@ const User = () => {
     }
 
     const openUpdateModal = (row) => {
+    }
+
+    const goUserRegister = () =>{
+        let path = '/userRegister';
+        navigate(path);
     }
 
     return (
@@ -146,7 +160,13 @@ const User = () => {
                 </div>
                 <div className='user-management-float-right' style={{marginTop: '20px', marginBottom: '5px'}}>
                     <NormalButton >엑셀 다운로드</NormalButton>                    
-                    <BaseButton sx={{width: '100px'}} style={{padding: 0, marginRight: 0}}>관리자등록</BaseButton>                    
+                    <BaseButton
+                        sx={{width: '100px'}} 
+                        style={{padding: 0, marginRight: 0}}
+                        onClick={()=>{goUserRegister()}}
+                    >
+                        관리자등록
+                    </BaseButton>                    
                 </div>
                 <div className='user-management-item-area'>
                     <Box noValidate component="form" autoComplete="off" sx={{ display: 'flex' }}>

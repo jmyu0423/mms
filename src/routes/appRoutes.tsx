@@ -30,6 +30,7 @@ import MainLayout from "src/components/layout/MainLayout";
 import BaseLayout from "src/components/layout/BaseLayout";
 
 import UserManagement from '../pages/UserManagement';
+import UserRegister from "src/pages/userRegister/UserRegister";
 
 import ItemRegisterLayout from "src/pages/itemRegister/ItemRegisterLayout";
 import MultiRegister from "src/pages/itemRegister/MultiRegister";
@@ -46,6 +47,11 @@ const appRoutes: RouteType[] = [
     path: "/login",
     element: <Login />,
     state: "login"
+  },
+  {
+    path: "/userRegister",
+    element: <UserRegister />,
+    state: "userRegister"
   },
   {
     path: "/statistics",
