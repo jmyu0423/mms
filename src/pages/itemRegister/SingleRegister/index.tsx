@@ -61,12 +61,6 @@ const SingleRegister = ({ }) => {
   const [countrySimpleSearchModal, setCountrySimpleSearchModal] = useState(false); //나라명 간단조회 모달 오픈
   const [personnelSearchModal, setPersonnelSearchModal] = useState(false); //인사검색 모달
 
-  const [today, setToday] = useState(dayjs(new Date()).format('YYYY-MM-DD'));
-  const [organization1, setOrganization1] = useState(""); //기관1
-  const [organization2, setOrganization2] = useState(""); //기관2
-  const [mainNumber, setMainNumber] = useState(""); //주수량
-  const [subNumber, setSubNumber] = useState(""); //부수량
-  const [useYn, setUseYn] = useState("N");
   const [alertOpen, setAlertOpen] = useState(false);
   const [content, setContent] = useState("");
   const addImageInput = useRef(null); //이미지 정보 넘길 ref
@@ -83,6 +77,24 @@ const SingleRegister = ({ }) => {
   const [sosokSubList, setSosokSubList] = useState([]);
   const [countrySubList, setcountrySubList] = useState([]);
   const [storage, setStorage] = useState("");
+
+  //-------------------------- 1번 ------------------------------------//
+  const [today, setToday] = useState(dayjs(new Date()).format('YYYY-MM-DD')); //등록일
+  const [organization1, setOrganization1] = useState(""); //보관소속1
+  const [organization2, setOrganization2] = useState(""); //보관소속2
+  const [name, setName] = useState(""); //명칭
+  const [subName, setSubName] = useState(""); //이명
+  const [engName, setEngName] = useState(""); //영어명칭
+  const [oriName, setOriName] = useState(""); //원어명칭
+  const [mainNumber, setMainNumber] = useState(0); //주수량
+  const [subNumber, setSubNumber] = useState(0); //부수량
+  const [useYn, setUseYn] = useState("N"); //딸림자료 유/무
+  const [useNumber, setUseNumber] = useState(0); //딸림수량
+  const [addMemo, setAddMemo] = useState(""); //추가상세기술
+  //-------------------------- 1번 ------------------------------------//
+
+  //-------------------------- 사진정보 ------------------------------------//
+  //-------------------------- 사진정보 ------------------------------------//
 
   const [columnDefs, setColumnDefs] = useState([
     { field: 'updDt', headerName: '수정일', flex: 2.5, cellStyle: { textAlign: "center", whiteSpace: 'normal' }, autoHeight: true },
@@ -199,6 +211,8 @@ const SingleRegister = ({ }) => {
     let tempList = [...imageList];
     let tempUrlList = [...imageListUrl];
 
+    console.log(files)
+
     let imageListCnt = tempList.length; //기존 이미지 리스트 갯수
     let addImageListCnt = files.length; //추가된 이미지 리스트 갯수
 
@@ -216,7 +230,7 @@ const SingleRegister = ({ }) => {
     setImageList(tempList);
     setImageListUrl(tempUrlList);
 
-    e.target.value = ''; //값 초기화
+    // e.target.value = ''; //값 초기화
   }
 
   //미리보기 이미지 클릭
@@ -360,11 +374,14 @@ const SingleRegister = ({ }) => {
 
     //raw data
     const object = {
-      "data": "test1234",
+      today: today, //등록일
+      organization1: organization1, //보관소속1
+      organization2: organization2, //보관소속2
+
     }
 
     const params = new FormData();
-    params.append('data', 'test12345');
+    params.append('data', JSON.stringify(object));
 
     const config = {
       responseType: "text",
@@ -374,7 +391,7 @@ const SingleRegister = ({ }) => {
     };
 
     await axios
-      .post("http://smus.scjmatthias.net:5000/artifact", JSON.stringify({ 'data': object }))
+      .post("http://smus.scjmatthias.net:5000/artifact", params)
       .then(function (response) {
         if (response.data.result === "ok") {
 
@@ -471,7 +488,18 @@ const SingleRegister = ({ }) => {
                     <td style={{ width: '10%', textAlign: 'center', backgroundColor: '#deebff' }}>주 수량(건)</td>
                     <td style={{ width: '30%' }}>
                       <ComboControlLabel
-                        control={<TextField fullWidth size="small" value={mainNumber} inputProps={{ maxLength: 20, min: 0 }} onChange={(e) => setMainNumber(e.target.value)} type="number" />}
+                        control={<TextField fullWidth size="small" value={mainNumber} inputProps={{ maxLength: 20, min: 0 }}
+                          onChange={(e) => {
+                            let value = parseInt(e.target.value)
+                            setMainNumber(value)
+                          }}
+                          onBlur={(e) => {
+                            if (e.target.value === "") {
+                              setMainNumber(0)
+                            }
+                          }}
+                          type="number"
+                        />}
                         label=""
                         labelPlacement="start"
                       />
@@ -479,7 +507,18 @@ const SingleRegister = ({ }) => {
                     <td style={{ width: '10%', textAlign: 'center', backgroundColor: '#deebff' }}>부 수량(점)</td>
                     <td style={{ width: '30%' }}>
                       <ComboControlLabel
-                        control={<TextField fullWidth size="small" value={subNumber} inputProps={{ maxLength: 20, min: 0 }} onChange={(e) => setSubNumber(e.target.value)} type="number" />}
+                        control={<TextField fullWidth size="small" value={subNumber} inputProps={{ maxLength: 20, min: 0 }}
+                          onChange={(e) => {
+                            let value = parseInt(e.target.value)
+                            setSubNumber(value)
+                          }}
+                          onBlur={(e) => {
+                            if (e.target.value === "") {
+                              setSubNumber(0)
+                            }
+                          }}
+                          type="number"
+                        />}
                         label=""
                         labelPlacement="start"
                       />
@@ -518,6 +557,22 @@ const SingleRegister = ({ }) => {
                     </td>
                     <td style={{ width: '10%', textAlign: 'center', backgroundColor: '#deebff' }}>딸림수량</td>
                     <td style={{ width: '30%' }}>
+                      <ComboControlLabel
+                        control={<TextField fullWidth size="small" value={useNumber} inputProps={{ maxLength: 20, min: 0 }}
+                          onChange={(e) => {
+                            let value = parseInt(e.target.value)
+                            setUseNumber(value)
+                          }}
+                          onBlur={(e) => {
+                            if (e.target.value === "") {
+                              setUseNumber(0)
+                            }
+                          }}
+                          type="number"
+                        />}
+                        label=""
+                        labelPlacement="start"
+                      />
                     </td>
                   </tr>
                   <tr>
@@ -539,7 +594,7 @@ const SingleRegister = ({ }) => {
                     <td style={{ width: '10%', textAlign: 'center' }}>추가 상세 기술</td>
                     <td colSpan={4} style={{ width: '90%' }}>
                       <Box sx={{ width: '100%' }}>
-                        <TextField multiline rows={3} fullWidth inputProps={{ style: { padding: 0, fontSize: 14, backgroundColor: 'white' } }} placeholder='text' />
+                        <TextField onChange={(e) => setAddMemo(e.target.value)} value={addMemo} multiline rows={3} fullWidth inputProps={{ style: { padding: 0, fontSize: 14, backgroundColor: 'white' } }} placeholder='text' />
                       </Box>
                     </td>
                   </tr>

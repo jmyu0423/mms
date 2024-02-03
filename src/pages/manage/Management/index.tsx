@@ -8,25 +8,26 @@ import AgGrid from "src/components/AgGrid";
 import ManagementRegistModal from "src/pages/manage/modal/ManagementRegistModal"
 import ManagementUpdateModal from "src/pages/manage/modal/ManagementUpdateModal"
 import ImagePreviewModal from "src/pages/manage/modal/ImagePreviewModal";
-import {BaseButton, DangerButton, NormalButton} from 'src/components/CustomButton';
+import { BaseButton, DangerButton, NormalButton } from 'src/components/CustomButton';
 import CustomDatePicker from 'src/components/CustomDatePicker';
 import dayjs from 'dayjs';
 import { ItemGroup, PopupFormControlLabel, ComboControlLabel } from 'src/components/modal/ItemGroup';
 import CustomCombo from 'src/components/combobox/CustomCombo';
-import { 
-  itemList, 
-  materialData, 
-  countryData, 
-  organization1List, 
+import {
+  itemList,
+  materialData,
+  countryData,
+  organization1List,
   organization2List,
   materialList,
   countryList,
   broughtReasonData,
   relatedTopicData
 } from 'src/jsonData';
-import CustomPagination from 'src/components/CustomPagination'; 
+import CustomPagination from 'src/components/CustomPagination';
 import AlertModal from 'src/components/modal/AlertModal';
 import BatchUpdateModal from "src/pages/manage/modal/BatchUpdateModal";
+import axios from 'axios';
 
 const PageContainer = styled(Container)(
   ({ theme }) => `
@@ -71,11 +72,11 @@ const Management = ({ }) => {
   const [openPreview, setOpenPreview] = useState(false);
 
   const [columnDefs, setColumnDefs] = useState([
-    { 
-      field: 'number', 
-      headerName: 'No.', 
-      flex: 1.5, 
-      cellStyle: { textAlign: "center", whiteSpace: 'normal' }, 
+    {
+      field: 'number',
+      headerName: 'No.',
+      flex: 1.5,
+      cellStyle: { textAlign: "center", whiteSpace: 'normal' },
       autoHeight: true,
       headerCheckboxSelection: true,
       checkboxSelection: true,
@@ -85,7 +86,7 @@ const Management = ({ }) => {
       cellRenderer: function (row) {
         if (row.data.imageList && row.data.imageList.length > 0) {
           return (
-            <div style={{width: '50px', height: '50px', display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}} onClick={(e) => { openPreviewModal(row.data) }}>
+            <div style={{ width: '50px', height: '50px', display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }} onClick={(e) => { openPreviewModal(row.data) }}>
               <img
                 style={imgSize}
                 loading="lazy"
@@ -134,7 +135,7 @@ const Management = ({ }) => {
   const [page, setPage] = useState(1); //이미지리스트 현재 페이지
   const iamgeDetailBtn = useRef(null);
   const [alertOpen, setAlertOpen] = useState(false);
-	const [content, setContent] = useState("");
+  const [content, setContent] = useState("");
 
   //재질 체크박스
   const [materialCheckItems, setMaterialCheckItems] = useState([]);
@@ -153,49 +154,52 @@ const Management = ({ }) => {
   //선택 일괄수정
   const [batchUpdateModal, setBatchUpdateModal] = useState(false);
 
+  const [sosokList, setSosokList] = useState([]);
+  const [sosokSubList, setSosokSubList] = useState([]);
+
   //체크박스 default 전체 선택
-  useEffect(()=>{
+  useEffect(() => {
     let tempMaterialList = [];
-    for(let i=0; i<materialData.length; i++){
+    for (let i = 0; i < materialData.length; i++) {
       tempMaterialList.push(materialData[i].cd);
     }
     setMaterialCheckItems(tempMaterialList);
 
     let countryList = [];
-    for(let i=0; i<countryData.length; i++){
+    for (let i = 0; i < countryData.length; i++) {
       countryList.push(countryData[i].cd);
     }
     setCountryCheckItems(countryList);
 
     let broughtReasonList = [];
-    for(let i=0; i<broughtReasonData.length; i++){
+    for (let i = 0; i < broughtReasonData.length; i++) {
       broughtReasonList.push(broughtReasonData[i].cd);
     }
     setBroughtReasonCheckItems(broughtReasonList);
-  },[])
+  }, [])
 
   //페이지네이션 작동
-  useEffect(()=>{
+  useEffect(() => {
     let tempList = [...rowData];
     let currList = [];
-    let offset = (page-1)*pageCnt; 
+    let offset = (page - 1) * pageCnt;
     currList = tempList.slice(offset, Number(offset) + Number(pageCnt));
     setImageList(currList);
 
     resetImageCheckbox();
-  },[pageCnt, page])
+  }, [pageCnt, page])
 
   //페이지 갯수 바꾸면 1페이지로 초기화
-  useEffect(()=>{
+  useEffect(() => {
     setPage(1);
-  },[pageCnt]);
+  }, [pageCnt]);
 
   //외부 클릭 감지
   useEffect(() => {
     function handleClickOutside(e) {
-      if(e.target.className !== styles.more_icon && iamgeDetailBtn.current){
-        let tempData= [...imageList];
-        for(let i=0; i<tempData.length; i++){
+      if (e.target.className !== styles.more_icon && iamgeDetailBtn.current) {
+        let tempData = [...imageList];
+        for (let i = 0; i < tempData.length; i++) {
           tempData[i].openMoreFlag = false;
         }
         setImageList(tempData);
@@ -208,8 +212,21 @@ const Management = ({ }) => {
     };
   }, [iamgeDetailBtn, imageList]);
 
+  useEffect(() => {
+    selectOrganization();
+  }, [])
+
+  useEffect(() => {
+    for (let i = 0; i < sosokList.length; i++) {
+      if (sosokList[i].code === organization1) {
+        setSosokSubList(sosokList[i].sub);
+        break;
+      }
+    }
+  }, [organization1])
+
   //체크박스 초기화
-  const resetImageCheckbox = () =>{
+  const resetImageCheckbox = () => {
     setImageListChckItems([]);
   }
 
@@ -280,9 +297,9 @@ const Management = ({ }) => {
 
   const openPreviewModal = (row) => {
     setSingleCurrRowData(row);
-    if(row.imageList.length > 0){
+    if (row.imageList.length > 0) {
       setOpenPreview(true);
-    }else{
+    } else {
       setContent("등록된 이미지가 없습니다.");
       setAlertOpen(true);
     }
@@ -293,193 +310,216 @@ const Management = ({ }) => {
   }
 
   //토글 검색 테이블
-  const toggleSearchTable = () =>{
+  const toggleSearchTable = () => {
     setSearchTable(!searchTable)
   }
 
-  const handleListType = (value) =>{
+  const handleListType = (value) => {
     //체크박스 초기화
     resetImageCheckbox();
-    
-    if(value === "itemList"){
+
+    if (value === "itemList") {
       setSearchType("itemList")
-    }else if(value === "imgList"){
+    } else if (value === "imgList") {
       setSearchType("imgList");
     }
   }
 
   const setFirstValue = (cd, targetData) => {
-    if(targetData === "organization1"){
-      setOrganization1(organization1List[cd].title)
-    }else if(targetData === "organization2"){
-      setOrganization2(organization2List[cd].title)
-    }else if(targetData === "material1"){
+    if (targetData === "organization1") {
+      console.log(cd)
+      console.log(targetData)
+      for (let i = 0; i < sosokList.length; i++) {
+        if (sosokList[i].code === cd) {
+          setOrganization1(sosokList[i].code);
+          break;
+        }
+      }
+    } else if (targetData === "organization2") {
+      for (let i = 0; i < sosokSubList.length; i++) {
+        if (sosokSubList[i].code === cd) {
+          setOrganization2(sosokSubList[i].code);
+          break;
+        }
+      }
+    } else if (targetData === "material1") {
       setMaterial1(materialList[cd].title)
-    }else if(targetData === "material2"){
+    } else if (targetData === "material2") {
       setMaterial2(materialList[cd].title)
-    }else if(targetData === "itemCountry"){
+    } else if (targetData === "itemCountry") {
       setItemCountry(countryList[cd].title)
-    }else if(targetData === "donorCountry"){
+    } else if (targetData === "donorCountry") {
       setDonorCountry(countryList[cd].title)
     }
   }
 
-  const onChangeMaterial = (e) =>{
+  const onChangeMaterial = (e) => {
     let isChecked = e.target.checked;
 
-    if(e.target.value != ""){
-      if(isChecked){
+    if (e.target.value != "") {
+      if (isChecked) {
         setMaterialCheckItems(prev => [...prev, e.target.value]);
-      }else{
+      } else {
         setMaterialCheckItems(materialCheckItems.filter((el) => el !== e.target.value));
       }
-    //전체선택일때
-    }else{
-      if(isChecked){
+      //전체선택일때
+    } else {
+      if (isChecked) {
         let idArray = [];
-        materialData.map((data)=>{
+        materialData.map((data) => {
           idArray.push(data.cd);
         })
         setMaterialCheckItems(idArray);
-      }else{
+      } else {
         setMaterialCheckItems([]);
       }
     }
   }
 
-  const onChangeCountry = (e) =>{
+  const onChangeCountry = (e) => {
     let isChecked = e.target.checked;
 
-    if(e.target.value != ""){
-      if(isChecked){
+    if (e.target.value != "") {
+      if (isChecked) {
         setCountryCheckItems(prev => [...prev, e.target.value]);
-      }else{
+      } else {
         setCountryCheckItems(countryCheckItems.filter((el) => el !== e.target.value));
       }
-    //전체선택일때
-    }else{
-      if(isChecked){
+      //전체선택일때
+    } else {
+      if (isChecked) {
         let idArray = [];
-        countryData.map((data)=>{
+        countryData.map((data) => {
           idArray.push(data.cd);
         })
         setCountryCheckItems(idArray);
-      }else{
+      } else {
         setCountryCheckItems([]);
       }
     }
   }
 
-  const onChangeBroughtReson = (e) =>{
+  const onChangeBroughtReson = (e) => {
     let isChecked = e.target.checked;
 
-    if(e.target.value != ""){
-      if(isChecked){
+    if (e.target.value != "") {
+      if (isChecked) {
         setBroughtReasonCheckItems(prev => [...prev, e.target.value]);
-      }else{
+      } else {
         setBroughtReasonCheckItems(broughtReasonCheckItems.filter((el) => el !== e.target.value));
       }
-    //전체선택일때
-    }else{
-      if(isChecked){
+      //전체선택일때
+    } else {
+      if (isChecked) {
         let idArray = [];
-        broughtReasonData.map((data)=>{
+        broughtReasonData.map((data) => {
           idArray.push(data.cd);
         })
         setBroughtReasonCheckItems(idArray);
-      }else{
+      } else {
         setBroughtReasonCheckItems([]);
       }
     }
   }
 
-  const onChangeRelatedTopic = (e) =>{
+  const onChangeRelatedTopic = (e) => {
     let isChecked = e.target.checked;
 
-    if(isChecked){
+    if (isChecked) {
       setRelatedTopicCheckItems(prev => [...prev, e.target.value]);
-    }else{
+    } else {
       setRelatedTopicCheckItems(relatedTopicCheckItems.filter((el) => el !== e.target.value));
     }
   }
 
-  const onChangeDonorCountry = (e) =>{
+  const onChangeDonorCountry = (e) => {
     let isChecked = e.target.checked;
 
-    if(e.target.value != ""){
-      if(isChecked){
+    if (e.target.value != "") {
+      if (isChecked) {
         setDonorCountryCheckItems(prev => [...prev, e.target.value]);
-      }else{
+      } else {
         setDonorCountryCheckItems(donorCountryCheckItems.filter((el) => el !== e.target.value));
       }
-    //전체선택일때
-    }else{
-      if(isChecked){
+      //전체선택일때
+    } else {
+      if (isChecked) {
         let idArray = [];
-        countryData.map((data)=>{
+        countryData.map((data) => {
           idArray.push(data.cd);
         })
         setDonorCountryCheckItems(idArray);
-      }else{
+      } else {
         setDonorCountryCheckItems([]);
       }
     }
   }
 
-  const onChangePageSize = (e) =>{
+  const onChangePageSize = (e) => {
     setPageCnt(e.target.value)
   };
 
-  const onChangeSelectImageList = (e) =>{
+  const onChangeSelectImageList = (e) => {
     let isChecked = e.target.checked;
 
-    if(e.target.value != ""){
-      if(isChecked){
+    if (e.target.value != "") {
+      if (isChecked) {
         setImageListChckItems(prev => [...prev, e.target.value]);
-      }else{
+      } else {
         setImageListChckItems(imageListChckItems.filter((el) => el !== e.target.value));
       }
-    //전체선택일때
-    }else{
-      if(isChecked){
+      //전체선택일때
+    } else {
+      if (isChecked) {
         let idArray = [];
-        imageList.map((data)=>{
+        imageList.map((data) => {
           idArray.push(data.seqNo.toString());
         })
 
         setImageListChckItems(idArray);
-      }else{
+      } else {
         setImageListChckItems([]);
       }
     }
   }
 
-  const openMoreBtn = (e, index) =>{
-    let tempData= [...imageList];
-    for(let i=0; i<tempData.length; i++){
-      if(i === index){
+  const openMoreBtn = (e, index) => {
+    let tempData = [...imageList];
+    for (let i = 0; i < tempData.length; i++) {
+      if (i === index) {
         tempData[i].openMoreFlag = !tempData[i].openMoreFlag;
-      }else{
+      } else {
         tempData[i].openMoreFlag = false;
       }
     }
     setImageList(tempData);
   }
 
-  const openDetailImageModal = (e, index) =>{
+  const openDetailImageModal = (e, index) => {
     openPreviewModal(imageList[index])
   }
 
-  const alertClose = () =>{
-		setAlertOpen(false);
-	}
+  const alertClose = () => {
+    setAlertOpen(false);
+  }
 
-  const batchUpdate = (e) =>{
+  const batchUpdate = (e) => {
     setBatchUpdateModal(true);
   }
 
-  const closeBatchUpdateModal = () =>{
+  const closeBatchUpdateModal = () => {
     setBatchUpdateModal(false);
+  }
+
+  //소속 리스트 호출
+  const selectOrganization = async () => {
+
+    // "http://smus.scjmatthias.net:5000/sosok"
+    axios.get("http://smus.scjmatthias.net:5000/sosok").then((response) => {
+      setSosokList(response.data);
+    }).catch((e) => {
+      console.log(e);
+    })
   }
 
   return (
@@ -492,12 +532,12 @@ const Management = ({ }) => {
           <div className={styles.search_controller}>
             <div className={styles.search_header}>
               <div className={styles.search_header_title}>검색 조건</div>
-              <div className={styles.search_header_toggle} onClick={(e)=>toggleSearchTable()}>{searchTable ? "검색 조건 닫기" : "검색 조건 열기"}
-                {searchTable ? 
-                <div className={styles.search_header_topArrow_icon}></div>
-                :
-                <div className={styles.search_header_downArrow_icon}></div>
-                }  
+              <div className={styles.search_header_toggle} onClick={(e) => toggleSearchTable()}>{searchTable ? "검색 조건 닫기" : "검색 조건 열기"}
+                {searchTable ?
+                  <div className={styles.search_header_topArrow_icon}></div>
+                  :
+                  <div className={styles.search_header_downArrow_icon}></div>
+                }
               </div>
             </div>
             {searchTable ?
@@ -505,116 +545,68 @@ const Management = ({ }) => {
                 <table className={styles.search_table}>
                   <tbody>
                     <tr>
-                      <td style={{width: '10%', textAlign: 'center'}}>등록일</td>
-                      <td colSpan={4} style={{width: '90%'}}>
-                      <CustomDatePicker startDt={startDt} endDt={endDt} setStartDt={setStartDt} setEndDt={setEndDt}/>
+                      <td style={{ width: '10%', textAlign: 'center' }}>등록일</td>
+                      <td colSpan={4} style={{ width: '90%' }}>
+                        <CustomDatePicker startDt={startDt} endDt={endDt} setStartDt={setStartDt} setEndDt={setEndDt} />
                       </td>
                     </tr>
                     <tr>
-                      <td style={{width: '10%', textAlign: 'center'}}>보관 소속</td>
-                      <td colSpan={4} style={{width: '90%'}}>
+                      <td style={{ width: '10%', textAlign: 'center' }}>보관 소속</td>
+                      <td colSpan={4} style={{ width: '90%' }}>
                         <ComboControlLabel
-                          control={<CustomCombo size="small" type="none" setData={setFirstValue} dataList={organization1List} value={organization1} targetData={"organization1"} codeChange={(e) => setOrganization1(e.target.value)} />}
+                          control={<CustomCombo size="small" type="none" setData={setFirstValue} dataList={sosokList} value={organization1} targetData={"organization1"} codeChange={(e) => setOrganization1(e.target.value)} />}
                           label=""
                           labelPlacement="start"
                         />
                         <ComboControlLabel
-                          control={<CustomCombo size="small" type="none" setData={setFirstValue} dataList={organization2List} value={organization2} targetData={"organization2"} codeChange={(e) => setOrganization2(e.target.value)} />}
+                          control={<CustomCombo size="small" type="none" setData={setFirstValue} dataList={sosokSubList} value={organization2} targetData={"organization2"} codeChange={(e) => setOrganization2(e.target.value)} />}
                           label=""
                           labelPlacement="start"
                         />
                       </td>
                     </tr>
                     <tr>
-                      <td style={{width: '10%', textAlign: 'center'}}>소장품 번호</td>
-                      <td style={{width: '10%', textAlign: 'center', backgroundColor: '#deebff'}}>시작 번호</td>
-                      <td style={{width: '35%'}}>
+                      <td style={{ width: '10%', textAlign: 'center' }}>소장품 번호</td>
+                      <td style={{ width: '10%', textAlign: 'center', backgroundColor: '#deebff' }}>시작 번호</td>
+                      <td style={{ width: '35%' }}>
                         <ComboControlLabel
                           control={<CustomCombo size="small" type="none" setData={setFirstValue} dataList={materialList} value={material1} targetData={"material1"} codeChange={(e) => setMaterial1(e.target.value)} />}
                           label=""
                           labelPlacement="start"
                         />
                         <ComboControlLabel
-                          control={<TextField fullWidth size="small" value={startNumber} inputProps={{ maxLength: 20, min: 0 }} onChange={(e) => setStartNumber(e.target.value)} type="number"/>}
+                          control={<TextField fullWidth size="small" value={startNumber} inputProps={{ maxLength: 20, min: 0 }} onChange={(e) => setStartNumber(e.target.value)} type="number" />}
                           label=""
                           labelPlacement="start"
                         />
                       </td>
-                      <td style={{width: '10%', textAlign: 'center', backgroundColor: '#deebff'}}>끝 번호</td>
-                      <td style={{width: '35%'}}>
+                      <td style={{ width: '10%', textAlign: 'center', backgroundColor: '#deebff' }}>끝 번호</td>
+                      <td style={{ width: '35%' }}>
                         <ComboControlLabel
                           control={<CustomCombo size="small" type="none" setData={setFirstValue} dataList={materialList} value={material2} targetData={"material2"} codeChange={(e) => setMaterial2(e.target.value)} />}
                           label=""
                           labelPlacement="start"
                         />
                         <ComboControlLabel
-                          control={<TextField fullWidth size="small" value={endNumber} inputProps={{ maxLength: 20, min: 0 }} onChange={(e) => setEndNumber(e.target.value)} type="number"/>}
+                          control={<TextField fullWidth size="small" value={endNumber} inputProps={{ maxLength: 20, min: 0 }} onChange={(e) => setEndNumber(e.target.value)} type="number" />}
                           label=""
                           labelPlacement="start"
                         />
                       </td>
                     </tr>
                     <tr>
-                      <td style={{width: '10%', textAlign: 'center'}}>재질</td>
-                      <td colSpan={4} style={{width: '90%'}}>
+                      <td style={{ width: '10%', textAlign: 'center' }}>재질</td>
+                      <td colSpan={4} style={{ width: '90%' }}>
 
-                      <label className={styles.normal_checkbox_lable}>
-                        <input type="checkbox" onChange={(e)=>onChangeMaterial(e)} value={""} checked={materialCheckItems.length === materialData.length ? true : false}/>
-                        전체
-                      </label>
-                      {
-                        materialData.length > 0 && materialData.map((data, index)=>{
-                          return(
-                            <label className={styles.normal_checkbox_lable} key={index}>
-                              <input type="checkbox" onChange={(e)=>onChangeMaterial(e)} value={data.cd} checked={materialCheckItems.includes(data.cd) ? true : false}/>
-                              {data.name}
-                            </label>
-                          )
-                        })
-                      }
-                      </td>
-                    </tr>
-                    <tr>
-                      <td style={{width: '10%', textAlign: 'center'}}>국적</td>
-                      <td style={{width: '10%', textAlign: 'center', backgroundColor: '#deebff'}}>국적 대륙</td>
-                      <td style={{width: '30%'}}>
-                      
-                      <label className={styles.normal_checkbox_lable}>
-                        <input type="checkbox" onChange={(e)=>onChangeCountry(e)} value={""} checked={countryCheckItems.length === countryData.length ? true : false}/>
-                        전체
-                      </label>
-                      {
-                        countryData.length > 0 && countryData.map((data, index)=>{
-                          return(
-                            <label className={styles.normal_checkbox_lable} key={index}>
-                              <input type="checkbox" onChange={(e)=>onChangeCountry(e)} value={data.cd} checked={countryCheckItems.includes(data.cd) ? true : false}/>
-                              {data.name}
-                            </label>
-                          )
-                        })
-                      }  
-                      </td>
-                      <td style={{width: '10%', textAlign: 'center', backgroundColor: '#deebff'}}>국적 나라</td>
-                      <td style={{width: '30%'}}>
-                        <ComboControlLabel
-                          control={<CustomCombo size="small" type="none" setData={setFirstValue} dataList={countryList} value={itemCountry} targetData={"itemCountry"} codeChange={(e) => setItemCountry(e.target.value)} />}
-                          label=""
-                          labelPlacement="start"
-                        />
-                      </td>
-                    </tr>
-                    <tr>
-                      <td style={{width: '10%', textAlign: 'center'}}>입수 연유</td>
-                      <td colSpan={4} style={{width: '90%'}}>
                         <label className={styles.normal_checkbox_lable}>
-                          <input type="checkbox" onChange={(e)=>onChangeBroughtReson(e)} value={""} checked={broughtReasonCheckItems.length === broughtReasonData.length ? true : false}/>
+                          <input type="checkbox" onChange={(e) => onChangeMaterial(e)} value={""} checked={materialCheckItems.length === materialData.length ? true : false} />
                           전체
                         </label>
                         {
-                          broughtReasonData.length > 0 && broughtReasonData.map((data, index)=>{
-                            return(
+                          materialData.length > 0 && materialData.map((data, index) => {
+                            return (
                               <label className={styles.normal_checkbox_lable} key={index}>
-                                <input type="checkbox" onChange={(e)=>onChangeBroughtReson(e)} value={data.cd} checked={broughtReasonCheckItems.includes(data.cd) ? true : false}/>
+                                <input type="checkbox" onChange={(e) => onChangeMaterial(e)} value={data.cd} checked={materialCheckItems.includes(data.cd) ? true : false} />
                                 {data.name}
                               </label>
                             )
@@ -623,52 +615,100 @@ const Management = ({ }) => {
                       </td>
                     </tr>
                     <tr>
-                      <td style={{width: '10%', textAlign: 'center'}}>입수 시기</td>
-                      <td colSpan={4} style={{width: '90%'}}>
-                        <CustomDatePicker startDt={broughtStartDt} endDt={broughtEndDt} setStartDt={setBroughtStartDt} setEndDt={setBroughtEndDt}/>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td style={{width: '10%', textAlign: 'center'}}>연관 주제</td>
-                      <td colSpan={4} style={{width: '90%'}}>
-                      {
-                        relatedTopicData.length > 0 && relatedTopicData.map((data, index)=>{
-                          return(
-                            <label className={styles.normal_checkbox_lable} key={index}>
-                              <input type="checkbox" onChange={(e)=>onChangeRelatedTopic(e)} value={data.cd} checked={relatedTopicCheckItems.includes(data.cd) ? true : false}/>
-                              {data.name}
-                              <label className={styles.normal_checkbox_lable}>
-                                <input type="number" min={0} />
-                                {data.cd === "3" ? "차" : "주년"}
-                              </label>
-                            </label>
-                            
-                          )
-                        })
-                      }
-                      </td>
-                    </tr>
-                    <tr>
-                      <td style={{width: '10%', textAlign: 'center'}}>기증자</td>
-                      <td style={{width: '10%', textAlign: 'center', backgroundColor: '#deebff'}}>국적 대륙</td>
-                      <td style={{width: '30%'}}>
+                      <td style={{ width: '10%', textAlign: 'center' }}>국적</td>
+                      <td style={{ width: '10%', textAlign: 'center', backgroundColor: '#deebff' }}>국적 대륙</td>
+                      <td style={{ width: '30%' }}>
+
                         <label className={styles.normal_checkbox_lable}>
-                          <input type="checkbox" onChange={(e)=>onChangeDonorCountry(e)} value={""} checked={donorCountryCheckItems.length === countryData.length ? true : false}/>
+                          <input type="checkbox" onChange={(e) => onChangeCountry(e)} value={""} checked={countryCheckItems.length === countryData.length ? true : false} />
                           전체
                         </label>
                         {
-                          countryData.length > 0 && countryData.map((data, index)=>{
-                            return(
+                          countryData.length > 0 && countryData.map((data, index) => {
+                            return (
                               <label className={styles.normal_checkbox_lable} key={index}>
-                                <input type="checkbox" onChange={(e)=>onChangeDonorCountry(e)} value={data.cd} checked={donorCountryCheckItems.includes(data.cd) ? true : false}/>
+                                <input type="checkbox" onChange={(e) => onChangeCountry(e)} value={data.cd} checked={countryCheckItems.includes(data.cd) ? true : false} />
                                 {data.name}
                               </label>
                             )
                           })
-                        }  
+                        }
                       </td>
-                      <td style={{width: '10%', textAlign: 'center', backgroundColor: '#deebff'}}>국적 나라</td>
-                      <td style={{width: '30%'}}>
+                      <td style={{ width: '10%', textAlign: 'center', backgroundColor: '#deebff' }}>국적 나라</td>
+                      <td style={{ width: '30%' }}>
+                        <ComboControlLabel
+                          control={<CustomCombo size="small" type="none" setData={setFirstValue} dataList={countryList} value={itemCountry} targetData={"itemCountry"} codeChange={(e) => setItemCountry(e.target.value)} />}
+                          label=""
+                          labelPlacement="start"
+                        />
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style={{ width: '10%', textAlign: 'center' }}>입수 연유</td>
+                      <td colSpan={4} style={{ width: '90%' }}>
+                        <label className={styles.normal_checkbox_lable}>
+                          <input type="checkbox" onChange={(e) => onChangeBroughtReson(e)} value={""} checked={broughtReasonCheckItems.length === broughtReasonData.length ? true : false} />
+                          전체
+                        </label>
+                        {
+                          broughtReasonData.length > 0 && broughtReasonData.map((data, index) => {
+                            return (
+                              <label className={styles.normal_checkbox_lable} key={index}>
+                                <input type="checkbox" onChange={(e) => onChangeBroughtReson(e)} value={data.cd} checked={broughtReasonCheckItems.includes(data.cd) ? true : false} />
+                                {data.name}
+                              </label>
+                            )
+                          })
+                        }
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style={{ width: '10%', textAlign: 'center' }}>입수 시기</td>
+                      <td colSpan={4} style={{ width: '90%' }}>
+                        <CustomDatePicker startDt={broughtStartDt} endDt={broughtEndDt} setStartDt={setBroughtStartDt} setEndDt={setBroughtEndDt} />
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style={{ width: '10%', textAlign: 'center' }}>연관 주제</td>
+                      <td colSpan={4} style={{ width: '90%' }}>
+                        {
+                          relatedTopicData.length > 0 && relatedTopicData.map((data, index) => {
+                            return (
+                              <label className={styles.normal_checkbox_lable} key={index}>
+                                <input type="checkbox" onChange={(e) => onChangeRelatedTopic(e)} value={data.cd} checked={relatedTopicCheckItems.includes(data.cd) ? true : false} />
+                                {data.name}
+                                <label className={styles.normal_checkbox_lable}>
+                                  <input type="number" min={0} />
+                                  {data.cd === "3" ? "차" : "주년"}
+                                </label>
+                              </label>
+
+                            )
+                          })
+                        }
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style={{ width: '10%', textAlign: 'center' }}>기증자</td>
+                      <td style={{ width: '10%', textAlign: 'center', backgroundColor: '#deebff' }}>국적 대륙</td>
+                      <td style={{ width: '30%' }}>
+                        <label className={styles.normal_checkbox_lable}>
+                          <input type="checkbox" onChange={(e) => onChangeDonorCountry(e)} value={""} checked={donorCountryCheckItems.length === countryData.length ? true : false} />
+                          전체
+                        </label>
+                        {
+                          countryData.length > 0 && countryData.map((data, index) => {
+                            return (
+                              <label className={styles.normal_checkbox_lable} key={index}>
+                                <input type="checkbox" onChange={(e) => onChangeDonorCountry(e)} value={data.cd} checked={donorCountryCheckItems.includes(data.cd) ? true : false} />
+                                {data.name}
+                              </label>
+                            )
+                          })
+                        }
+                      </td>
+                      <td style={{ width: '10%', textAlign: 'center', backgroundColor: '#deebff' }}>국적 나라</td>
+                      <td style={{ width: '30%' }}>
                         <ComboControlLabel
                           control={<CustomCombo size="small" type="none" setData={setFirstValue} dataList={countryList} value={donorCountry} targetData={"donorCountry"} codeChange={(e) => setDonorCountry(e.target.value)} />}
                           label=""
@@ -677,15 +717,15 @@ const Management = ({ }) => {
                       </td>
                     </tr>
                     <tr>
-                      <td style={{width: '10%', textAlign: 'center'}}>검색어 입력</td>
-                      <td colSpan={4} style={{width: '90%'}}>
-                        <Box sx={{width: 300}}>
-                          <TextField fullWidth inputProps={{style: {height: '0px', fontSize: 14, backgroundColor: 'white'}}} placeholder='검색어를 입력하세요'/>
+                      <td style={{ width: '10%', textAlign: 'center' }}>검색어 입력</td>
+                      <td colSpan={4} style={{ width: '90%' }}>
+                        <Box sx={{ width: 300 }}>
+                          <TextField fullWidth inputProps={{ style: { height: '0px', fontSize: 14, backgroundColor: 'white' } }} placeholder='검색어를 입력하세요' />
                         </Box>
                       </td>
                     </tr>
                     <tr>
-                      <td colSpan={5} style={{backgroundColor: '#F7F7F7', textAlign: 'right'}}>
+                      <td colSpan={5} style={{ backgroundColor: '#F7F7F7', textAlign: 'right' }}>
                         <button className={styles.search_btn}>검색</button>
                       </td>
                     </tr>
@@ -695,18 +735,18 @@ const Management = ({ }) => {
               :
               null
             }
-            
+
           </div>
         </div>
         <div className={styles.item_list_container}>
           <div className={styles.item_list_button_container}>
             <div className={styles.item_list_button_radio}>
-              <input type='radio' id="itemList" name="searchType" value="itemList" checked={seachType === "itemList"} onChange={(e)=>handleListType(e.target.value)}/>
+              <input type='radio' id="itemList" name="searchType" value="itemList" checked={seachType === "itemList"} onChange={(e) => handleListType(e.target.value)} />
               <label htmlFor="itemList">결과 목록</label>
             </div>
 
             <div className={styles.item_list_button_radio}>
-              <input type='radio' id="imgList" name="searchType" value="imgList" checked={seachType === "imgList"} onChange={(e)=>handleListType(e.target.value)}/>
+              <input type='radio' id="imgList" name="searchType" value="imgList" checked={seachType === "imgList"} onChange={(e) => handleListType(e.target.value)} />
               <label htmlFor="imgList">결과 이미지 목록</label>
             </div>
           </div>
@@ -721,7 +761,7 @@ const Management = ({ }) => {
                 {seachType === "imgList" ?
                   <div className={styles.image_list_all_checkbox}>
                     <label className={styles.image_list_all_checkbox_label}>
-                      <input type="checkbox" onChange={(e)=>onChangeSelectImageList(e)} value={""} checked={imageListChckItems.length === imageList.length ? true : false}/>
+                      <input type="checkbox" onChange={(e) => onChangeSelectImageList(e)} value={""} checked={imageListChckItems.length === imageList.length ? true : false} />
                       전체선택
                     </label>
                   </div>
@@ -730,8 +770,8 @@ const Management = ({ }) => {
                 }
                 <NormalButton >검색항목 추가/수정</NormalButton>
               </div>
-              <div className={styles.float_right}>            
-                <NormalButton onClick={(e)=>batchUpdate(e)}>선택 일괄수정</NormalButton>
+              <div className={styles.float_right}>
+                <NormalButton onClick={(e) => batchUpdate(e)}>선택 일괄수정</NormalButton>
                 <NormalButton >인쇄</NormalButton>
                 <NormalButton >다운로드</NormalButton>
                 <select className={styles.ag_pageCnt_select} onChange={onChangePageSize} value={pageCnt}>
@@ -757,45 +797,45 @@ const Management = ({ }) => {
               :
               <div className={styles.image_list_area}>
                 <ul>
-                {imageList.length > 0 && imageList.map((data, index)=>{
-                  return(
-                    <li key={index}>
-                      <div className={styles.image_list_area_header}>
-                        <div className={styles.image_list_area_header_checkbox}>
-                          <input type="checkbox" onChange={(e)=>onChangeSelectImageList(e)} value={data.seqNo} checked={imageListChckItems.includes(data.seqNo.toString()) ? true : false}/>
-                        </div>
-                        <div className={styles.image_list_area_header_more}>
-                          <div className={styles.more_icon} onClick={(e)=>openMoreBtn(e, index)}>
-                            {data.openMoreFlag ?
-                            <ul ref={iamgeDetailBtn} className={styles.btn_more_ul} onClick={(e)=>openDetailImageModal(e, index)}>
-                              <li>
-                                <a>
-                                  <span>이미지 더보기</span>
-                                </a>
-                              </li>
-                            </ul>
-                            :
-                            null
-                            }
+                  {imageList.length > 0 && imageList.map((data, index) => {
+                    return (
+                      <li key={index}>
+                        <div className={styles.image_list_area_header}>
+                          <div className={styles.image_list_area_header_checkbox}>
+                            <input type="checkbox" onChange={(e) => onChangeSelectImageList(e)} value={data.seqNo} checked={imageListChckItems.includes(data.seqNo.toString()) ? true : false} />
+                          </div>
+                          <div className={styles.image_list_area_header_more}>
+                            <div className={styles.more_icon} onClick={(e) => openMoreBtn(e, index)}>
+                              {data.openMoreFlag ?
+                                <ul ref={iamgeDetailBtn} className={styles.btn_more_ul} onClick={(e) => openDetailImageModal(e, index)}>
+                                  <li>
+                                    <a>
+                                      <span>이미지 더보기</span>
+                                    </a>
+                                  </li>
+                                </ul>
+                                :
+                                null
+                              }
+                            </div>
                           </div>
                         </div>
-                      </div>
-                      <div className={styles.image_list_area_imageContainer}>
-                        <img
-                          loading="lazy"
-                          src={data.imageList.length > 0 ? data.imageList[0].imageSrc : '/img/empty-image.png'}
-                        />
-                      </div>
-                      <div className={styles.image_list_area_title}>
-                        {data.itemNm}
-                      </div>
-                    </li>   
-                  )
-                })}
+                        <div className={styles.image_list_area_imageContainer}>
+                          <img
+                            loading="lazy"
+                            src={data.imageList.length > 0 ? data.imageList[0].imageSrc : '/img/empty-image.png'}
+                          />
+                        </div>
+                        <div className={styles.image_list_area_title}>
+                          {data.itemNm}
+                        </div>
+                      </li>
+                    )
+                  })}
                 </ul>
                 <div className={styles.image_list_pagination}>
-                  <CustomPagination 
-                    totalItemsCount={rowData.length} 
+                  <CustomPagination
+                    totalItemsCount={rowData.length}
                     pageCnt={pageCnt}
                     page={page}
                     setPage={setPage}
@@ -839,10 +879,10 @@ const Management = ({ }) => {
 
       {/* 알림창 */}
       <AlertModal
-				open={alertOpen}
-				onClose={alertClose}
-				content={content}
-			/>
+        open={alertOpen}
+        onClose={alertClose}
+        content={content}
+      />
     </div>
   );
 };

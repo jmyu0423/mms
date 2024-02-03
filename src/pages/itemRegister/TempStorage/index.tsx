@@ -41,6 +41,9 @@ const TempStorage = () => {
     const [openPreview, setOpenPreview] = useState(false); //이미지 미리보기 컨트롤 state
     const [singleCurrRowData, setSingleCurrRowData] = useState({});
 
+    const [sosokList, setSosokList] = useState([]);
+    const [sosokSubList, setSosokSubList] = useState([]);
+
     const [columnDefs, setColumnDefs] = useState([
         {
             field: 'number',
@@ -73,12 +76,13 @@ const TempStorage = () => {
         { field: 'name', headerName: '명칭', flex: 1.5, cellStyle: { textAlign: "center", whiteSpace: 'normal' }, autoHeight: true },
         { field: 'mainCnt', headerName: '주수량', flex: 1, cellStyle: { textAlign: "center", whiteSpace: 'normal' }, autoHeight: true },
         { field: 'subCnt', headerName: '부수량', flex: 1, cellStyle: { textAlign: "center", whiteSpace: 'normal' }, autoHeight: true },
-        { field: '', headerName: '임시저장일', flex: 1.5, cellStyle: { textAlign: "center", whiteSpace: 'normal' }, autoHeight: true,
-        cellRenderer: function (row) {
-            return (
-              <div>{dayjs(new Date()).format("YYYY-MM-DD")}</div>
-            )
-          }
+        {
+            field: '', headerName: '임시저장일', flex: 1.5, cellStyle: { textAlign: "center", whiteSpace: 'normal' }, autoHeight: true,
+            cellRenderer: function (row) {
+                return (
+                    <div>{dayjs(new Date()).format("YYYY-MM-DD")}</div>
+                )
+            }
         },
     ]);
 
@@ -98,9 +102,19 @@ const TempStorage = () => {
 
     const setFirstValue = (cd, targetData) => {
         if (targetData === "organization1") {
-            setOrganization1(organization1List[cd].title)
+            for (let i = 0; i < sosokList.length; i++) {
+                if (sosokList[i].code === cd) {
+                    setOrganization1(sosokList[i].code);
+                    break;
+                }
+            }
         } else if (targetData === "organization2") {
-            setOrganization2(organization2List[cd].title)
+            for (let i = 0; i < sosokSubList.length; i++) {
+                if (sosokSubList[i].code === cd) {
+                    setOrganization2(sosokSubList[i].code);
+                    break;
+                }
+            }
         } else if (targetData === "material1") {
             setMaterial1(materialList[cd].title)
         } else if (targetData === "material2") {

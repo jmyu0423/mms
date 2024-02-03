@@ -75,7 +75,10 @@ function CustomCombo(props) {
             }
             {props.dataList.map((option) => (
 
-                <MenuItem key={option.cd} value={option.cd !== undefined ? option.cd : option.code}>
+                <MenuItem
+                    key={option.cd !== undefined ? option.cd : option.code}
+                    value={option.cd !== undefined ? option.cd : option.code}
+                >
                     {option.title !== undefined ? option.title : option.name !== undefined ? option.name : option.name_kor}
                 </MenuItem>
             ))}
