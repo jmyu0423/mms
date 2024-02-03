@@ -6,17 +6,18 @@ import { NormalButton, BaseButton, AddButton } from 'src/components/CustomButton
 import dayjs from 'dayjs';
 import { ItemGroup, PopupFormControlLabel, ComboControlLabel } from 'src/components/modal/ItemGroup';
 import CustomCombo from 'src/components/combobox/CustomCombo';
-import { 
-  itemList, 
-  materialData, 
-  countryData, 
-  organization1List, 
+import {
+  itemList,
+  materialData,
+  countryData,
+  organization1List,
   organization2List,
   materialList,
   countryList,
   broughtReasonData,
   relatedTopicData,
-  historyData
+  historyData,
+  storageList
 } from 'src/jsonData';
 import AlertModal from 'src/components/modal/AlertModal';
 import PreviewModal from "src/pages/manage/modal/PreviewModal";
@@ -24,6 +25,7 @@ import SimpleSearchModal from "src/pages/manage/modal/SimpleSearchModal";
 import CountrySimpleSearchModal from "src/pages/manage/modal/CountrySimpleSearchModal";
 import PersonnelSearchModal from "src/pages/manage/modal/PersonnelSearchModal";
 import AgGrid from "src/components/AgGrid";
+import axios from 'axios';
 
 const PageContainer = styled(Container)(
   ({ theme }) => `
@@ -66,7 +68,7 @@ const SingleRegister = ({ }) => {
   const [subNumber, setSubNumber] = useState(""); //부수량
   const [useYn, setUseYn] = useState("N");
   const [alertOpen, setAlertOpen] = useState(false);
-	const [content, setContent] = useState("");
+  const [content, setContent] = useState("");
   const addImageInput = useRef(null); //이미지 정보 넘길 ref
   const [imageList, setImageList] = useState([]); //이미지 리스트
   const [imageListUrl, setImageListUrl] = useState([]); //미리보기 이미지 리스트
@@ -76,7 +78,12 @@ const SingleRegister = ({ }) => {
   const addPersonImageInput = useRef(null); //인사정보 이미지 넘길 ref
   const [personImageList, setPersonImageList] = useState([]); //인사정보 이미지 리스트
   const [personImageListUrl, setPersonImageListUrl] = useState([]); //인사정보 미리보기 이미지 리스트
-  
+
+  const [sosokList, setSosokList] = useState([]);
+  const [sosokSubList, setSosokSubList] = useState([]);
+  const [countrySubList, setcountrySubList] = useState([]);
+  const [storage, setStorage] = useState("");
+
   const [columnDefs, setColumnDefs] = useState([
     { field: 'updDt', headerName: '수정일', flex: 2.5, cellStyle: { textAlign: "center", whiteSpace: 'normal' }, autoHeight: true },
     { field: 'updContents', headerName: '수정 내용', flex: 10, cellStyle: { textAlign: "center", whiteSpace: 'normal' }, autoHeight: true },
@@ -84,51 +91,110 @@ const SingleRegister = ({ }) => {
     { field: 'regNm', headerName: '승인자', flex: 2, cellStyle: { textAlign: "center", whiteSpace: 'normal' }, autoHeight: true },
   ]);
 
-  useEffect(()=>{
+  useEffect(() => {
     //미리보기 이미지 갯수 최신화 하기 위함
     setImageCount(imageListUrl.length)
-  },[imageListUrl])
-  
+  }, [imageListUrl])
+
+  useEffect(() => {
+    selectOrganization();
+  }, [])
+
+  useEffect(() => {
+    for (let i = 0; i < sosokList.length; i++) {
+      if (sosokList[i].code === organization1) {
+        setSosokSubList(sosokList[i].sub);
+        break;
+      }
+    }
+  }, [organization1])
+
+  useEffect(() => {
+    let tempList = [];
+    let tempArr = {};
+    for (let i = 0; i < countryData.length; i++) {
+      if (countryData[i].cd === continent) {
+        tempArr = countryData[i].nations;
+        break;
+      }
+    }
+
+    for (let objKey in tempArr) {
+      if (tempArr.hasOwnProperty(objKey)) {
+        tempList.push(tempArr[objKey]);
+        Object.assign(tempArr[objKey], { cd: objKey });
+      }
+    }
+    setcountrySubList(tempList);
+  }, [continent])
+
   const closePreviewModal = () => {
     setOpenPreview(false);
   }
 
-  const alertClose = () =>{
-		setAlertOpen(false);
-	}
+  const alertClose = () => {
+    setAlertOpen(false);
+  }
 
-  const closeSimpleSearchModal = () =>{
+  const closeSimpleSearchModal = () => {
     setSimpleSearchModal(false);
   }
 
-  const closeCountrySimpleSearchModal = () =>{
+  const closeCountrySimpleSearchModal = () => {
     setCountrySimpleSearchModal(false);
   }
 
   const setFirstValue = (cd, targetData) => {
-    if(targetData === "organization1"){
-      setOrganization1(organization1List[cd].title)
-    }else if(targetData === "organization2"){
-      setOrganization2(organization2List[cd].title)
-    }else if(targetData === "continent"){
-      setContinent(countryData[cd].name);
-    }else if(targetData === "country"){
-      setCountry(countryList[cd].title);
+    if (targetData === "organization1") {
+      for (let i = 0; i < sosokList.length; i++) {
+        if (sosokList[i].code === cd) {
+          setOrganization1(sosokList[i].code);
+          break;
+        }
+      }
+    } else if (targetData === "organization2") {
+      for (let i = 0; i < sosokSubList.length; i++) {
+        if (sosokSubList[i].code === cd) {
+          setOrganization2(sosokSubList[i].code);
+          break;
+        }
+      }
+    } else if (targetData === "continent") {
+      for (let i = 0; i < countryData.length; i++) {
+        if (countryData[i].cd === cd) {
+          setContinent(countryData[i].cd);
+          break;
+        }
+      }
+    } else if (targetData === "country") {
+      for (let i = 0; i < countrySubList.length; i++) {
+        if (countrySubList[i].cd === cd) {
+          setCountry(countrySubList[i].cd);
+          break;
+        }
+      }
+    } else if (targetData === "storage") {
+      for (let i = 0; i < storageList.length; i++) {
+        if (storageList[i].cd === cd) {
+          setStorage(storageList[i].cd);
+          break;
+        }
+      }
     }
   }
 
   //딸림자료 유/무
-  const changeUseYn = (e) =>{
+  const changeUseYn = (e) => {
     setUseYn(e.target.value)
   }
 
   //미리보기 이미지 업로드 버튼
-  const addPrevImage = (e) =>{
+  const addPrevImage = (e) => {
     addImageInput.current.click();
   }
 
   //미리보기 이미지 업로드
-  const imageUpload = (e) =>{
+  const imageUpload = (e) => {
     let files = addImageInput.current.files;
     let tempList = [...imageList];
     let tempUrlList = [...imageListUrl];
@@ -136,14 +202,14 @@ const SingleRegister = ({ }) => {
     let imageListCnt = tempList.length; //기존 이미지 리스트 갯수
     let addImageListCnt = files.length; //추가된 이미지 리스트 갯수
 
-    if(imageListCnt + addImageListCnt > 10){
+    if (imageListCnt + addImageListCnt > 10) {
       setContent("최대 등록 가능한 이미지 갯수를 초과 하였습니다.");
       setAlertOpen(true);
       e.target.value = ''; //값 초기화
       return false;
     }
 
-    for(let i=0; i<files.length; i++){
+    for (let i = 0; i < files.length; i++) {
       tempUrlList.push(URL.createObjectURL(addImageInput.current.files[i]));
       tempList.push(addImageInput.current.files[i])
     }
@@ -154,13 +220,13 @@ const SingleRegister = ({ }) => {
   }
 
   //미리보기 이미지 클릭
-  const selectPreviewImage =(e, data) =>{
+  const selectPreviewImage = (e, data) => {
     setSingleCurrRowData(data);
     setOpenPreview(true);
   }
 
   //미리보기 이미지 제거
-  const removePreviewImage= (e, index) =>{
+  const removePreviewImage = (e, index) => {
     e.stopPropagation();
 
     let tempList = [...imageList];
@@ -173,18 +239,18 @@ const SingleRegister = ({ }) => {
   }
 
   //미리보기 이미지 다운로드
-  const downloadImage = (e) =>{
+  const downloadImage = (e) => {
 
-    if(imageListUrl.length > 0){
-      for(let i=0; i<imageListUrl.length; i++){
+    if (imageListUrl.length > 0) {
+      for (let i = 0; i < imageListUrl.length; i++) {
         let url = imageListUrl[i];
         let fileNm = imageList[i].name;
 
         fetch(url, { method: 'GET' })
-        .then((res) => {
+          .then((res) => {
             return res.blob();
-        })
-        .then((blob) => {
+          })
+          .then((blob) => {
             const url = window.URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
@@ -192,39 +258,39 @@ const SingleRegister = ({ }) => {
             document.body.appendChild(a);
             a.click();
             setTimeout((_) => {
-                window.URL.revokeObjectURL(url);
+              window.URL.revokeObjectURL(url);
             }, 60000);
             a.remove();
-        })
-        .catch((err) => {
+          })
+          .catch((err) => {
             console.error('err: ', err);
-        });
+          });
       }
-    }else{
+    } else {
       setContent("다운로드할 이미지가 없습니다.");
       setAlertOpen(true);
     }
   }
 
-  const simpleSearch = (e) =>{
+  const simpleSearch = (e) => {
     setSimpleSearchModal(true)
   }
 
-  const countrySimpleSearch = (e) =>{
+  const countrySimpleSearch = (e) => {
     setCountrySimpleSearchModal(true);
   }
 
-  const firstIcon = (e, index) =>{
+  const firstIcon = (e, index) => {
     e.stopPropagation();
   }
 
-   //인사 이미지 업로드 버튼
-   const addPrevPersonImage = (e) =>{
+  //인사 이미지 업로드 버튼
+  const addPrevPersonImage = (e) => {
     addPersonImageInput.current.click();
   }
 
   //인사정보 사진 업로드
-  const personImageUpload = (e) =>{
+  const personImageUpload = (e) => {
     let files = addPersonImageInput.current.files;
     let tempList = [...personImageList];
     let tempUrlList = [...personImageListUrl];
@@ -232,14 +298,14 @@ const SingleRegister = ({ }) => {
     let imageListCnt = tempList.length; //기존 이미지 리스트 갯수
     let addImageListCnt = files.length; //추가된 이미지 리스트 갯수
 
-    if(imageListCnt > 0){
+    if (imageListCnt > 0) {
       setContent("이미 등록된 이미지가 있습니다.");
       setAlertOpen(true);
       e.target.value = ''; //값 초기화
       return false;
     }
 
-    for(let i=0; i<files.length; i++){
+    for (let i = 0; i < files.length; i++) {
       tempUrlList.push(URL.createObjectURL(addPersonImageInput.current.files[i]));
       tempList.push(addPersonImageInput.current.files[i])
     }
@@ -250,7 +316,7 @@ const SingleRegister = ({ }) => {
   }
 
   //인사정보 미리보기 이미지 제거
-  const removePreviewPersonImage= (e, index) =>{
+  const removePreviewPersonImage = (e, index) => {
     e.stopPropagation();
 
     let tempList = [...personImageList];
@@ -267,13 +333,57 @@ const SingleRegister = ({ }) => {
   }
 
   //인사검색 모달 닫기
-  const closePersonnelSearchModal = () =>{
+  const closePersonnelSearchModal = () => {
     setPersonnelSearchModal(false);
   }
 
   //인사검색 모달 열기
-  const personnelSearch = (e) =>{
+  const personnelSearch = (e) => {
     setPersonnelSearchModal(true);
+  }
+
+  //소속 리스트 호출
+  const selectOrganization = async () => {
+
+    // "http://smus.scjmatthias.net:5000/sosok"
+    axios.get("http://smus.scjmatthias.net:5000/sosok").then((response) => {
+      setSosokList(response.data);
+    }).catch((e) => {
+      console.log(e);
+    })
+  }
+
+  //등록
+  const insertItem = async () => {
+    console.log(1234)
+    // "http://smus.scjmatthias.net:5000/artifact"
+
+    //raw data
+    const object = {
+      "data": "test1234",
+    }
+
+    const params = new FormData();
+    params.append('data', 'test12345');
+
+    const config = {
+      responseType: "text",
+      headers: {
+        "content-type": "application/x-www-form-urlencoded",
+      },
+    };
+
+    await axios
+      .post("http://smus.scjmatthias.net:5000/artifact", JSON.stringify({ 'data': object }))
+      .then(function (response) {
+        if (response.data.result === "ok") {
+
+        } else {
+        }
+      })
+      .catch(function (error) {
+        console.log("실패", error);
+      })
   }
 
   return (
@@ -288,11 +398,11 @@ const SingleRegister = ({ }) => {
       </div>
       <div className={styles.search_container}>
         <div className={styles.register_step_title}>
-          <div style={{ display: 'flex', justifyContent: 'center', flexDirection: 'column'}}>
+          <div style={{ display: 'flex', justifyContent: 'center', flexDirection: 'column' }}>
             1. 박물 조회
           </div>
           <div>
-            <BaseButton onClick={(e)=>simpleSearch(e)}>간단조회</BaseButton>
+            <BaseButton onClick={(e) => simpleSearch(e)}>간단조회</BaseButton>
           </div>
         </div>
         <div className={styles.search_controller_container}>
@@ -301,135 +411,135 @@ const SingleRegister = ({ }) => {
               <table className={styles.search_table}>
                 <tbody>
                   <tr>
-                    <td style={{width: '10%', textAlign: 'center'}}>등록일</td>
-                    <td colSpan={4} style={{width: '90%'}}>
+                    <td style={{ width: '10%', textAlign: 'center' }}>등록일</td>
+                    <td colSpan={4} style={{ width: '90%' }}>
                       {today}
                     </td>
                   </tr>
                   <tr>
-                    <td style={{textAlign: 'center'}}>보관 소속</td>
+                    <td style={{ textAlign: 'center' }}>보관 소속</td>
                     <td colSpan={2}>
                       <ComboControlLabel
-                        control={<CustomCombo size="small" type="none" setData={setFirstValue} dataList={organization1List} value={organization1} targetData={"organization1"} codeChange={(e) => setOrganization1(e.target.value)} />}
+                        control={<CustomCombo size="small" type="none" setData={setFirstValue} dataList={sosokList} value={organization1} targetData={"organization1"} codeChange={(e) => setOrganization1(e.target.value)} />}
                         label=""
                         labelPlacement="start"
                       />
                       <ComboControlLabel
-                        control={<CustomCombo size="small" type="none" setData={setFirstValue} dataList={organization2List} value={organization2} targetData={"organization2"} codeChange={(e) => setOrganization2(e.target.value)} />}
+                        control={<CustomCombo size="small" type="none" setData={setFirstValue} dataList={sosokSubList} value={organization2} targetData={"organization2"} codeChange={(e) => setOrganization2(e.target.value)} />}
                         label=""
                         labelPlacement="start"
                       />
                     </td>
-                    <td style={{textAlign: 'center', backgroundColor: '#deebff'}}>소장품 번호</td>
+                    <td style={{ textAlign: 'center', backgroundColor: '#deebff' }}>소장품 번호</td>
                     <td >
                     </td>
                   </tr>
                   <tr>
-                    <td style={{textAlign: 'center'}}>명칭</td>
+                    <td style={{ textAlign: 'center' }}>명칭</td>
                     <td colSpan={4}>
-                      <Box sx={{width: '80%'}}>
-                        <TextField fullWidth inputProps={{style: {height: '0px', fontSize: 14, backgroundColor: 'white'}}} placeholder='text'/>
+                      <Box sx={{ width: '80%' }}>
+                        <TextField fullWidth inputProps={{ style: { height: '0px', fontSize: 14, backgroundColor: 'white' } }} placeholder='text' />
                       </Box>
                     </td>
                   </tr>
                   <tr>
-                    <td style={{textAlign: 'center'}}>명칭(이명)</td>
+                    <td style={{ textAlign: 'center' }}>명칭(이명)</td>
                     <td colSpan={4}>
-                      <Box sx={{width: '80%'}}>
-                        <TextField fullWidth inputProps={{style: {height: '0px', fontSize: 14, backgroundColor: 'white'}}} placeholder='text'/>
+                      <Box sx={{ width: '80%' }}>
+                        <TextField fullWidth inputProps={{ style: { height: '0px', fontSize: 14, backgroundColor: 'white' } }} placeholder='text' />
                       </Box>
                     </td>
                   </tr>
                   <tr>
-                    <td style={{textAlign: 'center'}}>영어명칭</td>
+                    <td style={{ textAlign: 'center' }}>영어명칭</td>
                     <td colSpan={4}>
-                      <Box sx={{width: '80%'}}>
-                        <TextField fullWidth inputProps={{style: {height: '0px', fontSize: 14, backgroundColor: 'white'}}} placeholder='text'/>
+                      <Box sx={{ width: '80%' }}>
+                        <TextField fullWidth inputProps={{ style: { height: '0px', fontSize: 14, backgroundColor: 'white' } }} placeholder='text' />
                       </Box>
                     </td>
                   </tr>
                   <tr>
-                    <td style={{textAlign: 'center'}}>원어명칭</td>
+                    <td style={{ textAlign: 'center' }}>원어명칭</td>
                     <td colSpan={4}>
-                      <Box sx={{width: '80%'}}>
-                        <TextField fullWidth inputProps={{style: {height: '0px', fontSize: 14, backgroundColor: 'white'}}} placeholder='text'/>
+                      <Box sx={{ width: '80%' }}>
+                        <TextField fullWidth inputProps={{ style: { height: '0px', fontSize: 14, backgroundColor: 'white' } }} placeholder='text' />
                       </Box>
                     </td>
                   </tr>
                   <tr>
-                    <td style={{width: '10%', textAlign: 'center'}}>수량</td>
-                    <td style={{width: '10%', textAlign: 'center', backgroundColor: '#deebff'}}>주 수량(건)</td>
-                    <td style={{width: '30%'}}>
+                    <td style={{ width: '10%', textAlign: 'center' }}>수량</td>
+                    <td style={{ width: '10%', textAlign: 'center', backgroundColor: '#deebff' }}>주 수량(건)</td>
+                    <td style={{ width: '30%' }}>
                       <ComboControlLabel
-                        control={<TextField fullWidth size="small" value={mainNumber} inputProps={{ maxLength: 20, min: 0 }} onChange={(e) => setMainNumber(e.target.value)} type="number"/>}
+                        control={<TextField fullWidth size="small" value={mainNumber} inputProps={{ maxLength: 20, min: 0 }} onChange={(e) => setMainNumber(e.target.value)} type="number" />}
                         label=""
                         labelPlacement="start"
                       />
                     </td>
-                    <td style={{width: '10%', textAlign: 'center', backgroundColor: '#deebff'}}>부 수량(점)</td>
-                    <td style={{width: '30%'}}>
+                    <td style={{ width: '10%', textAlign: 'center', backgroundColor: '#deebff' }}>부 수량(점)</td>
+                    <td style={{ width: '30%' }}>
                       <ComboControlLabel
-                        control={<TextField fullWidth size="small" value={subNumber} inputProps={{ maxLength: 20, min: 0 }} onChange={(e) => setSubNumber(e.target.value)} type="number"/>}
+                        control={<TextField fullWidth size="small" value={subNumber} inputProps={{ maxLength: 20, min: 0 }} onChange={(e) => setSubNumber(e.target.value)} type="number" />}
                         label=""
                         labelPlacement="start"
                       />
                     </td>
                   </tr>
                   <tr>
-                    <td style={{width: '10%', textAlign: 'center'}}>딸림자료</td>
-                    <td style={{width: '10%', textAlign: 'center', backgroundColor: '#deebff'}}>유/무</td>
-                    <td style={{width: '30%'}}>
+                    <td style={{ width: '10%', textAlign: 'center' }}>딸림자료</td>
+                    <td style={{ width: '10%', textAlign: 'center', backgroundColor: '#deebff' }}>유/무</td>
+                    <td style={{ width: '30%' }}>
                       <div className={styles.checkbox_container}>
                         <div className={styles.checkbox_item}>
                           <label>
-                            <input 
-                              type='radio' 
+                            <input
+                              type='radio'
                               name='useYn'
                               value='N'
-                              checked={useYn === "N" }   
-                              onChange={(e)=>changeUseYn(e)}
+                              checked={useYn === "N"}
+                              onChange={(e) => changeUseYn(e)}
                             />
                             무
                           </label>
                         </div>
                         <div className={styles.checkbox_item}>
                           <label>
-                            <input 
-                              type='radio' 
+                            <input
+                              type='radio'
                               name='useYn'
                               value='Y'
-                              checked={useYn === "Y" }   
-                              onChange={(e)=>changeUseYn(e)}
+                              checked={useYn === "Y"}
+                              onChange={(e) => changeUseYn(e)}
                             />
                             유
                           </label>
                         </div>
                       </div>
                     </td>
-                    <td style={{width: '10%', textAlign: 'center', backgroundColor: '#deebff'}}>딸림수량</td>
-                    <td style={{width: '30%'}}>
+                    <td style={{ width: '10%', textAlign: 'center', backgroundColor: '#deebff' }}>딸림수량</td>
+                    <td style={{ width: '30%' }}>
                     </td>
                   </tr>
                   <tr>
-                    <td style={{textAlign: 'center'}}>재질/크기</td>
-                    <td style={{textAlign: 'center', backgroundColor: '#deebff'}}>상세번호</td>
+                    <td style={{ textAlign: 'center' }}>재질/크기</td>
+                    <td style={{ textAlign: 'center', backgroundColor: '#deebff' }}>상세번호</td>
                   </tr>
                   <tr>
-                    <td style={{textAlign: 'center'}}>
-                      <div style={{marginBottom: '5px', marginTop: '3px'}}>
+                    <td style={{ textAlign: 'center' }}>
+                      <div style={{ marginBottom: '5px', marginTop: '3px' }}>
                         <AddButton >+크기 추가</AddButton>
                       </div>
-                      <div style={{marginBottom: '3px', marginTop: '3px'}}>
+                      <div style={{ marginBottom: '3px', marginTop: '3px' }}>
                         <AddButton >-크기 삭제</AddButton>
                       </div>
                     </td>
-                    <td style={{textAlign: 'center', backgroundColor: '#deebff'}}>상세번호</td>
+                    <td style={{ textAlign: 'center', backgroundColor: '#deebff' }}>상세번호</td>
                   </tr>
                   <tr>
-                    <td style={{width: '10%', textAlign: 'center'}}>추가 상세 기술</td>
-                    <td colSpan={4} style={{width: '90%'}}>
-                      <Box sx={{width: '100%'}}>
-                        <TextField multiline rows={3} fullWidth inputProps={{style: {padding: 0, fontSize: 14, backgroundColor: 'white'}}} placeholder='text'/>
+                    <td style={{ width: '10%', textAlign: 'center' }}>추가 상세 기술</td>
+                    <td colSpan={4} style={{ width: '90%' }}>
+                      <Box sx={{ width: '100%' }}>
+                        <TextField multiline rows={3} fullWidth inputProps={{ style: { padding: 0, fontSize: 14, backgroundColor: 'white' } }} placeholder='text' />
                       </Box>
                     </td>
                   </tr>
@@ -443,48 +553,48 @@ const SingleRegister = ({ }) => {
         <ul>
           <li>
             <div>
-              <span style={{marginRight: '10px'}}>사진 정보</span>
-              <NormalButton onClick={(e)=>{downloadImage(e)}}>다운로드</NormalButton>
+              <span style={{ marginRight: '10px' }}>사진 정보</span>
+              <NormalButton onClick={(e) => { downloadImage(e) }}>다운로드</NormalButton>
             </div>
           </li>
         </ul>
       </div>
       <div className={styles.preview_image_container}>
         <div className={styles.preview_image_list}>
-          <div className={styles.preview_image_add} onClick={(e)=>addPrevImage(e)}>
-            <div style={{textAlign: 'center'}}>
+          <div className={styles.preview_image_add} onClick={(e) => addPrevImage(e)}>
+            <div style={{ textAlign: 'center' }}>
               <div className={styles.camera_image}></div>
-              <span style={{fontSize: '20px'}}>{iamgeCount}/10</span>
-              <input onChange={imageUpload} ref={addImageInput} type="file" multiple hidden accept="image/*"/>
+              <span style={{ fontSize: '20px' }}>{iamgeCount}/10</span>
+              <input onChange={imageUpload} ref={addImageInput} type="file" multiple hidden accept="image/*" />
             </div>
           </div>
-          {imageListUrl.length > 0 && imageListUrl.map((data, index)=>{
-              return(
-                index === 0 ?
-                <div className={styles.preview_image_add} onClick={(e)=>selectPreviewImage(e, data)}>
-                  <div className={styles.preview_first_icon} onClick={(e)=>firstIcon(e, index)}>대표</div>
-                  <div className={styles.preview_image_remove} onClick={(e)=>removePreviewImage(e, index)}></div>
+          {imageListUrl.length > 0 && imageListUrl.map((data, index) => {
+            return (
+              index === 0 ?
+                <div className={styles.preview_image_add} onClick={(e) => selectPreviewImage(e, data)}>
+                  <div className={styles.preview_first_icon} onClick={(e) => firstIcon(e, index)}>대표</div>
+                  <div className={styles.preview_image_remove} onClick={(e) => removePreviewImage(e, index)}></div>
                   <img
-                    style={{width:'auto', maxWidth: '100%', height: 'auto', maxHeight: '100%'}}
+                    style={{ width: 'auto', maxWidth: '100%', height: 'auto', maxHeight: '100%' }}
                     src={data}
                     alt="img"
                   />
                 </div>
                 :
-                <div className={styles.preview_image_add} onClick={(e)=>selectPreviewImage(e, data)}>
-                  <div className={styles.preview_image_remove} onClick={(e)=>removePreviewImage(e, index)}></div>
+                <div className={styles.preview_image_add} onClick={(e) => selectPreviewImage(e, data)}>
+                  <div className={styles.preview_image_remove} onClick={(e) => removePreviewImage(e, index)}></div>
                   <img
-                    style={{width:'auto', maxWidth: '100%', height: 'auto', maxHeight: '100%'}}
+                    style={{ width: 'auto', maxWidth: '100%', height: 'auto', maxHeight: '100%' }}
                     src={data}
                     alt="img"
                   />
                 </div>
-              )
-            })}
+            )
+          })}
         </div>
       </div>
       <div className={styles.register_step_title}>
-        <div style={{ display: 'flex', justifyContent: 'center', flexDirection: 'column'}}>
+        <div style={{ display: 'flex', justifyContent: 'center', flexDirection: 'column' }}>
           2. 배경 정보
         </div>
         <div>
@@ -497,149 +607,149 @@ const SingleRegister = ({ }) => {
             <table className={styles.search_table}>
               <tbody>
                 <tr>
-                  <td style={{width: '10%', textAlign: 'center'}}>박물국적</td>
-                  <td colSpan={4} style={{width: '90%'}}>
+                  <td style={{ width: '10%', textAlign: 'center' }}>박물국적</td>
+                  <td colSpan={4} style={{ width: '90%' }}>
                     <ComboControlLabel
                       control={<CustomCombo size="small" type="none" setData={setFirstValue} dataList={countryData} value={continent} targetData={"continent"} codeChange={(e) => setContinent(e.target.value)} />}
                       label=""
                       labelPlacement="start"
                     />
                     <ComboControlLabel
-                      control={<CustomCombo size="small" type="none" setData={setFirstValue} dataList={countryList} value={country} targetData={"country"} codeChange={(e) => setCountry(e.target.value)} />}
+                      control={<CustomCombo size="small" type="none" setData={setFirstValue} dataList={countrySubList} value={country} targetData={"country"} codeChange={(e) => setCountry(e.target.value)} />}
                       label=""
                       labelPlacement="start"
                     />
-                    <AddButton onClick={(e)=>countrySimpleSearch(e)}>간편 조회</AddButton>
+                    <AddButton onClick={(e) => countrySimpleSearch(e)}>간편 조회</AddButton>
                   </td>
                 </tr>
                 <tr>
-                  <td style={{width: '10%', textAlign: 'center'}}>제작 시기</td>
-                  <td style={{width: '10%', textAlign: 'center', backgroundColor: '#deebff'}}>년도 유형</td>
-                  <td style={{width: '30%'}}>
-                    <Box sx={{width: '80%'}}>
-                      <TextField fullWidth inputProps={{style: {height: '0px', fontSize: 14, backgroundColor: 'white'}}} placeholder='text'/>
+                  <td style={{ width: '10%', textAlign: 'center' }}>제작 시기</td>
+                  <td style={{ width: '10%', textAlign: 'center', backgroundColor: '#deebff' }}>년도 유형</td>
+                  <td style={{ width: '30%' }}>
+                    <Box sx={{ width: '80%' }}>
+                      <TextField fullWidth inputProps={{ style: { height: '0px', fontSize: 14, backgroundColor: 'white' } }} placeholder='text' />
                     </Box>
                   </td>
-                  <td style={{width: '10%', textAlign: 'center', backgroundColor: '#deebff'}}>제작시기</td>
-                  <td style={{width: '30%'}}>
-                    <Box sx={{width: '80%'}}>
-                      <TextField fullWidth inputProps={{style: {height: '0px', fontSize: 14, backgroundColor: 'white'}}} placeholder='text'/>
+                  <td style={{ width: '10%', textAlign: 'center', backgroundColor: '#deebff' }}>제작시기</td>
+                  <td style={{ width: '30%' }}>
+                    <Box sx={{ width: '80%' }}>
+                      <TextField fullWidth inputProps={{ style: { height: '0px', fontSize: 14, backgroundColor: 'white' } }} placeholder='text' />
                     </Box>
                   </td>
                 </tr>
                 <tr>
-                  <td style={{textAlign: 'center'}}>제작사</td>
+                  <td style={{ textAlign: 'center' }}>제작사</td>
                   <td colSpan={4}>
-                    <Box sx={{width: '80%'}}>
-                      <TextField fullWidth inputProps={{style: {height: '0px', fontSize: 14, backgroundColor: 'white'}}} placeholder='text'/>
+                    <Box sx={{ width: '80%' }}>
+                      <TextField fullWidth inputProps={{ style: { height: '0px', fontSize: 14, backgroundColor: 'white' } }} placeholder='text' />
                     </Box>
                   </td>
                 </tr>
                 <tr>
-                  <td style={{width: '10%', textAlign: 'center'}}>입수 연유</td>
-                  <td style={{width: '10%', textAlign: 'center', backgroundColor: '#deebff'}}>입수 연유</td>
-                  <td style={{width: '30%'}}>
-                    <Box sx={{width: '80%'}}>
-                      <TextField fullWidth inputProps={{style: {height: '0px', fontSize: 14, backgroundColor: 'white'}}} placeholder='text'/>
+                  <td style={{ width: '10%', textAlign: 'center' }}>입수 연유</td>
+                  <td style={{ width: '10%', textAlign: 'center', backgroundColor: '#deebff' }}>입수 연유</td>
+                  <td style={{ width: '30%' }}>
+                    <Box sx={{ width: '80%' }}>
+                      <TextField fullWidth inputProps={{ style: { height: '0px', fontSize: 14, backgroundColor: 'white' } }} placeholder='text' />
                     </Box>
                   </td>
-                  <td style={{width: '10%', textAlign: 'center', backgroundColor: '#deebff'}}>입수 년도</td>
-                  <td style={{width: '30%'}}>
-                    <Box sx={{width: '80%'}}>
-                      <TextField fullWidth inputProps={{style: {height: '0px', fontSize: 14, backgroundColor: 'white'}}} placeholder='text'/>
+                  <td style={{ width: '10%', textAlign: 'center', backgroundColor: '#deebff' }}>입수 년도</td>
+                  <td style={{ width: '30%' }}>
+                    <Box sx={{ width: '80%' }}>
+                      <TextField fullWidth inputProps={{ style: { height: '0px', fontSize: 14, backgroundColor: 'white' } }} placeholder='text' />
                     </Box>
                   </td>
                 </tr>
                 <tr>
-                  <td style={{textAlign: 'center'}}>행사명</td>
+                  <td style={{ textAlign: 'center' }}>행사명</td>
                   <td colSpan={2}>
-                    <Box sx={{width: '80%'}}>
-                      <TextField fullWidth inputProps={{style: {height: '0px', fontSize: 14, backgroundColor: 'white'}}} placeholder='text'/>
+                    <Box sx={{ width: '80%' }}>
+                      <TextField fullWidth inputProps={{ style: { height: '0px', fontSize: 14, backgroundColor: 'white' } }} placeholder='text' />
                     </Box>
                   </td>
-                  <td style={{textAlign: 'center', backgroundColor: '#deebff'}}>차수</td>
+                  <td style={{ textAlign: 'center', backgroundColor: '#deebff' }}>차수</td>
                   <td>
-                    <Box sx={{width: '80%'}}>
-                      <TextField fullWidth inputProps={{style: {height: '0px', fontSize: 14, backgroundColor: 'white'}}} placeholder='text'/>
+                    <Box sx={{ width: '80%' }}>
+                      <TextField fullWidth inputProps={{ style: { height: '0px', fontSize: 14, backgroundColor: 'white' } }} placeholder='text' />
                     </Box>
                   </td>
                 </tr>
                 <tr>
-                  <td style={{width: '10%', textAlign: 'center'}}>장소/수상자</td>
-                  <td style={{width: '10%', textAlign: 'center', backgroundColor: '#deebff'}}>입수 장소</td>
-                  <td style={{width: '30%'}}>
-                    <Box sx={{width: '80%'}}>
-                      <TextField fullWidth inputProps={{style: {height: '0px', fontSize: 14, backgroundColor: 'white'}}} placeholder='text'/>
+                  <td style={{ width: '10%', textAlign: 'center' }}>장소/수상자</td>
+                  <td style={{ width: '10%', textAlign: 'center', backgroundColor: '#deebff' }}>입수 장소</td>
+                  <td style={{ width: '30%' }}>
+                    <Box sx={{ width: '80%' }}>
+                      <TextField fullWidth inputProps={{ style: { height: '0px', fontSize: 14, backgroundColor: 'white' } }} placeholder='text' />
                     </Box>
                   </td>
-                  <td style={{width: '10%', textAlign: 'center', backgroundColor: '#deebff'}}>수상자</td>
-                  <td style={{width: '30%'}}>
-                    <Box sx={{width: '80%'}}>
-                      <TextField fullWidth inputProps={{style: {height: '0px', fontSize: 14, backgroundColor: 'white'}}} placeholder='text'/>
-                    </Box>
-                  </td>
-                </tr>
-                <tr>
-                  <td rowSpan={4} style={{width: '10%', textAlign: 'center'}}>기증자 or 구입자
-                    <AddButton onClick={(e)=>personnelSearch(e)}>인사 검색</AddButton>
-                  </td>
-                  <td style={{width: '10%', textAlign: 'center', backgroundColor: '#deebff'}}>기증자명</td>
-                  <td style={{width: '30%'}}>
-                    <Box sx={{width: '80%'}}>
-                      <TextField fullWidth inputProps={{style: {height: '0px', fontSize: 14, backgroundColor: 'white'}}} placeholder='한글로 기재'/>
-                    </Box>
-                  </td>
-                  <td style={{width: '10%', textAlign: 'center', backgroundColor: '#deebff'}}>소속/직책</td>
-                  <td style={{width: '30%'}}>
-                    <Box sx={{width: '80%'}}>
-                      <TextField fullWidth inputProps={{style: {height: '0px', fontSize: 14, backgroundColor: 'white'}}} placeholder='한글로 기재'/>
+                  <td style={{ width: '10%', textAlign: 'center', backgroundColor: '#deebff' }}>수상자</td>
+                  <td style={{ width: '30%' }}>
+                    <Box sx={{ width: '80%' }}>
+                      <TextField fullWidth inputProps={{ style: { height: '0px', fontSize: 14, backgroundColor: 'white' } }} placeholder='text' />
                     </Box>
                   </td>
                 </tr>
                 <tr>
-                  <td style={{width: '10%', textAlign: 'center', backgroundColor: '#deebff'}}>기증자명</td>
-                  <td style={{width: '30%'}}>
-                    <Box sx={{width: '80%'}}>
-                      <TextField fullWidth inputProps={{style: {height: '0px', fontSize: 14, backgroundColor: 'white'}}} placeholder='영어로 기재'/>
+                  <td rowSpan={4} style={{ width: '10%', textAlign: 'center' }}>기증자 or 구입자
+                    <AddButton onClick={(e) => personnelSearch(e)}>인사 검색</AddButton>
+                  </td>
+                  <td style={{ width: '10%', textAlign: 'center', backgroundColor: '#deebff' }}>기증자명</td>
+                  <td style={{ width: '30%' }}>
+                    <Box sx={{ width: '80%' }}>
+                      <TextField fullWidth inputProps={{ style: { height: '0px', fontSize: 14, backgroundColor: 'white' } }} placeholder='한글로 기재' />
                     </Box>
                   </td>
-                  <td style={{width: '10%', textAlign: 'center', backgroundColor: '#deebff'}}>소속/직책</td>
-                  <td style={{width: '30%'}}>
-                    <Box sx={{width: '80%'}}>
-                      <TextField fullWidth inputProps={{style: {height: '0px', fontSize: 14, backgroundColor: 'white'}}} placeholder='영어로 기재'/>
+                  <td style={{ width: '10%', textAlign: 'center', backgroundColor: '#deebff' }}>소속/직책</td>
+                  <td style={{ width: '30%' }}>
+                    <Box sx={{ width: '80%' }}>
+                      <TextField fullWidth inputProps={{ style: { height: '0px', fontSize: 14, backgroundColor: 'white' } }} placeholder='한글로 기재' />
                     </Box>
                   </td>
                 </tr>
                 <tr>
-                  <td style={{width: '10%', textAlign: 'center', backgroundColor: '#deebff'}}>중요등급</td>
-                  <td style={{width: '30%'}}>
-                    <Box sx={{width: '80%'}}>
-                      <TextField fullWidth inputProps={{style: {height: '0px', fontSize: 14, backgroundColor: 'white'}}} placeholder='영어로 기재'/>
+                  <td style={{ width: '10%', textAlign: 'center', backgroundColor: '#deebff' }}>기증자명</td>
+                  <td style={{ width: '30%' }}>
+                    <Box sx={{ width: '80%' }}>
+                      <TextField fullWidth inputProps={{ style: { height: '0px', fontSize: 14, backgroundColor: 'white' } }} placeholder='영어로 기재' />
                     </Box>
                   </td>
-                  <td style={{width: '10%', textAlign: 'center', backgroundColor: '#deebff'}}></td>
-                  <td style={{width: '30%'}}>
+                  <td style={{ width: '10%', textAlign: 'center', backgroundColor: '#deebff' }}>소속/직책</td>
+                  <td style={{ width: '30%' }}>
+                    <Box sx={{ width: '80%' }}>
+                      <TextField fullWidth inputProps={{ style: { height: '0px', fontSize: 14, backgroundColor: 'white' } }} placeholder='영어로 기재' />
+                    </Box>
                   </td>
                 </tr>
                 <tr>
-                  <td style={{width: '10%', textAlign: 'center', backgroundColor: '#deebff'}}>사진</td>
-                  <td style={{width: '30%'}}>
-                    <div style={{display: 'flex'}}>
-                      <div className={styles.preview_person_image_add} onClick={(e)=>addPrevPersonImage(e)}>
-                        <div style={{textAlign: 'center'}}>
-                          <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'center', marginBottom: '5px'}}>
+                  <td style={{ width: '10%', textAlign: 'center', backgroundColor: '#deebff' }}>중요등급</td>
+                  <td style={{ width: '30%' }}>
+                    <Box sx={{ width: '80%' }}>
+                      <TextField fullWidth inputProps={{ style: { height: '0px', fontSize: 14, backgroundColor: 'white' } }} placeholder='영어로 기재' />
+                    </Box>
+                  </td>
+                  <td style={{ width: '10%', textAlign: 'center', backgroundColor: '#deebff' }}></td>
+                  <td style={{ width: '30%' }}>
+                  </td>
+                </tr>
+                <tr>
+                  <td style={{ width: '10%', textAlign: 'center', backgroundColor: '#deebff' }}>사진</td>
+                  <td style={{ width: '30%' }}>
+                    <div style={{ display: 'flex' }}>
+                      <div className={styles.preview_person_image_add} onClick={(e) => addPrevPersonImage(e)}>
+                        <div style={{ textAlign: 'center' }}>
+                          <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', marginBottom: '5px' }}>
                             <div className={styles.camera_person_image}></div>
                           </div>
-                          <span style={{fontSize: '14px'}}>사진 등록</span>
-                          <input onChange={personImageUpload} ref={addPersonImageInput} type="file" hidden accept="image/*"/>
+                          <span style={{ fontSize: '14px' }}>사진 등록</span>
+                          <input onChange={personImageUpload} ref={addPersonImageInput} type="file" hidden accept="image/*" />
                         </div>
                       </div>
-                      {personImageListUrl.length > 0 && personImageListUrl.map((data, index)=>{
-                        return(
-                          <div className={styles.preview_person_image_add} onClick={(e)=>selectPreviewImage(e, data)}>
-                            <div className={styles.preview_image_remove} onClick={(e)=>removePreviewPersonImage(e, index)}></div>
+                      {personImageListUrl.length > 0 && personImageListUrl.map((data, index) => {
+                        return (
+                          <div className={styles.preview_person_image_add} onClick={(e) => selectPreviewImage(e, data)}>
+                            <div className={styles.preview_image_remove} onClick={(e) => removePreviewPersonImage(e, index)}></div>
                             <img
-                              style={{width:'auto', maxWidth: '100%', height: 'auto', maxHeight: '100%'}}
+                              style={{ width: 'auto', maxWidth: '100%', height: 'auto', maxHeight: '100%' }}
                               src={data}
                               alt="img"
                             />
@@ -655,7 +765,7 @@ const SingleRegister = ({ }) => {
         </div>
       </div>
       <div className={styles.register_step_title}>
-        <div style={{ display: 'flex', justifyContent: 'center', flexDirection: 'column'}}>
+        <div style={{ display: 'flex', justifyContent: 'center', flexDirection: 'column' }}>
           3. 설명 정보
         </div>
       </div>
@@ -665,7 +775,7 @@ const SingleRegister = ({ }) => {
             <table className={styles.search_table}>
               <tbody>
                 <tr>
-                  <td style={{width: '11%', textAlign: 'center'}}>
+                  <td style={{ width: '11%', textAlign: 'center' }}>
                     <div>
                       소장품 설명
                     </div>
@@ -673,47 +783,47 @@ const SingleRegister = ({ }) => {
                       (용도, 의미 등)
                     </div>
                   </td>
-                  <td colSpan={4} style={{width: '90%'}}>
-                    <Box sx={{width: '100%'}}>
-                      <TextField multiline rows={3} fullWidth inputProps={{style: {padding: 0, fontSize: 14, backgroundColor: 'white'}}} placeholder='text area'/>
+                  <td colSpan={4} style={{ width: '90%' }}>
+                    <Box sx={{ width: '100%' }}>
+                      <TextField multiline rows={3} fullWidth inputProps={{ style: { padding: 0, fontSize: 14, backgroundColor: 'white' } }} placeholder='text area' />
                     </Box>
                   </td>
                 </tr>
                 <tr>
-                  <td style={{width: '10%', textAlign: 'center'}}>
+                  <td style={{ width: '10%', textAlign: 'center' }}>
                     소장품 가치 등급
                   </td>
-                  <td colSpan={4} style={{width: '90%'}}>
-                    <Box sx={{width: '20%'}}>
-                      <TextField fullWidth inputProps={{style: {height: '0px', fontSize: 14, backgroundColor: 'white'}}} placeholder='선택'/>
+                  <td colSpan={4} style={{ width: '90%' }}>
+                    <Box sx={{ width: '20%' }}>
+                      <TextField fullWidth inputProps={{ style: { height: '0px', fontSize: 14, backgroundColor: 'white' } }} placeholder='선택' />
                     </Box>
                   </td>
                 </tr>
                 <tr>
-                  <td style={{width: '10%', textAlign: 'center'}}>
+                  <td style={{ width: '10%', textAlign: 'center' }}>
                     딸림자료 정보
                   </td>
-                  <td colSpan={4} style={{width: '90%'}}>
-                    <Box sx={{width: '100%'}}>
-                      <TextField multiline rows={3} fullWidth inputProps={{style: {padding: 0, fontSize: 14, backgroundColor: 'white'}}} placeholder='text area'/>
+                  <td colSpan={4} style={{ width: '90%' }}>
+                    <Box sx={{ width: '100%' }}>
+                      <TextField multiline rows={3} fullWidth inputProps={{ style: { padding: 0, fontSize: 14, backgroundColor: 'white' } }} placeholder='text area' />
                     </Box>
                   </td>
                 </tr>
                 <tr>
-                  <td style={{width: '10%', textAlign: 'center'}}>
+                  <td style={{ width: '10%', textAlign: 'center' }}>
                     셋트 소장품 여부
                   </td>
-                  <td colSpan={4} style={{width: '90%'}}>
+                  <td colSpan={4} style={{ width: '90%' }}>
                     <AddButton >간편 조회</AddButton>
                   </td>
                 </tr>
                 <tr>
-                  <td style={{width: '10%', textAlign: 'center'}}>
+                  <td style={{ width: '10%', textAlign: 'center' }}>
                     기타
                   </td>
-                  <td colSpan={4} style={{width: '90%'}}>
-                    <Box sx={{width: '100%'}}>
-                      <TextField rows={1} fullWidth inputProps={{style: {fontSize: 14, backgroundColor: 'white'}}} placeholder='text area'/>
+                  <td colSpan={4} style={{ width: '90%' }}>
+                    <Box sx={{ width: '100%' }}>
+                      <TextField rows={1} fullWidth inputProps={{ style: { fontSize: 14, backgroundColor: 'white' } }} placeholder='text area' />
                     </Box>
                   </td>
                 </tr>
@@ -723,7 +833,7 @@ const SingleRegister = ({ }) => {
         </div>
       </div>
       <div className={styles.register_step_title}>
-        <div style={{ display: 'flex', justifyContent: 'center', flexDirection: 'column'}}>
+        <div style={{ display: 'flex', justifyContent: 'center', flexDirection: 'column' }}>
           4. 보관 / 보존정보
         </div>
         <div>
@@ -736,52 +846,52 @@ const SingleRegister = ({ }) => {
             <table className={styles.search_table}>
               <tbody>
                 <tr>
-                  <td style={{width: '10%', textAlign: 'center'}}>보관구분</td>
-                  <td colSpan={4} style={{width: '90%'}}>
+                  <td style={{ width: '10%', textAlign: 'center' }}>보관구분</td>
+                  <td colSpan={4} style={{ width: '90%' }}>
                     <ComboControlLabel
-                      control={<CustomCombo size="small" type="none" setData={setFirstValue} dataList={countryData} value={continent} targetData={"continent"} codeChange={(e) => setContinent(e.target.value)} />}
+                      control={<CustomCombo size="small" type="none" setData={setFirstValue} dataList={storageList} value={storage} targetData={"storage"} codeChange={(e) => setStorage(e.target.value)} />}
                       label=""
                       labelPlacement="start"
                     />
                   </td>
                 </tr>
                 <tr>
-                  <td style={{width: '10%', textAlign: 'center'}}>보관처</td>
-                  <td style={{width: '10%', textAlign: 'center', backgroundColor: '#deebff'}}>보관처1</td>
-                  <td style={{width: '10%'}}>
-                    <ComboControlLabel
+                  <td style={{ width: '10%', textAlign: 'center' }}>보관처</td>
+                  <td style={{ width: '10%', textAlign: 'center', backgroundColor: '#deebff' }}>보관처1</td>
+                  <td style={{ width: '10%' }}>
+                    {/* <ComboControlLabel
                       control={<CustomCombo size="small" type="none" setData={setFirstValue} dataList={countryData} value={continent} targetData={"continent"} codeChange={(e) => setContinent(e.target.value)} />}
                       label=""
                       labelPlacement="start"
-                    />
+                    /> */}
                   </td>
-                  <td style={{width: '10%', textAlign: 'center', backgroundColor: '#deebff'}}>보관처2</td>
-                  <td style={{width: '10%'}}>
-                    <ComboControlLabel
+                  <td style={{ width: '10%', textAlign: 'center', backgroundColor: '#deebff' }}>보관처2</td>
+                  <td style={{ width: '10%' }}>
+                    {/* <ComboControlLabel
                       control={<CustomCombo size="small" type="none" setData={setFirstValue} dataList={countryData} value={continent} targetData={"continent"} codeChange={(e) => setContinent(e.target.value)} />}
                       label=""
                       labelPlacement="start"
-                    />
+                    /> */}
                   </td>
-                  <td style={{width: '10%', textAlign: 'center', backgroundColor: '#deebff'}}>보관처3</td>
-                  <td style={{width: '10%'}}>
-                    <ComboControlLabel
+                  <td style={{ width: '10%', textAlign: 'center', backgroundColor: '#deebff' }}>보관처3</td>
+                  <td style={{ width: '10%' }}>
+                    {/* <ComboControlLabel
                       control={<CustomCombo size="small" type="none" setData={setFirstValue} dataList={countryData} value={continent} targetData={"continent"} codeChange={(e) => setContinent(e.target.value)} />}
                       label=""
                       labelPlacement="start"
-                    />
+                    /> */}
                   </td>
-                  <td style={{width: '10%', textAlign: 'center', backgroundColor: '#deebff'}}>보관처4</td>
-                  <td style={{width: '10%'}}>
-                    <ComboControlLabel
+                  <td style={{ width: '10%', textAlign: 'center', backgroundColor: '#deebff' }}>보관처4</td>
+                  <td style={{ width: '10%' }}>
+                    {/* <ComboControlLabel
                       control={<CustomCombo size="small" type="none" setData={setFirstValue} dataList={countryData} value={continent} targetData={"continent"} codeChange={(e) => setContinent(e.target.value)} />}
                       label=""
                       labelPlacement="start"
-                    />
+                    /> */}
                   </td>
                 </tr>
                 <tr>
-                  <td style={{width: '10%', textAlign: 'center'}}>
+                  <td style={{ width: '10%', textAlign: 'center' }}>
                     <div>
                       보존상태
                     </div>
@@ -789,20 +899,20 @@ const SingleRegister = ({ }) => {
                       / 보존상태
                     </div>
                   </td>
-                  <td colSpan={4} style={{width: '90%'}}>
+                  <td colSpan={4} style={{ width: '90%' }}>
                     <AddButton>추가 생성</AddButton>
                   </td>
                 </tr>
                 <tr>
-                  <td style={{width: '10%', textAlign: 'center'}}>
+                  <td style={{ width: '10%', textAlign: 'center' }}>
                     상태
                   </td>
-                  <td colSpan={4} style={{width: '90%'}}>
-                    <ComboControlLabel
+                  <td colSpan={4} style={{ width: '90%' }}>
+                    {/* <ComboControlLabel
                       control={<CustomCombo size="small" type="none" setData={setFirstValue} dataList={countryData} value={continent} targetData={"continent"} codeChange={(e) => setContinent(e.target.value)} />}
                       label=""
                       labelPlacement="start"
-                    />
+                    /> */}
                   </td>
                 </tr>
               </tbody>
@@ -811,7 +921,7 @@ const SingleRegister = ({ }) => {
         </div>
       </div>
       <div className={styles.register_step_title}>
-        <div style={{ display: 'flex', justifyContent: 'center', flexDirection: 'column'}}>
+        <div style={{ display: 'flex', justifyContent: 'center', flexDirection: 'column' }}>
           5. 등록자 정보
         </div>
       </div>
@@ -821,20 +931,20 @@ const SingleRegister = ({ }) => {
             <table className={styles.search_table}>
               <tbody>
                 <tr>
-                  <td style={{width: '10%', textAlign: 'center'}}>등록자</td>
-                  <td colSpan={4} style={{width: '90%'}}>
-                    <Box sx={{width: '20%'}}>
-                      <TextField fullWidth inputProps={{style: {height: '0px', fontSize: 14, backgroundColor: 'white'}}} placeholder='등록자'/>
+                  <td style={{ width: '10%', textAlign: 'center' }}>등록자</td>
+                  <td colSpan={4} style={{ width: '90%' }}>
+                    <Box sx={{ width: '20%' }}>
+                      <TextField fullWidth inputProps={{ style: { height: '0px', fontSize: 14, backgroundColor: 'white' } }} placeholder='등록자' />
                     </Box>
                   </td>
                 </tr>
                 <tr>
-                  <td style={{width: '10%', textAlign: 'center'}}>소속/직책</td>
-                  <td style={{width: '10%', textAlign: 'center', backgroundColor: '#deebff'}}>소속</td>
-                  <td style={{width: '30%'}}>
+                  <td style={{ width: '10%', textAlign: 'center' }}>소속/직책</td>
+                  <td style={{ width: '10%', textAlign: 'center', backgroundColor: '#deebff' }}>소속</td>
+                  <td style={{ width: '30%' }}>
                   </td>
-                  <td style={{width: '10%', textAlign: 'center', backgroundColor: '#deebff'}}>직책</td>
-                  <td style={{width: '30%'}}>
+                  <td style={{ width: '10%', textAlign: 'center', backgroundColor: '#deebff' }}>직책</td>
+                  <td style={{ width: '30%' }}>
                   </td>
                 </tr>
               </tbody>
@@ -843,7 +953,7 @@ const SingleRegister = ({ }) => {
         </div>
       </div>
       <div className={styles.register_step_title}>
-        <div style={{ display: 'flex', justifyContent: 'center', flexDirection: 'column'}}>
+        <div style={{ display: 'flex', justifyContent: 'center', flexDirection: 'column' }}>
           6. History
         </div>
       </div>
@@ -862,8 +972,8 @@ const SingleRegister = ({ }) => {
         </div>
       </div>
       <div className={styles.register_step_title}>
-          <NormalButton sx={{backgroundColor: 'gray', width: '100px'}}>수정</NormalButton>
-          <BaseButton sx={{width: '100px'}}>등록</BaseButton>
+        <NormalButton sx={{ backgroundColor: 'gray', width: '100px' }}>수정</NormalButton>
+        <BaseButton sx={{ width: '100px' }} onClick={(e) => insertItem()}>등록</BaseButton>
       </div>
 
       {/* 이미지 미리보기 */}
@@ -875,10 +985,10 @@ const SingleRegister = ({ }) => {
 
       {/* 알림창 */}
       <AlertModal
-				open={alertOpen}
-				onClose={alertClose}
-				content={content}
-			/>
+        open={alertOpen}
+        onClose={alertClose}
+        content={content}
+      />
 
       {/* 간단조회 미리보기 */}
       <SimpleSearchModal

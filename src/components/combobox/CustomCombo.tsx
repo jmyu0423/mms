@@ -20,7 +20,7 @@ const MenuProps = {
 
 
 
-function CustomCombo(props){
+function CustomCombo(props) {
 
     const CustomTextField = styled(TextField)(({ theme }) => ({
         '& .MuiOutlinedInput-root': {
@@ -29,13 +29,21 @@ function CustomCombo(props){
         },
     }));
 
-    useEffect(()=>{
-        selectList();
-    },[])
+    useEffect(() => {
+        if (props.dataList.length > 0) {
+            selectList();
+        }
+    }, [props.dataList])
 
-    const selectList = () =>{
-        if(props.setData){
-            props.setData(props.dataList[0].cd, props.targetData)
+    const selectList = () => {
+        if (props.targetData === "organization1" || props.targetData === "organization2") {
+            if (props.setData) {
+                props.setData(props.dataList[0].code, props.targetData)
+            }
+        } else {
+            if (props.setData) {
+                props.setData(props.dataList[0].cd, props.targetData)
+            }
         }
     }
 
@@ -53,7 +61,7 @@ function CustomCombo(props){
                 },
             }}
 
-            // sx={{"& fieldset": { border: 'none' },}}
+        // sx={{"& fieldset": { border: 'none' },}}
         >
             {props.type === "all" ?
                 <MenuItem key="" value="">
@@ -66,9 +74,9 @@ function CustomCombo(props){
                     : null
             }
             {props.dataList.map((option) => (
-                
-                <MenuItem key={option.cd} value={option.title !== undefined ? option.title : option.name}>
-                    {option.title !== undefined ? option.title : option.name}
+
+                <MenuItem key={option.cd} value={option.cd !== undefined ? option.cd : option.code}>
+                    {option.title !== undefined ? option.title : option.name !== undefined ? option.name : option.name_kor}
                 </MenuItem>
             ))}
         </CustomTextField>
@@ -92,7 +100,7 @@ CustomCombo.propTypes = {
         PropTypes.func.isRequired,
         PropTypes.any
     ]),
-    targetData: PropTypes.string, 
+    targetData: PropTypes.string,
     dataList: PropTypes.array,
     height: PropTypes.string,
 };
