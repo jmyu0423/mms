@@ -67,8 +67,7 @@ const SingleRegister = ({ }) => {
   const [imageList, setImageList] = useState([]); //이미지 리스트
   const [imageListUrl, setImageListUrl] = useState([]); //미리보기 이미지 리스트
   const [iamgeCount, setImageCount] = useState(0);
-  const [continent, setContinent] = useState(""); //대륙
-  const [country, setCountry] = useState(""); //나라
+
   const addPersonImageInput = useRef(null); //인사정보 이미지 넘길 ref
   const [personImageList, setPersonImageList] = useState([]); //인사정보 이미지 리스트
   const [personImageListUrl, setPersonImageListUrl] = useState([]); //인사정보 미리보기 이미지 리스트
@@ -93,8 +92,10 @@ const SingleRegister = ({ }) => {
   const [addMemo, setAddMemo] = useState(""); //추가상세기술
   //-------------------------- 1번 ------------------------------------//
 
-  //-------------------------- 사진정보 ------------------------------------//
-  //-------------------------- 사진정보 ------------------------------------//
+  //-------------------------- 배경정보 ------------------------------------//
+  const [continent, setContinent] = useState(""); //대륙
+  const [country, setCountry] = useState(""); //나라
+  //-------------------------- 배경정보 ------------------------------------//
 
   const [columnDefs, setColumnDefs] = useState([
     { field: 'updDt', headerName: '수정일', flex: 2.5, cellStyle: { textAlign: "center", whiteSpace: 'normal' }, autoHeight: true },
@@ -211,8 +212,6 @@ const SingleRegister = ({ }) => {
     let tempList = [...imageList];
     let tempUrlList = [...imageListUrl];
 
-    console.log(files)
-
     let imageListCnt = tempList.length; //기존 이미지 리스트 갯수
     let addImageListCnt = files.length; //추가된 이미지 리스트 갯수
 
@@ -230,7 +229,7 @@ const SingleRegister = ({ }) => {
     setImageList(tempList);
     setImageListUrl(tempUrlList);
 
-    // e.target.value = ''; //값 초기화
+    e.target.value = ''; //값 초기화
   }
 
   //미리보기 이미지 클릭
@@ -369,38 +368,93 @@ const SingleRegister = ({ }) => {
 
   //등록
   const insertItem = async () => {
-    console.log(1234)
     // "http://smus.scjmatthias.net:5000/artifact"
+
+    //딸림자료 유무로 인한 수량 체크
+    let tempCnt = 0;
+    if (useYn === "Y") {
+      tempCnt = useNumber;
+    }
+
+    //보관소속 이름 추출
+    let org1Value = "";
+    let org2Value = "";
+    console.log(sosokList)
+    console.log(organization1)
+    for (let i = 0; i < sosokList.length; i++) {
+      if (sosokList[i].code == organization1) {
+        org1Value = sosokList[i].name;
+        break;
+      }
+    }
+
+    for (let i = 0; i < sosokSubList.length; i++) {
+      if (sosokSubList[i].code == organization2) {
+        org2Value = sosokList[i].name;
+        break;
+      }
+    }
 
     //raw data
     const object = {
       today: today, //등록일
       organization1: organization1, //보관소속1
       organization2: organization2, //보관소속2
+      org1Value: org1Value, //보관소속1 명칭
+      org2Value: org2Value, //보관소속2 명칭
+      name: name, //명칭
+      subName: subName, //이명
+      engName: engName, //영어이름
+      oriName: oriName, //원어명칭
+      mainNumber: mainNumber, //주수량
+      subNumber: subNumber, //부수량
+      useYn: useYn, //딸람자료 유무
+      useNumber: tempCnt, //딸림수량
+      addMemo: addMemo, //추가상세기술
 
+      continent: continent, //대륙
+      country: country, //나라
     }
 
     const params = new FormData();
-    params.append('data', JSON.stringify(object));
+    //사진정보
+    // for (let i = 0; i < imageList.length; i++) {
+    //   params.append('file', imageList[i]);
+    // }
 
-    const config = {
-      responseType: "text",
-      headers: {
-        "content-type": "application/x-www-form-urlencoded",
-      },
-    };
+    params.append('data', JSON.stringify(object));
 
     await axios
       .post("http://smus.scjmatthias.net:5000/artifact", params)
       .then(function (response) {
-        if (response.data.result === "ok") {
-
+        console.log(response)
+        if (response.statusText === "OK") {
+          alert("등록완료");
+          resetData();
+          window.scrollTo(0, 0);
         } else {
         }
       })
       .catch(function (error) {
         console.log("실패", error);
       })
+  }
+
+  //등록 후 데이터 리셋
+  const resetData = () => {
+    setOrganization1(sosokList[0].code);
+    setOrganization2(sosokSubList[0].code);
+    setName("");
+    setSubName("");
+    setEngName("");
+    setOriName("");
+    setMainNumber(0);
+    setSubNumber(0);
+    setUseYn("N");
+    setUseNumber(0);
+    setAddMemo("");
+    setContinent(countryData[0].cd);
+    setCountry(countrySubList[0].cd);
   }
 
   return (
@@ -455,7 +509,7 @@ const SingleRegister = ({ }) => {
                     <td style={{ textAlign: 'center' }}>명칭</td>
                     <td colSpan={4}>
                       <Box sx={{ width: '80%' }}>
-                        <TextField fullWidth inputProps={{ style: { height: '0px', fontSize: 14, backgroundColor: 'white' } }} placeholder='text' />
+                        <TextField value={name} onChange={(e) => setName(e.target.value)} fullWidth inputProps={{ style: { height: '0px', fontSize: 14, backgroundColor: 'white' } }} placeholder='text' />
                       </Box>
                     </td>
                   </tr>
@@ -463,7 +517,7 @@ const SingleRegister = ({ }) => {
                     <td style={{ textAlign: 'center' }}>명칭(이명)</td>
                     <td colSpan={4}>
                       <Box sx={{ width: '80%' }}>
-                        <TextField fullWidth inputProps={{ style: { height: '0px', fontSize: 14, backgroundColor: 'white' } }} placeholder='text' />
+                        <TextField value={subName} onChange={(e) => setSubName(e.target.value)} fullWidth inputProps={{ style: { height: '0px', fontSize: 14, backgroundColor: 'white' } }} placeholder='text' />
                       </Box>
                     </td>
                   </tr>
@@ -471,7 +525,7 @@ const SingleRegister = ({ }) => {
                     <td style={{ textAlign: 'center' }}>영어명칭</td>
                     <td colSpan={4}>
                       <Box sx={{ width: '80%' }}>
-                        <TextField fullWidth inputProps={{ style: { height: '0px', fontSize: 14, backgroundColor: 'white' } }} placeholder='text' />
+                        <TextField value={engName} onChange={(e) => setEngName(e.target.value)} fullWidth inputProps={{ style: { height: '0px', fontSize: 14, backgroundColor: 'white' } }} placeholder='text' />
                       </Box>
                     </td>
                   </tr>
@@ -479,7 +533,7 @@ const SingleRegister = ({ }) => {
                     <td style={{ textAlign: 'center' }}>원어명칭</td>
                     <td colSpan={4}>
                       <Box sx={{ width: '80%' }}>
-                        <TextField fullWidth inputProps={{ style: { height: '0px', fontSize: 14, backgroundColor: 'white' } }} placeholder='text' />
+                        <TextField value={oriName} onChange={(e) => setOriName(e.target.value)} fullWidth inputProps={{ style: { height: '0px', fontSize: 14, backgroundColor: 'white' } }} placeholder='text' />
                       </Box>
                     </td>
                   </tr>
@@ -569,6 +623,7 @@ const SingleRegister = ({ }) => {
                             }
                           }}
                           type="number"
+                          disabled={useYn === "N" ? true : false}
                         />}
                         label=""
                         labelPlacement="start"
@@ -626,7 +681,7 @@ const SingleRegister = ({ }) => {
           {imageListUrl.length > 0 && imageListUrl.map((data, index) => {
             return (
               index === 0 ?
-                <div className={styles.preview_image_add} onClick={(e) => selectPreviewImage(e, data)}>
+                <div className={styles.preview_image_add} onClick={(e) => selectPreviewImage(e, data)} key={index}>
                   <div className={styles.preview_first_icon} onClick={(e) => firstIcon(e, index)}>대표</div>
                   <div className={styles.preview_image_remove} onClick={(e) => removePreviewImage(e, index)}></div>
                   <img
@@ -636,7 +691,7 @@ const SingleRegister = ({ }) => {
                   />
                 </div>
                 :
-                <div className={styles.preview_image_add} onClick={(e) => selectPreviewImage(e, data)}>
+                <div className={styles.preview_image_add} onClick={(e) => selectPreviewImage(e, data)} key={index}>
                   <div className={styles.preview_image_remove} onClick={(e) => removePreviewImage(e, index)}></div>
                   <img
                     style={{ width: 'auto', maxWidth: '100%', height: 'auto', maxHeight: '100%' }}
@@ -801,7 +856,7 @@ const SingleRegister = ({ }) => {
                       </div>
                       {personImageListUrl.length > 0 && personImageListUrl.map((data, index) => {
                         return (
-                          <div className={styles.preview_person_image_add} onClick={(e) => selectPreviewImage(e, data)}>
+                          <div className={styles.preview_person_image_add} onClick={(e) => selectPreviewImage(e, data)} key={index} >
                             <div className={styles.preview_image_remove} onClick={(e) => removePreviewPersonImage(e, index)}></div>
                             <img
                               style={{ width: 'auto', maxWidth: '100%', height: 'auto', maxHeight: '100%' }}

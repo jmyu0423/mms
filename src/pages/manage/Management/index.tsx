@@ -58,7 +58,7 @@ const WngCard = styled(Card)(({ theme }) => ({
 const Management = ({ }) => {
   const imgSize = { maxHeight: "100%", maxWidth: "100%", cursor: "pointer", display: "flex" };
   const [gridState, setgridState] = useState(null); // Optional - for accessing Grid's API
-  const [rowData, setRowData] = useState(itemList); // Set rowData to Array of Objects, one Object per Row
+  const [rowData, setRowData] = useState([]); // Set rowData to Array of Objects, one Object per Row
   const [selectedRow, setSelectedRow] = useState([]);
 
   //등록모달 컨트롤 state
@@ -97,12 +97,26 @@ const Management = ({ }) => {
         } else return null;
       },
     },
-    { field: 'affiliation', headerName: '소장품 소속', flex: 2, cellStyle: { textAlign: "center", whiteSpace: 'normal' }, autoHeight: true },
+    {
+      field: '', headerName: '소장품 소속', flex: 2, cellStyle: { textAlign: "center", whiteSpace: 'normal' }, autoHeight: true,
+      cellRenderer: function (row) {
+        console.log(row)
+        if (row.data.org1Value && row.data.org2Value) {
+          return (
+            <div>
+              {row.data.org1Value + "/" + row.data.org2Value}
+            </div>
+          )
+        } else {
+          return null;
+        }
+      }
+    },
     { field: 'number', headerName: '소장품 번호', flex: 2, cellStyle: { textAlign: "center", whiteSpace: 'normal' }, autoHeight: true },
     { field: 'detailNumber', headerName: '세부 번호', flex: 2, cellStyle: { textAlign: "center", whiteSpace: 'normal' }, autoHeight: true },
     { field: 'name', headerName: '명칭', flex: 2, cellStyle: { textAlign: "center", whiteSpace: 'normal' }, autoHeight: true },
-    { field: 'mainCnt', headerName: '주수량', flex: 1.2, cellStyle: { textAlign: "center", whiteSpace: 'normal' }, autoHeight: true },
-    { field: 'subCnt', headerName: '부수량', flex: 1.2, cellStyle: { textAlign: "center", whiteSpace: 'normal' }, autoHeight: true },
+    { field: 'mainNumber', headerName: '주수량', flex: 1.2, cellStyle: { textAlign: "center", whiteSpace: 'normal' }, autoHeight: true },
+    { field: 'subNumber', headerName: '부수량', flex: 1.2, cellStyle: { textAlign: "center", whiteSpace: 'normal' }, autoHeight: true },
     {
       field: '', headerName: 'action', flex: 2, cellStyle: { textAlign: "center" },
       cellRenderer: function (row) {
@@ -214,6 +228,7 @@ const Management = ({ }) => {
 
   useEffect(() => {
     selectOrganization();
+    selectItemList();
   }, [])
 
   useEffect(() => {
@@ -249,6 +264,26 @@ const Management = ({ }) => {
 
   const closeUpdateModal = () => {
     setOpenUpdate(false)
+  }
+
+  //데이터 리스트 호출
+  const selectItemList = async () => {
+    await axios
+      .get("http://smus.scjmatthias.net:5000/artifact")
+      .then(function (response) {
+        if (response.statusText === "OK") {
+          let resultData = [];
+          if (response.data != "") {
+            resultData = JSON.parse(response.data);
+          }
+          console.log(resultData)
+          setRowData(resultData)
+        } else {
+        }
+      })
+      .catch(function (error) {
+        console.log("실패", error);
+      })
   }
 
   const deleteRowData = () => {
@@ -327,8 +362,6 @@ const Management = ({ }) => {
 
   const setFirstValue = (cd, targetData) => {
     if (targetData === "organization1") {
-      console.log(cd)
-      console.log(targetData)
       for (let i = 0; i < sosokList.length; i++) {
         if (sosokList[i].code === cd) {
           setOrganization1(sosokList[i].code);
