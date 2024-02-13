@@ -80,6 +80,13 @@ const Management = ({ }) => {
       autoHeight: true,
       headerCheckboxSelection: true,
       checkboxSelection: true,
+      cellRenderer: function (row) {
+        return (
+          <div>
+            {row.rowIndex + 1}
+          </div>
+        );
+      },
     },
     {
       field: 'image', headerName: '대표 이미지', flex: 2, cellStyle: { display: 'flex', justifyContent: 'center', alignItems: 'center', textAlign: "center", whiteSpace: 'normal' }, autoHeight: true,
@@ -100,7 +107,6 @@ const Management = ({ }) => {
     {
       field: '', headerName: '소장품 소속', flex: 2, cellStyle: { textAlign: "center", whiteSpace: 'normal' }, autoHeight: true,
       cellRenderer: function (row) {
-        console.log(row)
         if (row.data.org1Value && row.data.org2Value) {
           return (
             <div>
@@ -259,7 +265,7 @@ const Management = ({ }) => {
 
   const openUpdateModal = (row) => {
     setSingleCurrRowData(row.data);
-    setOpenUpdate(true);
+    // setOpenUpdate(true);
   }
 
   const closeUpdateModal = () => {

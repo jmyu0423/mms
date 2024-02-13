@@ -10,7 +10,8 @@ const MainToolUser = () => {
             style={{
                 backgroundColor: "aliceblue",
                 padding: "0px 5px",
-                marginRight: "10px"
+                marginRight: "10px",
+                textTransform: 'none'
             }}
             sx={{ "& .MuiButton-startIcon": { marginRight: "0px" } }}
 

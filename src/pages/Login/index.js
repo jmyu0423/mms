@@ -48,7 +48,7 @@ const Login = () => {
         };
 
         let tempResult = {
-            realname: "admin",
+            realname: userId,
             result: "ok",
             sesskey: ""
         }

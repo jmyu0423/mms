@@ -7,17 +7,17 @@ import dayjs from 'dayjs';
 import { ItemGroup, PopupFormControlLabel, ComboControlLabel } from 'src/components/modal/ItemGroup';
 import CustomCombo from 'src/components/combobox/CustomCombo';
 import {
-  itemList,
   materialData,
   countryData,
   organization1List,
   organization2List,
-  materialList,
   countryList,
   broughtReasonData,
   relatedTopicData,
   historyData,
-  storageList
+  storageList,
+  sizeType,
+  yearTypeList,
 } from 'src/jsonData';
 import AlertModal from 'src/components/modal/AlertModal';
 import PreviewModal from "src/pages/manage/modal/PreviewModal";
@@ -74,10 +74,12 @@ const SingleRegister = ({ }) => {
 
   const [sosokList, setSosokList] = useState([]);
   const [sosokSubList, setSosokSubList] = useState([]);
+  const [regSosokSubList1, setSosokSubList1] = useState([]);
+  const [regSosokSubList2, setSosokSubList2] = useState([]);
   const [countrySubList, setcountrySubList] = useState([]);
-  const [storage, setStorage] = useState("");
+  const [instSosokSubList, setInstSosokSubList] = useState([]);
 
-  //-------------------------- 1번 ------------------------------------//
+  //-------------------------- 박물조회 ------------------------------------//
   const [today, setToday] = useState(dayjs(new Date()).format('YYYY-MM-DD')); //등록일
   const [organization1, setOrganization1] = useState(""); //보관소속1
   const [organization2, setOrganization2] = useState(""); //보관소속2
@@ -89,13 +91,52 @@ const SingleRegister = ({ }) => {
   const [subNumber, setSubNumber] = useState(0); //부수량
   const [useYn, setUseYn] = useState("N"); //딸림자료 유/무
   const [useNumber, setUseNumber] = useState(0); //딸림수량
+  const [material, setMaterial] = useState(materialData[0].cd); //재질
+  const [sizeArr, setSizelArr] = useState([{ name: sizeType[0].name, cd: sizeType[0].cd, size: "" }]); //크기
   const [addMemo, setAddMemo] = useState(""); //추가상세기술
-  //-------------------------- 1번 ------------------------------------//
+  //-------------------------- 박물조회 ------------------------------------//
 
   //-------------------------- 배경정보 ------------------------------------//
   const [continent, setContinent] = useState(""); //대륙
   const [country, setCountry] = useState(""); //나라
+  const [yearType, setYearType] = useState(yearTypeList[0].cd); //년도 유형
+  const [prodYear, setProdYear] = useState(""); //제작시기
+  const [producer, setProducer] = useState(""); //제작사
+  const [getReason, setGetReason] = useState(""); //입수연유
+  const [getYear, setGetYear] = useState(""); //입수년도
+  const [eventTitle, setEventTitle] = useState(""); //행사명
+  const [eventCount, setEventCount] = useState(""); //차수
+  const [getLocation, setGetLocation] = useState(""); //입수장소
+  const [getName, setGetName] = useState(""); //수상자
+  const [donorName1, setDonorName1] = useState(""); //기증자1
+  const [do1Sosok, setDo1Sosok] = useState(""); //기증자1 소속/직책
+  const [donorName2, setDonorName2] = useState(""); //기증자2
+  const [do2Sosok, setDo2Sosok] = useState(""); //기증자2 소속/직책
+  const [impoGrade, setImpoGrade] = useState(""); //중요등급
   //-------------------------- 배경정보 ------------------------------------//
+
+  //-------------------------- 설명정보 ------------------------------------//
+  const [documnet, setDocument] = useState(""); //소장품 설명
+  const [prodGrage, setProdGrade] = useState(""); //소장품 가치 등급
+  const [subImfo, setSubImfo] = useState(""); //딸림자료 정보
+  const [docMemo, setDocMemo] = useState(""); //기타
+  //-------------------------- 설명정보 ------------------------------------//
+
+  //-------------------------- 보관/보존정보 ------------------------------------//
+  const [storage, setStorage] = useState(""); //보관구분
+  const [regSosok1, setRegSosok1] = useState(""); //보관처1 소속1
+  const [regSosokSub1, setRegSosokSub1] = useState(""); //보관처1 소속2
+  const [regSosok2, setRegSosok2] = useState(""); //보관처2 소속1
+  const [regSosokSub2, setRegSosokSub2] = useState(""); //보관처2 소속2
+  const [prodState, setProdState] = useState(""); //상태
+  //-------------------------- 보관/보존정보 ------------------------------------//
+
+  //-------------------------- 등록자 정보 ------------------------------------//
+  const [register, setRegister] = useState(""); //등록자
+  const [inserSosok, setInserSosok] = useState("") //등록자 소속1
+  const [inserSosokSub, setInserSosokSub] = useState("") //등록자 소속1
+  const [regPosition, setRegiPosition] = useState(""); //직책
+  //-------------------------- 등록자 정보 ------------------------------------//
 
   const [columnDefs, setColumnDefs] = useState([
     { field: 'updDt', headerName: '수정일', flex: 2.5, cellStyle: { textAlign: "center", whiteSpace: 'normal' }, autoHeight: true },
@@ -103,6 +144,8 @@ const SingleRegister = ({ }) => {
     { field: 'updNm', headerName: '수정자', flex: 2, cellStyle: { textAlign: "center", whiteSpace: 'normal' }, autoHeight: true },
     { field: 'regNm', headerName: '승인자', flex: 2, cellStyle: { textAlign: "center", whiteSpace: 'normal' }, autoHeight: true },
   ]);
+
+
 
   useEffect(() => {
     //미리보기 이미지 갯수 최신화 하기 위함
@@ -140,6 +183,34 @@ const SingleRegister = ({ }) => {
     }
     setcountrySubList(tempList);
   }, [continent])
+
+
+  useEffect(() => {
+    for (let i = 0; i < sosokList.length; i++) {
+      if (sosokList[i].code === regSosok1) {
+        setSosokSubList1(sosokList[i].sub);
+        break;
+      }
+    }
+  }, [regSosok1])
+
+  useEffect(() => {
+    for (let i = 0; i < sosokList.length; i++) {
+      if (sosokList[i].code === regSosok2) {
+        setSosokSubList2(sosokList[i].sub);
+        break;
+      }
+    }
+  }, [regSosok2])
+
+  useEffect(() => {
+    for (let i = 0; i < sosokList.length; i++) {
+      if (sosokList[i].code === inserSosok) {
+        setInstSosokSubList(sosokList[i].sub);
+        break;
+      }
+    }
+  }, [inserSosok])
 
   const closePreviewModal = () => {
     setOpenPreview(false);
@@ -190,6 +261,48 @@ const SingleRegister = ({ }) => {
       for (let i = 0; i < storageList.length; i++) {
         if (storageList[i].cd === cd) {
           setStorage(storageList[i].cd);
+          break;
+        }
+      }
+    } else if (targetData === "regSosok1") {
+      for (let i = 0; i < sosokList.length; i++) {
+        if (sosokList[i].code === cd) {
+          setRegSosok1(sosokList[i].code);
+          break;
+        }
+      }
+    } else if (targetData === "regSosokSub1") {
+      for (let i = 0; i < regSosokSubList1.length; i++) {
+        if (regSosokSubList1[i].code === cd) {
+          setRegSosokSub1(regSosokSubList1[i].code);
+          break;
+        }
+      }
+    } else if (targetData === "regSosok2") {
+      for (let i = 0; i < sosokList.length; i++) {
+        if (sosokList[i].code === cd) {
+          setRegSosok2(sosokList[i].code);
+          break;
+        }
+      }
+    } else if (targetData === "regSosokSub2") {
+      for (let i = 0; i < regSosokSubList2.length; i++) {
+        if (regSosokSubList2[i].code === cd) {
+          setRegSosokSub2(regSosokSubList2[i].code);
+          break;
+        }
+      }
+    } else if (targetData === "inserSosok") {
+      for (let i = 0; i < sosokList.length; i++) {
+        if (sosokList[i].code === cd) {
+          setInserSosok(sosokList[i].code);
+          break;
+        }
+      }
+    } else if (targetData === "inserSosokSub") {
+      for (let i = 0; i < instSosokSubList.length; i++) {
+        if (instSosokSubList[i].code === cd) {
+          setInserSosokSub(instSosokSubList[i].code);
           break;
         }
       }
@@ -376,11 +489,11 @@ const SingleRegister = ({ }) => {
       tempCnt = useNumber;
     }
 
+    let sizeObj = Object.assign({}, sizeArr);
+
     //보관소속 이름 추출
     let org1Value = "";
     let org2Value = "";
-    console.log(sosokList)
-    console.log(organization1)
     for (let i = 0; i < sosokList.length; i++) {
       if (sosokList[i].code == organization1) {
         org1Value = sosokList[i].name;
@@ -393,6 +506,11 @@ const SingleRegister = ({ }) => {
         org2Value = sosokList[i].name;
         break;
       }
+    }
+
+    let tempProdYear = "";
+    if (yearType != "00") {
+      tempProdYear = prodYear;
     }
 
     //raw data
@@ -410,10 +528,43 @@ const SingleRegister = ({ }) => {
       subNumber: subNumber, //부수량
       useYn: useYn, //딸람자료 유무
       useNumber: tempCnt, //딸림수량
+      material: material, //재질
+      sizeObj: sizeObj, //사이즈
       addMemo: addMemo, //추가상세기술
 
       continent: continent, //대륙
       country: country, //나라
+      yearType: yearType, //년도 유형
+      prodYear: tempProdYear, //제작시기
+      producer: producer, //제작사
+      getReason: getReason, //입수연유
+      getYear: getYear, //입수년도
+      eventTitle: eventTitle, //행사명
+      eventCount: eventCount, //차수
+      getLocation: getLocation, //입사장소
+      getName: getName, //수상자
+      donorName1: donorName1, //기증자1
+      do1Sosok: do1Sosok, //기증자1 소속/직책
+      donorName2: donorName2, //기증자2
+      do2Sosok: do2Sosok, //기증자2 소속/직책
+      impoGrade: impoGrade, //중요등급
+
+      documnet: documnet, //소장품 설명
+      prodGrage: prodGrage, //소장품 가치 등급
+      subImfo: subImfo, //딸림자료 정보
+      docMemo: docMemo, //기타
+
+      storage: storage, //보관 구분
+      regSosok1: regSosok1, //보관처1
+      regSosokSub1: regSosokSub1, //보관처1 서브
+      regSosok2: regSosok2, //보관처2
+      regSosokSub2: regSosokSub2, //보관처2 서브
+      prodState: prodState, //상태
+
+      register: register, //등록자
+      inserSosok: inserSosok, //등록자 소속1
+      inserSosokSub: inserSosokSub, //등록자 소속1 서브
+      regPosition: regPosition, //직책
     }
 
     const params = new FormData();
@@ -430,7 +581,8 @@ const SingleRegister = ({ }) => {
         console.log(response)
         if (response.statusText === "OK") {
           alert("등록완료");
-          resetData();
+          window.location.reload();
+          // resetData();
           window.scrollTo(0, 0);
         } else {
         }
@@ -452,9 +604,66 @@ const SingleRegister = ({ }) => {
     setSubNumber(0);
     setUseYn("N");
     setUseNumber(0);
+
     setAddMemo("");
+
     setContinent(countryData[0].cd);
     setCountry(countrySubList[0].cd);
+  }
+
+  //재질 추가
+  const addMaterial = (e) => {
+    let tempList = [...sizeArr];
+    if (tempList.length > 4) {
+      return false;
+    }
+    tempList.push({ name: sizeType[0].name, cd: sizeType[0].cd, size: "" });
+    setSizelArr(tempList);
+  }
+
+  //재질 삭제
+  const removeMaterial = (e) => {
+    let tempList = [...sizeArr];
+    if (tempList.length === 1) {
+      if (tempList[0].cd == "00") {
+        tempList[0].name = sizeType[0].name;
+        tempList[0].cd = sizeType[0].cd;
+        setSizelArr(tempList);
+      }
+      return false;
+    }
+    tempList.splice(tempList.length - 1);
+    setSizelArr(tempList);
+  }
+
+  //사이즈 선택
+  const handleSizeType = (e, index) => {
+    let tempList = [...sizeArr];
+
+    for (let i = 0; i < sizeType.length; i++) {
+      if (sizeType[i].cd == e.target.value) {
+        tempList[index].name = sizeType[i].name;
+        tempList[index].cd = sizeType[i].cd;
+        break;
+      }
+    }
+    setSizelArr(tempList)
+  }
+
+  //직접 사이즈 입력
+  const handleEditType = (e, index) => {
+    let tempList = [...sizeArr];
+
+    tempList[index].name = e.target.value;
+    setSizelArr(tempList)
+  }
+
+  //사이즈 크기
+  const handleSize = (e, index) => {
+    let tempList = [...sizeArr];
+
+    tempList[index].size = e.target.value;
+    setSizelArr(tempList)
   }
 
   return (
@@ -632,18 +841,55 @@ const SingleRegister = ({ }) => {
                   </tr>
                   <tr>
                     <td style={{ textAlign: 'center' }}>재질/크기</td>
-                    <td style={{ textAlign: 'center', backgroundColor: '#deebff' }}>상세번호</td>
+                    <td style={{ textAlign: 'center', backgroundColor: '#deebff' }}>재질</td>
+                    <td colSpan={3}>
+                      <select name="material" style={{ marginRight: "2px", width: "80px" }} onChange={(e) => setMaterial(e.target.value)}>
+                        {materialData.map((data) => {
+                          return (
+                            <option value={data.cd}>
+                              {data.name}
+                            </option>
+                          )
+                        })}
+                      </select>
+                    </td>
                   </tr>
                   <tr>
                     <td style={{ textAlign: 'center' }}>
                       <div style={{ marginBottom: '5px', marginTop: '3px' }}>
-                        <AddButton >+크기 추가</AddButton>
+                        <AddButton onClick={(e) => addMaterial(e)}>+크기 추가</AddButton>
                       </div>
                       <div style={{ marginBottom: '3px', marginTop: '3px' }}>
-                        <AddButton >-크기 삭제</AddButton>
+                        <AddButton onClick={(e) => removeMaterial(e)}>-크기 삭제</AddButton>
                       </div>
                     </td>
-                    <td style={{ textAlign: 'center', backgroundColor: '#deebff' }}>상세번호</td>
+                    <td style={{ textAlign: 'center', backgroundColor: '#deebff' }}>크기</td>
+                    <td colSpan={3}>
+                      <div style={{ display: "flex" }}>
+                        {sizeArr.map((data, index) => {
+                          return (
+                            <div>
+                              {data.cd != "00" ?
+                                <select name="sizeType" style={{ marginRight: "2px", width: "80px" }} onChange={(e) => { handleSizeType(e, index) }}>
+                                  {sizeType.map((data) => {
+                                    return (
+                                      <option value={data.cd} key={data.cd}>
+                                        {data.name}
+                                      </option>
+                                    )
+                                  })}
+                                </select>
+                                :
+                                <input type="text" style={{ marginRight: "2px", width: "80px", height: "20px" }} onChange={(e) => handleEditType(e, index)}></input>
+                              }
+                              <div>
+                                <input type="text" style={{ width: "80px" }} onChange={(e) => { handleSize(e, index) }}></input>
+                              </div>
+                            </div>
+                          )
+                        })}
+                      </div>
+                    </td>
                   </tr>
                   <tr>
                     <td style={{ width: '10%', textAlign: 'center' }}>추가 상세 기술</td>
@@ -736,14 +982,26 @@ const SingleRegister = ({ }) => {
                   <td style={{ width: '10%', textAlign: 'center' }}>제작 시기</td>
                   <td style={{ width: '10%', textAlign: 'center', backgroundColor: '#deebff' }}>년도 유형</td>
                   <td style={{ width: '30%' }}>
-                    <Box sx={{ width: '80%' }}>
-                      <TextField fullWidth inputProps={{ style: { height: '0px', fontSize: 14, backgroundColor: 'white' } }} placeholder='text' />
-                    </Box>
+                    <select name="yearType" onChange={(e) => setYearType(e.target.value)}>
+                      {yearTypeList.map((data) => {
+                        return (
+                          <option value={data.cd}>
+                            {data.name}
+                          </option>
+                        )
+                      })}
+                    </select>
                   </td>
                   <td style={{ width: '10%', textAlign: 'center', backgroundColor: '#deebff' }}>제작시기</td>
                   <td style={{ width: '30%' }}>
                     <Box sx={{ width: '80%' }}>
-                      <TextField fullWidth inputProps={{ style: { height: '0px', fontSize: 14, backgroundColor: 'white' } }} placeholder='text' />
+                      <TextField
+                        fullWidth
+                        onChange={(e) => setProdYear(e.target.value)}
+                        inputProps={{ style: { height: '0px', fontSize: 14, backgroundColor: 'white' } }}
+                        placeholder='text'
+                        disabled={yearType == "00" ? true : false}
+                      />
                     </Box>
                   </td>
                 </tr>
@@ -751,7 +1009,12 @@ const SingleRegister = ({ }) => {
                   <td style={{ textAlign: 'center' }}>제작사</td>
                   <td colSpan={4}>
                     <Box sx={{ width: '80%' }}>
-                      <TextField fullWidth inputProps={{ style: { height: '0px', fontSize: 14, backgroundColor: 'white' } }} placeholder='text' />
+                      <TextField
+                        onChange={(e) => setProducer(e.target.value)}
+                        fullWidth
+                        inputProps={{ style: { height: '0px', fontSize: 14, backgroundColor: 'white' } }}
+                        placeholder='text'
+                      />
                     </Box>
                   </td>
                 </tr>
@@ -760,13 +1023,19 @@ const SingleRegister = ({ }) => {
                   <td style={{ width: '10%', textAlign: 'center', backgroundColor: '#deebff' }}>입수 연유</td>
                   <td style={{ width: '30%' }}>
                     <Box sx={{ width: '80%' }}>
-                      <TextField fullWidth inputProps={{ style: { height: '0px', fontSize: 14, backgroundColor: 'white' } }} placeholder='text' />
+                      <TextField
+                        fullWidth
+                        onChange={(e) => setGetReason(e.target.value)}
+                        inputProps={{ style: { height: '0px', fontSize: 14, backgroundColor: 'white' } }} placeholder='text' />
                     </Box>
                   </td>
                   <td style={{ width: '10%', textAlign: 'center', backgroundColor: '#deebff' }}>입수 년도</td>
                   <td style={{ width: '30%' }}>
                     <Box sx={{ width: '80%' }}>
-                      <TextField fullWidth inputProps={{ style: { height: '0px', fontSize: 14, backgroundColor: 'white' } }} placeholder='text' />
+                      <TextField
+                        fullWidth
+                        onChange={(e) => setGetYear(e.target.value)}
+                        inputProps={{ style: { height: '0px', fontSize: 14, backgroundColor: 'white' } }} placeholder='text' />
                     </Box>
                   </td>
                 </tr>
@@ -774,13 +1043,19 @@ const SingleRegister = ({ }) => {
                   <td style={{ textAlign: 'center' }}>행사명</td>
                   <td colSpan={2}>
                     <Box sx={{ width: '80%' }}>
-                      <TextField fullWidth inputProps={{ style: { height: '0px', fontSize: 14, backgroundColor: 'white' } }} placeholder='text' />
+                      <TextField
+                        fullWidth
+                        onChange={(e) => setEventTitle(e.target.value)}
+                        inputProps={{ style: { height: '0px', fontSize: 14, backgroundColor: 'white' } }} placeholder='text' />
                     </Box>
                   </td>
                   <td style={{ textAlign: 'center', backgroundColor: '#deebff' }}>차수</td>
                   <td>
                     <Box sx={{ width: '80%' }}>
-                      <TextField fullWidth inputProps={{ style: { height: '0px', fontSize: 14, backgroundColor: 'white' } }} placeholder='text' />
+                      <TextField
+                        fullWidth
+                        onChange={(e) => setEventCount(e.target.value)}
+                        inputProps={{ style: { height: '0px', fontSize: 14, backgroundColor: 'white' } }} placeholder='text' />
                     </Box>
                   </td>
                 </tr>
@@ -789,13 +1064,19 @@ const SingleRegister = ({ }) => {
                   <td style={{ width: '10%', textAlign: 'center', backgroundColor: '#deebff' }}>입수 장소</td>
                   <td style={{ width: '30%' }}>
                     <Box sx={{ width: '80%' }}>
-                      <TextField fullWidth inputProps={{ style: { height: '0px', fontSize: 14, backgroundColor: 'white' } }} placeholder='text' />
+                      <TextField
+                        fullWidth
+                        onChange={(e) => setGetLocation(e.target.value)}
+                        inputProps={{ style: { height: '0px', fontSize: 14, backgroundColor: 'white' } }} placeholder='text' />
                     </Box>
                   </td>
                   <td style={{ width: '10%', textAlign: 'center', backgroundColor: '#deebff' }}>수상자</td>
                   <td style={{ width: '30%' }}>
                     <Box sx={{ width: '80%' }}>
-                      <TextField fullWidth inputProps={{ style: { height: '0px', fontSize: 14, backgroundColor: 'white' } }} placeholder='text' />
+                      <TextField
+                        fullWidth
+                        onChange={(e) => setGetName(e.target.value)}
+                        inputProps={{ style: { height: '0px', fontSize: 14, backgroundColor: 'white' } }} placeholder='text' />
                     </Box>
                   </td>
                 </tr>
@@ -806,13 +1087,19 @@ const SingleRegister = ({ }) => {
                   <td style={{ width: '10%', textAlign: 'center', backgroundColor: '#deebff' }}>기증자명</td>
                   <td style={{ width: '30%' }}>
                     <Box sx={{ width: '80%' }}>
-                      <TextField fullWidth inputProps={{ style: { height: '0px', fontSize: 14, backgroundColor: 'white' } }} placeholder='한글로 기재' />
+                      <TextField
+                        fullWidth
+                        onChange={(e) => setDonorName1(e.target.value)}
+                        inputProps={{ style: { height: '0px', fontSize: 14, backgroundColor: 'white' } }} placeholder='한글로 기재' />
                     </Box>
                   </td>
                   <td style={{ width: '10%', textAlign: 'center', backgroundColor: '#deebff' }}>소속/직책</td>
                   <td style={{ width: '30%' }}>
                     <Box sx={{ width: '80%' }}>
-                      <TextField fullWidth inputProps={{ style: { height: '0px', fontSize: 14, backgroundColor: 'white' } }} placeholder='한글로 기재' />
+                      <TextField
+                        fullWidth
+                        onChange={(e) => setDo1Sosok(e.target.value)}
+                        inputProps={{ style: { height: '0px', fontSize: 14, backgroundColor: 'white' } }} placeholder='한글로 기재' />
                     </Box>
                   </td>
                 </tr>
@@ -820,13 +1107,19 @@ const SingleRegister = ({ }) => {
                   <td style={{ width: '10%', textAlign: 'center', backgroundColor: '#deebff' }}>기증자명</td>
                   <td style={{ width: '30%' }}>
                     <Box sx={{ width: '80%' }}>
-                      <TextField fullWidth inputProps={{ style: { height: '0px', fontSize: 14, backgroundColor: 'white' } }} placeholder='영어로 기재' />
+                      <TextField
+                        fullWidth
+                        onChange={(e) => setDonorName2(e.target.value)}
+                        inputProps={{ style: { height: '0px', fontSize: 14, backgroundColor: 'white' } }} placeholder='영어로 기재' />
                     </Box>
                   </td>
                   <td style={{ width: '10%', textAlign: 'center', backgroundColor: '#deebff' }}>소속/직책</td>
                   <td style={{ width: '30%' }}>
                     <Box sx={{ width: '80%' }}>
-                      <TextField fullWidth inputProps={{ style: { height: '0px', fontSize: 14, backgroundColor: 'white' } }} placeholder='영어로 기재' />
+                      <TextField
+                        fullWidth
+                        onChange={(e) => setDo2Sosok(e.target.value)}
+                        inputProps={{ style: { height: '0px', fontSize: 14, backgroundColor: 'white' } }} placeholder='영어로 기재' />
                     </Box>
                   </td>
                 </tr>
@@ -834,7 +1127,10 @@ const SingleRegister = ({ }) => {
                   <td style={{ width: '10%', textAlign: 'center', backgroundColor: '#deebff' }}>중요등급</td>
                   <td style={{ width: '30%' }}>
                     <Box sx={{ width: '80%' }}>
-                      <TextField fullWidth inputProps={{ style: { height: '0px', fontSize: 14, backgroundColor: 'white' } }} placeholder='영어로 기재' />
+                      <TextField
+                        fullWidth
+                        onChange={(e) => setImpoGrade(e.target.value)}
+                        inputProps={{ style: { height: '0px', fontSize: 14, backgroundColor: 'white' } }} placeholder="text" />
                     </Box>
                   </td>
                   <td style={{ width: '10%', textAlign: 'center', backgroundColor: '#deebff' }}></td>
@@ -895,7 +1191,12 @@ const SingleRegister = ({ }) => {
                   </td>
                   <td colSpan={4} style={{ width: '90%' }}>
                     <Box sx={{ width: '100%' }}>
-                      <TextField multiline rows={3} fullWidth inputProps={{ style: { padding: 0, fontSize: 14, backgroundColor: 'white' } }} placeholder='text area' />
+                      <TextField
+                        onChange={(e) => setDocument(e.target.value)}
+                        multiline
+                        rows={3}
+                        fullWidth
+                        inputProps={{ style: { padding: 0, fontSize: 14, backgroundColor: 'white' } }} placeholder='text area' />
                     </Box>
                   </td>
                 </tr>
@@ -905,7 +1206,10 @@ const SingleRegister = ({ }) => {
                   </td>
                   <td colSpan={4} style={{ width: '90%' }}>
                     <Box sx={{ width: '20%' }}>
-                      <TextField fullWidth inputProps={{ style: { height: '0px', fontSize: 14, backgroundColor: 'white' } }} placeholder='선택' />
+                      <TextField
+                        onChange={(e) => setProdGrade(e.target.value)}
+                        fullWidth
+                        inputProps={{ style: { height: '0px', fontSize: 14, backgroundColor: 'white' } }} placeholder='text' />
                     </Box>
                   </td>
                 </tr>
@@ -915,7 +1219,12 @@ const SingleRegister = ({ }) => {
                   </td>
                   <td colSpan={4} style={{ width: '90%' }}>
                     <Box sx={{ width: '100%' }}>
-                      <TextField multiline rows={3} fullWidth inputProps={{ style: { padding: 0, fontSize: 14, backgroundColor: 'white' } }} placeholder='text area' />
+                      <TextField
+                        onChange={(e) => setSubImfo(e.target.value)}
+                        multiline
+                        rows={3}
+                        fullWidth
+                        inputProps={{ style: { padding: 0, fontSize: 14, backgroundColor: 'white' } }} placeholder='text area' />
                     </Box>
                   </td>
                 </tr>
@@ -933,7 +1242,11 @@ const SingleRegister = ({ }) => {
                   </td>
                   <td colSpan={4} style={{ width: '90%' }}>
                     <Box sx={{ width: '100%' }}>
-                      <TextField rows={1} fullWidth inputProps={{ style: { fontSize: 14, backgroundColor: 'white' } }} placeholder='text area' />
+                      <TextField
+                        onChange={(e) => setDocMemo(e.target.value)}
+                        rows={1}
+                        fullWidth
+                        inputProps={{ style: { fontSize: 14, backgroundColor: 'white' } }} placeholder='text area' />
                     </Box>
                   </td>
                 </tr>
@@ -960,45 +1273,41 @@ const SingleRegister = ({ }) => {
                   <td colSpan={4} style={{ width: '90%' }}>
                     <ComboControlLabel
                       control={<CustomCombo size="small" type="none" setData={setFirstValue} dataList={storageList} value={storage} targetData={"storage"} codeChange={(e) => setStorage(e.target.value)} />}
-                      label=""
                       labelPlacement="start"
+                      label=""
                     />
                   </td>
                 </tr>
                 <tr>
                   <td style={{ width: '10%', textAlign: 'center' }}>보관처</td>
                   <td style={{ width: '10%', textAlign: 'center', backgroundColor: '#deebff' }}>보관처1</td>
-                  <td style={{ width: '10%' }}>
-                    {/* <ComboControlLabel
-                      control={<CustomCombo size="small" type="none" setData={setFirstValue} dataList={countryData} value={continent} targetData={"continent"} codeChange={(e) => setContinent(e.target.value)} />}
+                  <td style={{ width: '20%' }}>
+                    <ComboControlLabel
+                      control={<CustomCombo size="small" type="none" setData={setFirstValue} dataList={sosokList} value={regSosok1} targetData={"regSosok1"} codeChange={(e) => setRegSosok1(e.target.value)} />}
                       label=""
                       labelPlacement="start"
-                    /> */}
+                    />
+                    <ComboControlLabel
+                      control={<CustomCombo size="small" type="none" setData={setFirstValue} dataList={regSosokSubList1} value={regSosokSub1} targetData={"regSosokSub1"} codeChange={(e) => setRegSosokSub1(e.target.value)} />}
+                      label=""
+                      labelPlacement="start"
+                    />
                   </td>
+
                   <td style={{ width: '10%', textAlign: 'center', backgroundColor: '#deebff' }}>보관처2</td>
-                  <td style={{ width: '10%' }}>
-                    {/* <ComboControlLabel
-                      control={<CustomCombo size="small" type="none" setData={setFirstValue} dataList={countryData} value={continent} targetData={"continent"} codeChange={(e) => setContinent(e.target.value)} />}
+                  <td style={{ width: '20%' }}>
+                    <ComboControlLabel
+                      control={<CustomCombo size="small" type="none" setData={setFirstValue} dataList={sosokList} value={regSosok2} targetData={"regSosok2"} codeChange={(e) => setRegSosok2(e.target.value)} />}
                       label=""
                       labelPlacement="start"
-                    /> */}
-                  </td>
-                  <td style={{ width: '10%', textAlign: 'center', backgroundColor: '#deebff' }}>보관처3</td>
-                  <td style={{ width: '10%' }}>
-                    {/* <ComboControlLabel
-                      control={<CustomCombo size="small" type="none" setData={setFirstValue} dataList={countryData} value={continent} targetData={"continent"} codeChange={(e) => setContinent(e.target.value)} />}
+                    />
+                    <ComboControlLabel
+                      control={<CustomCombo size="small" type="none" setData={setFirstValue} dataList={regSosokSubList2} value={regSosokSub2} targetData={"regSosokSub2"} codeChange={(e) => setRegSosokSub2(e.target.value)} />}
                       label=""
                       labelPlacement="start"
-                    /> */}
+                    />
                   </td>
-                  <td style={{ width: '10%', textAlign: 'center', backgroundColor: '#deebff' }}>보관처4</td>
-                  <td style={{ width: '10%' }}>
-                    {/* <ComboControlLabel
-                      control={<CustomCombo size="small" type="none" setData={setFirstValue} dataList={countryData} value={continent} targetData={"continent"} codeChange={(e) => setContinent(e.target.value)} />}
-                      label=""
-                      labelPlacement="start"
-                    /> */}
-                  </td>
+
                 </tr>
                 <tr>
                   <td style={{ width: '10%', textAlign: 'center' }}>
@@ -1017,12 +1326,14 @@ const SingleRegister = ({ }) => {
                   <td style={{ width: '10%', textAlign: 'center' }}>
                     상태
                   </td>
-                  <td colSpan={4} style={{ width: '90%' }}>
-                    {/* <ComboControlLabel
-                      control={<CustomCombo size="small" type="none" setData={setFirstValue} dataList={countryData} value={continent} targetData={"continent"} codeChange={(e) => setContinent(e.target.value)} />}
-                      label=""
-                      labelPlacement="start"
-                    /> */}
+                  <td colSpan={8} style={{ width: '90%' }}>
+                    <Box sx={{ width: '100%' }}>
+                      <TextField
+                        onChange={(e) => setProdState(e.target.value)}
+                        rows={1}
+                        fullWidth
+                        inputProps={{ style: { fontSize: 14, backgroundColor: 'white' } }} placeholder='text area' />
+                    </Box>
                   </td>
                 </tr>
               </tbody>
@@ -1044,7 +1355,10 @@ const SingleRegister = ({ }) => {
                   <td style={{ width: '10%', textAlign: 'center' }}>등록자</td>
                   <td colSpan={4} style={{ width: '90%' }}>
                     <Box sx={{ width: '20%' }}>
-                      <TextField fullWidth inputProps={{ style: { height: '0px', fontSize: 14, backgroundColor: 'white' } }} placeholder='등록자' />
+                      <TextField
+                        onChange={(e) => setRegister(e.target.value)}
+                        fullWidth
+                        inputProps={{ style: { height: '0px', fontSize: 14, backgroundColor: 'white' } }} placeholder='등록자' />
                     </Box>
                   </td>
                 </tr>
@@ -1052,9 +1366,25 @@ const SingleRegister = ({ }) => {
                   <td style={{ width: '10%', textAlign: 'center' }}>소속/직책</td>
                   <td style={{ width: '10%', textAlign: 'center', backgroundColor: '#deebff' }}>소속</td>
                   <td style={{ width: '30%' }}>
+                    <ComboControlLabel
+                      control={<CustomCombo size="small" type="none" setData={setFirstValue} dataList={sosokList} value={inserSosok} targetData={"inserSosok"} codeChange={(e) => setInserSosok(e.target.value)} />}
+                      label=""
+                      labelPlacement="start"
+                    />
+                    <ComboControlLabel
+                      control={<CustomCombo size="small" type="none" setData={setFirstValue} dataList={instSosokSubList} value={inserSosokSub} targetData={"inserSosokSub"} codeChange={(e) => setInserSosokSub(e.target.value)} />}
+                      label=""
+                      labelPlacement="start"
+                    />
                   </td>
                   <td style={{ width: '10%', textAlign: 'center', backgroundColor: '#deebff' }}>직책</td>
                   <td style={{ width: '30%' }}>
+                    <Box sx={{ width: '80%' }}>
+                      <TextField
+                        onChange={(e) => setRegiPosition(e.target.value)}
+                        fullWidth
+                        inputProps={{ style: { height: '0px', fontSize: 14, backgroundColor: 'white' } }} placeholder='직책' />
+                    </Box>
                   </td>
                 </tr>
               </tbody>
@@ -1062,7 +1392,7 @@ const SingleRegister = ({ }) => {
           </div>
         </div>
       </div>
-      <div className={styles.register_step_title}>
+      {/* <div className={styles.register_step_title}>
         <div style={{ display: 'flex', justifyContent: 'center', flexDirection: 'column' }}>
           6. History
         </div>
@@ -1080,9 +1410,9 @@ const SingleRegister = ({ }) => {
             />
           </div>
         </div>
-      </div>
-      <div className={styles.register_step_title}>
-        <NormalButton sx={{ backgroundColor: 'gray', width: '100px' }}>수정</NormalButton>
+      </div> */}
+      <div className={styles.register_float_right}>
+        {/* <NormalButton sx={{ backgroundColor: 'gray', width: '100px' }}>수정</NormalButton> */}
         <BaseButton sx={{ width: '100px' }} onClick={(e) => insertItem()}>등록</BaseButton>
       </div>
 

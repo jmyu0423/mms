@@ -36,7 +36,11 @@ function CustomCombo(props) {
     }, [props.dataList])
 
     const selectList = () => {
-        if (props.targetData === "organization1" || props.targetData === "organization2") {
+        if (props.targetData === "organization1" || props.targetData === "organization2" ||
+            props.targetData === "regSosok1" || props.targetData === "regSosok2"
+            || props.targetData === "regSosokSub1" || props.targetData === "regSosokSub2"
+            || props.targetData === "inserSosok" || props.targetData === "inserSosokSub"
+        ) {
             if (props.setData) {
                 props.setData(props.dataList[0].code, props.targetData)
             }

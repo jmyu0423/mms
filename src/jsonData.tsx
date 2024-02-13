@@ -445,63 +445,63 @@ export const itemList = ([
 export const materialData = ([
   {
     name: "상패",
-    cd: "0",
+    cd: "00",
   },
   {
     name: "상장",
-    cd: "1",
+    cd: "000",
   },
   {
     name: "금속",
-    cd: "2",
+    cd: "01",
   },
   {
-    name: "도토기",
-    cd: "3",
+    name: "도토",
+    cd: "02",
   },
   {
-    name: "석",
-    cd: "4",
+    name: "석재",
+    cd: "03",
   },
   {
     name: "유리",
-    cd: "5",
+    cd: "04",
   },
   {
     name: "보석",
-    cd: "6",
+    cd: "004",
   },
   {
-    name: "나무",
-    cd: "7",
+    name: "목제",
+    cd: "05",
   },
   {
     name: "조제",
-    cd: "8",
+    cd: "06",
   },
   {
     name: "골각패갑",
-    cd: "9",
+    cd: "07",
   },
   {
     name: "피모",
-    cd: "10",
+    cd: "08",
   },
   {
     name: "직물",
-    cd: "11",
+    cd: "09",
   },
   {
     name: "종자",
-    cd: "12",
+    cd: "10",
   },
   {
     name: "종이",
-    cd: "13",
+    cd: "11",
   },
   {
     name: "기타",
-    cd: "14",
+    cd: "12",
   }
 ]);
 
@@ -786,6 +786,11 @@ export const countryData = ([
     name: "아시아",
     cd: "Asia",
     "nations": {
+      "KOR": {
+        "number": 1,
+        "name_eng": "Korea",
+        "name_kor": "대한민국"
+      },
       "AFG": {
         "number": 4,
         "name_eng": "Afghanistan",
@@ -1699,4 +1704,50 @@ export const storageList = ([
     cd: '2',
     name: '전시중'
   }
+])
+
+export const sizeType = ([
+  {
+    cd: '01',
+    name: '가로'
+  },
+  {
+    cd: '02',
+    name: '세로'
+  },
+  {
+    cd: '03',
+    name: '높이'
+  },
+  {
+    cd: '04',
+    name: '두께'
+  },
+  {
+    cd: '05',
+    name: '지름'
+  },
+  {
+    cd: '00',
+    name: '기타'
+  }
+])
+
+export const yearTypeList = ([
+  {
+    cd: '01',
+    name: '연도일치'
+  },
+  {
+    cd: '01',
+    name: '연대추정(10년단위)'
+  },
+  {
+    cd: '02',
+    name: '연대추정(100년단위)'
+  },
+  {
+    cd: '00',
+    name: '연도미상'
+  },
 ])
