@@ -503,7 +503,7 @@ const SingleRegister = ({ }) => {
 
     for (let i = 0; i < sosokSubList.length; i++) {
       if (sosokSubList[i].code == organization2) {
-        org2Value = sosokList[i].name;
+        org2Value = sosokSubList[i].name;
         break;
       }
     }
