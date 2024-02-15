@@ -1,12 +1,29 @@
 import { useEffect, useRef, useMemo, useState, useLayoutEffect } from 'react';
 import { Box, TextField, styled, Button, DialogContent, Grid, Typography, formControlClasses } from "@mui/material";
-import RegistModal from 'src/components/modal/RegistModal';
-import { ItemGroup, PopupFormControlLabel } from 'src/components/modal/ItemGroup';
+import UpdateModal from 'src/components/modal/UpdateModal';
+import { ItemGroup, PopupFormControlLabel, ComboControlLabel } from 'src/components/modal/ItemGroup';
 import StorageCombo from 'src/components/combobox/StorageCombo';
 import CountryCombo from 'src/components/combobox/CountryCombo';
 import { indigo } from '@mui/material/colors';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { NormalButton, BaseButton, AddButton } from 'src/components/CustomButton';
+import styles from "src/pages/itemRegister/register.module.css";
+import dayjs from 'dayjs';
+import CustomCombo from 'src/components/combobox/CustomCombo';
+import {
+    materialData,
+    countryData,
+    organization1List,
+    organization2List,
+    countryList,
+    broughtReasonData,
+    relatedTopicData,
+    historyData,
+    storageList,
+    sizeType,
+    yearTypeList,
+} from 'src/jsonData';
 
 const FileDownloadButton = styled(Button)(({ theme }) => ({
     color: theme.palette.getContrastText(indigo[400]),
@@ -30,160 +47,43 @@ const CustomDatePicker = styled(DatePicker)`
 `;
 
 const ManagementUpdateModal = ({ openUpdate, closeUpdateModal, setSingleCurrRowData, singleCurrRowData, updateRow }) => {
-    //파일 기본적인 정보
-    const fileObj = {
-        fileName: '파일명',
-        fileInfo: ''
-    };
-    const fileListRef = useRef([fileObj]);
-    const WIDTH_SIZE = '600px';
-
     //컬럼의 상태관리
-    const [title, setTitle] = useState("") //제목
-    const [itemNm, setItemNm] = useState(""); //명칭
-    const [storage, setStorage] = useState(""); //보관장소
-    const [texture, setTexture] = useState(""); //재질
-    const [count, setCount] = useState(1); //건
-    const [piece, setPiece] = useState(1); //점
-    const [comment, setComment] = useState("") //제작시대/용도기능
-    const [sizeA, setSizeA] = useState(""); //크기A
-    const [sizeB, setSizeB] = useState(""); //크기B
-    const [sizeC, setSizeC] = useState(""); //크기C
-    const [getReason, setGetReason] = useState(""); //입수연유
-    const [presdate, setPresdate] = useState(new Date()); //수여(증정)날짜
-    const [presplace, setPresplace] = useState("") //수여(증정)장소
-    const [eventname, setEventname] = useState("") //행사명
-    const [conferrer, setConferrer] = useState("") //수여자
-    const [country, setCountry] = useState("") //국가
-    const [giver, setGiver] = useState(""); //증정자이름/직책
-    const [characteristic, setCharacteristic] = useState(""); //특징
-    const [fileList, setFileList] = useState({}); // 파일
-    const [image, setImage] = useState("");
 
     //컬럼의 에러관리
     const [paramError, setParamError] = useState({
-        title: '',
-        itemNm: '',
-        storage: '',
-        texture: '',
-        count: '',
-        piece: '',
-        comment: '',
-        sizeA: '',
-        sizeB: '',
-        sizeC: '',
-        getReason: '',
-        presdate: '',
-        presplace: '',
-        eventname: '',
-        conferrer: '',
-        country: '',
-        giver: '',
-        characteristic: '',
     })
+
+    const [simpleSearchModal, setSimpleSearchModal] = useState(false); //간단조회 모달 오픈
+    const [sosokList, setSosokList] = useState([]);
+    const [sosokSubList, setSosokSubList] = useState([]);
+
+    //-------------------------- 박물조회 ------------------------------------//
+    const [today, setToday] = useState(dayjs(new Date()).format('YYYY-MM-DD')); //등록일
+    const [organization1, setOrganization1] = useState(""); //보관소속1
+    const [organization2, setOrganization2] = useState(""); //보관소속2
+    const [name, setName] = useState(""); //명칭
+    const [subName, setSubName] = useState(""); //이명
+    const [engName, setEngName] = useState(""); //영어명칭
+    const [oriName, setOriName] = useState(""); //원어명칭
+    const [mainNumber, setMainNumber] = useState(0); //주수량
+    const [subNumber, setSubNumber] = useState(0); //부수량
+    const [useYn, setUseYn] = useState("N"); //딸림자료 유/무
+    const [useNumber, setUseNumber] = useState(0); //딸림수량
+    const [material, setMaterial] = useState(materialData[0].cd); //재질
+    const [sizeArr, setSizelArr] = useState([{ name: sizeType[0].name, cd: sizeType[0].cd, size: "" }]); //크기
+    const [addMemo, setAddMemo] = useState(""); //추가상세기술
+    //-------------------------- 박물조회 ------------------------------------//
 
     useEffect(() => {
         if (openUpdate) {
-            setTitle(singleCurrRowData.title)
-            setItemNm(singleCurrRowData.itemNm);
-            setStorage(singleCurrRowData.storage);
-            setTexture(singleCurrRowData.texture);
-            setCount(singleCurrRowData.count);
-            setPiece(singleCurrRowData.piece);
-            setComment(singleCurrRowData.comment);
-            setSizeA(singleCurrRowData.sizeA);
-            setSizeB(singleCurrRowData.sizeB);
-            setSizeC(singleCurrRowData.sizeC);
-            setGetReason(singleCurrRowData.getReason);
-            setPresdate(singleCurrRowData.presdate);
-            setPresplace(singleCurrRowData.presplace);
-            setEventname(singleCurrRowData.eventname);
-            setConferrer(singleCurrRowData.conferrer);
-            setCountry(singleCurrRowData.country);
-            setGiver(singleCurrRowData.giver);
-            setCharacteristic(singleCurrRowData.characteristic);
-            setFileList(singleCurrRowData.fileList && Object.keys(singleCurrRowData.fileList).length === 0 ? fileListRef.current[0] : singleCurrRowData.fileList);
-            setImage(singleCurrRowData.image);
-            resetErrorParams();
+            console.log(singleCurrRowData)
         }
     }, [openUpdate, singleCurrRowData])
-
-    //에러파라미터 리셋
-    const resetErrorParams = () => {
-        setParamError({
-            ...paramError,
-            title: '',
-            itemNm: '',
-            storage: '',
-            texture: '',
-            count: '',
-            piece: '',
-            comment: '',
-            sizeA: '',
-            sizeB: '',
-            sizeC: '',
-            getReason: '',
-            presdate: '',
-            presplace: '',
-            eventname: '',
-            conferrer: '',
-            country: '',
-            giver: '',
-            characteristic: ''
-        })
-    }
-
-    //파일업로드
-    const uploadFile = (e) => {
-        let data = { ...fileList };
-        data.fileName = e.target.files[0].name;
-        data.fileInfo = e.target.files[0];
-        setFileList(data);
-
-        //이미지 생성
-        const reader = new FileReader();
-        const file = e.target.files[0];
-        reader.readAsDataURL(file);
-
-        return new Promise((resolve) => {
-            reader.onload = () => {
-                setImage(reader.result || null); // 파일의 컨텐츠
-                resolve();
-            };
-            e.target.value = ''; //이벤트 값 초기화
-        });
-    };
-
-    //파일제거
-    const deleteFile = (e) => {
-        setFileList(fileListRef.current[0]);
-        setImage(""); //이미지 초기화
-    };
 
     //물품수정
     const updateItem = () => {
         let tempList = {
             ...singleCurrRowData,
-            title: title,
-            itemNm: itemNm,
-            storage: storage,
-            texture: texture,
-            count: count,
-            piece: piece,
-            comment: comment,
-            sizeA: sizeA,
-            sizeB: sizeB,
-            sizeC: sizeC,
-            getReason: getReason,
-            presdate: presdate,
-            presplace: presplace,
-            eventname: eventname,
-            conferrer: conferrer,
-            country: country,
-            giver: giver,
-            characteristic: characteristic,
-            fileList: fileList,
-            image: image
         };
 
         setSingleCurrRowData(tempList);
@@ -192,211 +92,310 @@ const ManagementUpdateModal = ({ openUpdate, closeUpdateModal, setSingleCurrRowD
         closeUpdateModal();
     }
 
-    return (
-        <RegistModal title="물품수정" open={openUpdate} onClose={closeUpdateModal} onOk={updateItem} >
-            <DialogContent dividers sx={{ flexGrow: 1, maxWidth: "1200px" }}>
-                <Grid container spacing={2}>
-                    <Grid item={true} xs={4} display={'flex'} justifyContent={'right'}>
-                        <PopupFormControlLabel
-                            control={<TextField fullWidth size="small" value={title} inputProps={{ maxLength: 20 }} onChange={(e) => setTitle(e.target.value)} error={paramError.title === '' ? false : true} helperText={paramError.title} />}
-                            label="제목"
-                            labelPlacement="start"
-                        />
-                    </Grid>
-                    <Grid item={true} xs={4} display={'flex'} justifyContent={'right'}>
-                        <PopupFormControlLabel
-                            control={<TextField fullWidth size="small" value={itemNm} inputProps={{ maxLength: 20 }} onChange={(e) => setItemNm(e.target.value)} error={paramError.itemNm === '' ? false : true} helperText={paramError.itemNm} />}
-                            label="명칭"
-                            labelPlacement="start"
-                        />
-                    </Grid>
-                    <Grid item={true} xs={4} display={'flex'} justifyContent={'right'}>
-                        <PopupFormControlLabel
-                            control={<StorageCombo fullWidth size="small" type="none" value={storage} codeChange={(e) => setStorage(e.target.value)} error={paramError.itemNm === '' ? false : true} helperText={paramError.itemNm} />}
-                            label="보관장소"
-                            labelPlacement="start"
-                        />
-                    </Grid>
-                    <Grid item={true} xs={4} display={'flex'} justifyContent={'right'}>
-                        <PopupFormControlLabel
-                            control={<TextField fullWidth size="small" value={texture} inputProps={{ maxLength: 20 }} onChange={(e) => setTexture(e.target.value)} error={paramError.itemNm === '' ? false : true} helperText={paramError.itemNm} />}
-                            label="재질"
-                            labelPlacement="start"
-                        />
-                    </Grid>
-                    <Grid item={true} xs={4} display={'flex'} justifyContent={'right'}>
-                        <PopupFormControlLabel
-                            control={<TextField fullWidth size="small" value={count} inputProps={{ maxLength: 20 }} onChange={(e) => setCount(e.target.value)} error={paramError.itemNm === '' ? false : true} helperText={paramError.itemNm} />}
-                            label="건"
-                            labelPlacement="start"
-                        />
-                    </Grid>
-                    <Grid item={true} xs={4} display={'flex'} justifyContent={'right'}>
-                        <PopupFormControlLabel
-                            control={<TextField fullWidth size="small" value={piece} inputProps={{ maxLength: 20 }} onChange={(e) => setPiece(e.target.value)} error={paramError.itemNm === '' ? false : true} helperText={paramError.itemNm} />}
-                            label="점"
-                            labelPlacement="start"
-                        />
-                    </Grid>
-                    <Grid item={true} xs={4} display={'flex'} justifyContent={'right'}>
-                        <PopupFormControlLabel
-                            control={<TextField fullWidth size="small" value={sizeA} inputProps={{ maxLength: 20 }} onChange={(e) => setSizeA(e.target.value)} error={paramError.itemNm === '' ? false : true} helperText={paramError.itemNm} />}
-                            label="가로(지름)mm"
-                            labelPlacement="start"
-                        />
-                    </Grid>
-                    <Grid item={true} xs={4} display={'flex'} justifyContent={'right'}>
-                        <PopupFormControlLabel
-                            control={<TextField fullWidth size="small" value={sizeB} inputProps={{ maxLength: 20 }} onChange={(e) => setSizeB(e.target.value)} error={paramError.itemNm === '' ? false : true} helperText={paramError.itemNm} />}
-                            label="세로mm"
-                            labelPlacement="start"
-                        />
-                    </Grid>
-                    <Grid item={true} xs={4} display={'flex'} justifyContent={'right'}>
-                        <PopupFormControlLabel
-                            control={<TextField fullWidth size="small" value={sizeC} inputProps={{ maxLength: 20 }} onChange={(e) => setSizeC(e.target.value)} error={paramError.itemNm === '' ? false : true} helperText={paramError.itemNm} />}
-                            label="높이(두께)mm"
-                            labelPlacement="start"
-                        />
-                    </Grid>
-                    <Grid item={true} xs={4} display={'flex'} justifyContent={'right'}>
-                        <PopupFormControlLabel
-                            control={<CustomDatePicker dateFormat="yyyy/MM/dd" selected={presdate} onChange={(date) => setPresdate(date)} />}
-                            label="수여(증정)날짜"
-                            labelPlacement="start"
-                        />
-                    </Grid>
-                    <Grid item={true} xs={4} display={'flex'} justifyContent={'right'}>
-                        <PopupFormControlLabel
-                            control={<TextField fullWidth size="small" value={presplace} inputProps={{ maxLength: 20 }} onChange={(e) => setPresplace(e.target.value)} error={paramError.presplace === '' ? false : true} helperText={paramError.presplace} />}
-                            label="수여(증정)장소"
-                            labelPlacement="start"
-                        />
-                    </Grid>
-                    <Grid item={true} xs={4} display={'flex'} justifyContent={'right'}>
-                        <PopupFormControlLabel
-                            control={<TextField fullWidth size="small" value={eventname} inputProps={{ maxLength: 20 }} onChange={(e) => setEventname(e.target.value)} error={paramError.eventname === '' ? false : true} helperText={paramError.eventname} />}
-                            label="행사명"
-                            labelPlacement="start"
-                        />
-                    </Grid>
-                    <Grid item={true} xs={4} display={'flex'} justifyContent={'right'}>
-                        <PopupFormControlLabel
-                            control={<TextField fullWidth size="small" value={conferrer} inputProps={{ maxLength: 20 }} onChange={(e) => setConferrer(e.target.value)} error={paramError.conferrer === '' ? false : true} helperText={paramError.conferrer} />}
-                            label="수여자"
-                            labelPlacement="start"
-                        />
-                    </Grid>
-                    <Grid item={true} xs={4} display={'flex'} justifyContent={'right'}>
-                        <PopupFormControlLabel
-                            control={<TextField fullWidth size="small" value={comment} inputProps={{ maxLength: 20 }} onChange={(e) => setComment(e.target.value)} error={paramError.itemNm === '' ? false : true} helperText={paramError.itemNm} />}
-                            label="제작시대/용도기능"
-                            labelPlacement="start"
-                        />
-                    </Grid>
-                    <Grid item={true} xs={4} display={'flex'} justifyContent={'right'}>
-                        <PopupFormControlLabel
-                            control={<TextField fullWidth size="small" value={getReason} inputProps={{ maxLength: 20 }} onChange={(e) => setGetReason(e.target.value)} error={paramError.itemNm === '' ? false : true} helperText={paramError.itemNm} />}
-                            label="입수연유"
-                            labelPlacement="start"
-                        />
-                    </Grid>
-                    <Grid item={true} xs={4} display={'flex'} justifyContent={'right'}>
-                        <PopupFormControlLabel
-                            control={<CountryCombo fullWidth size="small" type="none" value={country} codeChange={(e) => setCountry(e.target.value)} error={paramError.itemNm === '' ? false : true} helperText={paramError.itemNm} />}
-                            label="증정자국적(코드)"
-                            labelPlacement="start"
-                        />
-                    </Grid>
-                    <Grid item={true} xs={4} display={'flex'} justifyContent={'right'}>
-                        <PopupFormControlLabel
-                            control={<TextField fullWidth size="small" value={giver} inputProps={{ maxLength: 20 }} onChange={(e) => setGiver(e.target.value)} error={paramError.itemNm === '' ? false : true} helperText={paramError.itemNm} />}
-                            label="증정자이름/직책"
-                            labelPlacement="start"
-                        />
-                    </Grid>
-                    <Grid item={true} xs={4} display={'flex'} justifyContent={'right'}>
-                        <PopupFormControlLabel
-                            control={<TextField fullWidth size="small" value={characteristic} inputProps={{ maxLength: 20 }} onChange={(e) => setCharacteristic(e.target.value)} error={paramError.itemNm === '' ? false : true} helperText={paramError.itemNm} />}
-                            label="특징"
-                            labelPlacement="start"
-                        />
-                    </Grid>
-                    <Grid item={true} xs={8} display={'flex'} flexDirection={'column'} alignItems={'center'} marginTop={"80px"}>
-                        <Box display={"flex"} alignItems={"flex-end"}>
-                            <Box
-                                style={{ width: WIDTH_SIZE, marginRight: "4px" }}
-                                display={'flex'}
-                                mt={1}
-                                sx={{
-                                    background: '#F8F8F8',
-                                    padding: '5px 20px',
-                                    borderRadius: '6px',
-                                    border: '1px solid #C7C7C7',
-                                    boxSizing: 'border-box',
-                                    width: '100%',
-                                    justifyContent: 'space-between'
-                                }}
-                            >
-                                <Typography children={fileList.fileName} flexGrow={1} fontWeight={'bold'} />
-                                <Box>
-                                    <Typography
-                                        component="label"
-                                        onChange={uploadFile}
-                                        sx={{
-                                            cursor: 'pointer'
-                                        }}
-                                        style={{ color: 'black', fontWeight: 'bold', fontSize: "14px" }}
-                                    >
-                                        파일 업로드
-                                        <input hidden accept="image/*" type="file" />
-                                    </Typography>
-                                </Box>
-                                &nbsp;
-                                <Box
-                                    sx={{
-                                        cursor: 'pointer',
-                                        display: "flex",
-                                        flexDirection: "column",
-                                        justifyContent: "center"
-                                    }}
-                                >
-                                    <Typography
-                                        onClick={(e) => deleteFile(e)}
-                                        children="삭제"
-                                        color="red"
-                                        fontWeight={'bold'}
-                                        fontSize={"14px"}
+    //간단조회
+    const simpleSearch = (e) => {
+        setSimpleSearchModal(true)
+    }
 
-                                    />
-                                </Box>
-                            </Box>
-                            {image ?
-                                <FileDownloadButton
-                                    style={{ padding: 0, border: "1px solid", fontWeight: "bold" }}
-                                >
-                                    <a
-                                        href={image}
-                                        download={fileList.fileName}
-                                        style={{ color: "white", textDecoration: "none" }}
-                                    >
-                                        파일다운로드
-                                    </a>
-                                </FileDownloadButton>
-                                :
-                                null
-                            }
-                        </Box>
-                    </Grid>
-                    <Grid item={true} xs={4} display={'flex'} justifyContent={'center'} marginTop={"80px"}>
-                        <img
-                            width="80%"
-                            src={image}
-                        />
-                    </Grid>
-                </Grid>
+    const setFirstValue = (cd, targetData) => {
+    }
+
+    //딸림자료 유/무
+    const changeUseYn = (e) => {
+        setUseYn(e.target.value)
+    }
+
+    //재질 추가
+    const addMaterial = (e) => {
+        let tempList = [...sizeArr];
+        if (tempList.length > 4) {
+            return false;
+        }
+        tempList.push({ name: sizeType[0].name, cd: sizeType[0].cd, size: "" });
+        setSizelArr(tempList);
+    }
+
+    //재질 삭제
+    const removeMaterial = (e) => {
+        let tempList = [...sizeArr];
+        if (tempList.length === 1) {
+            if (tempList[0].cd == "00") {
+                tempList[0].name = sizeType[0].name;
+                tempList[0].cd = sizeType[0].cd;
+                setSizelArr(tempList);
+            }
+            return false;
+        }
+        tempList.splice(tempList.length - 1);
+        setSizelArr(tempList);
+    }
+
+    //사이즈 선택
+    const handleSizeType = (e, index) => {
+        let tempList = [...sizeArr];
+
+        for (let i = 0; i < sizeType.length; i++) {
+            if (sizeType[i].cd == e.target.value) {
+                tempList[index].name = sizeType[i].name;
+                tempList[index].cd = sizeType[i].cd;
+                break;
+            }
+        }
+        setSizelArr(tempList)
+    }
+
+    //직접 사이즈 입력
+    const handleEditType = (e, index) => {
+        let tempList = [...sizeArr];
+
+        tempList[index].name = e.target.value;
+        setSizelArr(tempList)
+    }
+
+    //사이즈 크기
+    const handleSize = (e, index) => {
+        let tempList = [...sizeArr];
+
+        tempList[index].size = e.target.value;
+        setSizelArr(tempList)
+    }
+
+    return (
+        <UpdateModal title="물품수정" open={openUpdate} onClose={closeUpdateModal} onOk={updateItem} >
+            <DialogContent dividers sx={{ flexGrow: 1, minWidth: "1000px" }}>
+                <div className={styles.search_main}>
+                    <div className={styles.search_container}>
+                        <div className={styles.register_step_title} style={{ paddingLeft: '0px', paddingRight: '0px' }}>
+                            <div style={{ display: 'flex', justifyContent: 'center', flexDirection: 'column' }}>
+                                1. 박물 조회
+                            </div>
+                            <div>
+                                <BaseButton style={{ margin: '0px' }} onClick={(e) => simpleSearch(e)}>간단조회</BaseButton>
+                            </div>
+                        </div>
+                        <div className={styles.search_controller_container}>
+                            <div className={styles.search_controller}>
+                                <div className={styles.search_list}>
+                                    <table className={styles.search_table}>
+                                        <tbody>
+                                            <tr>
+                                                <td style={{ width: '10%', textAlign: 'center' }}>수정일</td>
+                                                <td colSpan={4} style={{ width: '90%' }}>
+                                                    {today}
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style={{ textAlign: 'center' }}>보관 소속</td>
+                                                <td colSpan={2} style={{ width: '40%' }}>
+                                                    <ComboControlLabel
+                                                        control={<CustomCombo size="small" type="none" setData={setFirstValue} dataList={sosokList} value={organization1} targetData={"organization1"} codeChange={(e) => setOrganization1(e.target.value)} />}
+                                                        label=""
+                                                        labelPlacement="start"
+                                                    />
+                                                    <ComboControlLabel
+                                                        control={<CustomCombo size="small" type="none" setData={setFirstValue} dataList={sosokSubList} value={organization2} targetData={"organization2"} codeChange={(e) => setOrganization2(e.target.value)} />}
+                                                        label=""
+                                                        labelPlacement="start"
+                                                    />
+                                                </td>
+                                                <td style={{ textAlign: 'center', backgroundColor: '#deebff', width: '10%' }}>소장품 번호</td>
+                                                <td >
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style={{ textAlign: 'center' }}>명칭</td>
+                                                <td colSpan={4}>
+                                                    <Box sx={{ width: '80%' }}>
+                                                        <TextField value={name} onChange={(e) => setName(e.target.value)} fullWidth inputProps={{ style: { height: '0px', fontSize: 14, backgroundColor: 'white' } }} placeholder='text' />
+                                                    </Box>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style={{ textAlign: 'center' }}>명칭(이명)</td>
+                                                <td colSpan={4}>
+                                                    <Box sx={{ width: '80%' }}>
+                                                        <TextField value={subName} onChange={(e) => setSubName(e.target.value)} fullWidth inputProps={{ style: { height: '0px', fontSize: 14, backgroundColor: 'white' } }} placeholder='text' />
+                                                    </Box>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style={{ textAlign: 'center' }}>영어명칭</td>
+                                                <td colSpan={4}>
+                                                    <Box sx={{ width: '80%' }}>
+                                                        <TextField value={engName} onChange={(e) => setEngName(e.target.value)} fullWidth inputProps={{ style: { height: '0px', fontSize: 14, backgroundColor: 'white' } }} placeholder='text' />
+                                                    </Box>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style={{ textAlign: 'center' }}>원어명칭</td>
+                                                <td colSpan={4}>
+                                                    <Box sx={{ width: '80%' }}>
+                                                        <TextField value={oriName} onChange={(e) => setOriName(e.target.value)} fullWidth inputProps={{ style: { height: '0px', fontSize: 14, backgroundColor: 'white' } }} placeholder='text' />
+                                                    </Box>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style={{ width: '10%', textAlign: 'center' }}>수량</td>
+                                                <td style={{ width: '10%', textAlign: 'center', backgroundColor: '#deebff' }}>주 수량(건)</td>
+                                                <td style={{ width: '30%' }}>
+                                                    <ComboControlLabel
+                                                        control={<TextField fullWidth size="small" value={mainNumber} inputProps={{ maxLength: 20, min: 0 }}
+                                                            onChange={(e) => {
+                                                                let value = parseInt(e.target.value)
+                                                                setMainNumber(value)
+                                                            }}
+                                                            onBlur={(e) => {
+                                                                if (e.target.value === "") {
+                                                                    setMainNumber(0)
+                                                                }
+                                                            }}
+                                                            type="number"
+                                                        />}
+                                                        label=""
+                                                        labelPlacement="start"
+                                                    />
+                                                </td>
+                                                <td style={{ width: '10%', textAlign: 'center', backgroundColor: '#deebff' }}>부 수량(점)</td>
+                                                <td style={{ width: '30%' }}>
+                                                    <ComboControlLabel
+                                                        control={<TextField fullWidth size="small" value={subNumber} inputProps={{ maxLength: 20, min: 0 }}
+                                                            onChange={(e) => {
+                                                                let value = parseInt(e.target.value)
+                                                                setSubNumber(value)
+                                                            }}
+                                                            onBlur={(e) => {
+                                                                if (e.target.value === "") {
+                                                                    setSubNumber(0)
+                                                                }
+                                                            }}
+                                                            type="number"
+                                                        />}
+                                                        label=""
+                                                        labelPlacement="start"
+                                                    />
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style={{ width: '10%', textAlign: 'center' }}>딸림자료</td>
+                                                <td style={{ width: '10%', textAlign: 'center', backgroundColor: '#deebff' }}>유/무</td>
+                                                <td style={{ width: '30%' }}>
+                                                    <div className={styles.checkbox_container}>
+                                                        <div className={styles.checkbox_item}>
+                                                            <label>
+                                                                <input
+                                                                    type='radio'
+                                                                    name='useYn'
+                                                                    value='N'
+                                                                    checked={useYn === "N"}
+                                                                    onChange={(e) => changeUseYn(e)}
+                                                                />
+                                                                무
+                                                            </label>
+                                                        </div>
+                                                        <div className={styles.checkbox_item}>
+                                                            <label>
+                                                                <input
+                                                                    type='radio'
+                                                                    name='useYn'
+                                                                    value='Y'
+                                                                    checked={useYn === "Y"}
+                                                                    onChange={(e) => changeUseYn(e)}
+                                                                />
+                                                                유
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td style={{ width: '10%', textAlign: 'center', backgroundColor: '#deebff' }}>딸림수량</td>
+                                                <td style={{ width: '30%' }}>
+                                                    <ComboControlLabel
+                                                        control={<TextField fullWidth size="small" value={useNumber} inputProps={{ maxLength: 20, min: 0 }}
+                                                            onChange={(e) => {
+                                                                let value = parseInt(e.target.value)
+                                                                setUseNumber(value)
+                                                            }}
+                                                            onBlur={(e) => {
+                                                                if (e.target.value === "") {
+                                                                    setUseNumber(0)
+                                                                }
+                                                            }}
+                                                            type="number"
+                                                            disabled={useYn === "N" ? true : false}
+                                                        />}
+                                                        label=""
+                                                        labelPlacement="start"
+                                                    />
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style={{ textAlign: 'center' }}>재질/크기</td>
+                                                <td style={{ textAlign: 'center', backgroundColor: '#deebff' }}>재질</td>
+                                                <td colSpan={3}>
+                                                    <select name="material" style={{ marginRight: "2px", width: "80px" }} onChange={(e) => setMaterial(e.target.value)}>
+                                                        {materialData.map((data) => {
+                                                            return (
+                                                                <option value={data.cd}>
+                                                                    {data.name}
+                                                                </option>
+                                                            )
+                                                        })}
+                                                    </select>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style={{ textAlign: 'center' }}>
+                                                    <div style={{ marginBottom: '5px', marginTop: '3px' }}>
+                                                        <AddButton onClick={(e) => addMaterial(e)}>+크기 추가</AddButton>
+                                                    </div>
+                                                    <div style={{ marginBottom: '3px', marginTop: '3px' }}>
+                                                        <AddButton onClick={(e) => removeMaterial(e)}>-크기 삭제</AddButton>
+                                                    </div>
+                                                </td>
+                                                <td style={{ textAlign: 'center', backgroundColor: '#deebff' }}>크기</td>
+                                                <td colSpan={3}>
+                                                    <div style={{ display: "flex" }}>
+                                                        {sizeArr.map((data, index) => {
+                                                            return (
+                                                                <div>
+                                                                    {data.cd != "00" ?
+                                                                        <select name="sizeType" style={{ marginRight: "2px", width: "80px" }} onChange={(e) => { handleSizeType(e, index) }}>
+                                                                            {sizeType.map((data) => {
+                                                                                return (
+                                                                                    <option value={data.cd} key={data.cd}>
+                                                                                        {data.name}
+                                                                                    </option>
+                                                                                )
+                                                                            })}
+                                                                        </select>
+                                                                        :
+                                                                        <input type="text" style={{ marginRight: "2px", width: "80px", height: "20px" }} onChange={(e) => handleEditType(e, index)}></input>
+                                                                    }
+                                                                    <div>
+                                                                        <input type="text" style={{ width: "80px" }} onChange={(e) => { handleSize(e, index) }}></input>
+                                                                    </div>
+                                                                </div>
+                                                            )
+                                                        })}
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style={{ width: '10%', textAlign: 'center' }}>추가 상세 기술</td>
+                                                <td colSpan={4} style={{ width: '90%' }}>
+                                                    <Box sx={{ width: '100%' }}>
+                                                        <TextField onChange={(e) => setAddMemo(e.target.value)} value={addMemo} multiline rows={3} fullWidth inputProps={{ style: { padding: 0, fontSize: 14, backgroundColor: 'white' } }} placeholder='text' />
+                                                    </Box>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </DialogContent>
-        </RegistModal>
+        </UpdateModal>
     )
 }
 export default ManagementUpdateModal;

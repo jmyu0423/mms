@@ -265,7 +265,7 @@ const Management = ({ }) => {
 
   const openUpdateModal = (row) => {
     setSingleCurrRowData(row.data);
-    // setOpenUpdate(true);
+    setOpenUpdate(true);
   }
 
   const closeUpdateModal = () => {
