@@ -158,6 +158,7 @@ const ManagementUpdateModal = ({ openUpdate, closeUpdateModal, setSingleCurrRowD
     useEffect(() => {
         let tempList = [];
         let tempArr = {};
+
         for (let i = 0; i < countryData.length; i++) {
             if (countryData[i].cd === continent) {
                 tempArr = countryData[i].nations;
@@ -172,7 +173,10 @@ const ManagementUpdateModal = ({ openUpdate, closeUpdateModal, setSingleCurrRowD
             }
         }
         setcountrySubList(tempList);
-    }, [continent])
+        if (tempList.length > 0) {
+            setCountry(tempList[0].cd)
+        }
+    }, [continent, countryData])
 
     useEffect(() => {
         for (let i = 0; i < sosokList.length; i++) {
@@ -181,7 +185,7 @@ const ManagementUpdateModal = ({ openUpdate, closeUpdateModal, setSingleCurrRowD
                 break;
             }
         }
-    }, [regSosok1])
+    }, [regSosok1, sosokList])
 
     useEffect(() => {
         for (let i = 0; i < sosokList.length; i++) {
@@ -190,7 +194,7 @@ const ManagementUpdateModal = ({ openUpdate, closeUpdateModal, setSingleCurrRowD
                 break;
             }
         }
-    }, [regSosok2])
+    }, [regSosok2, sosokList])
 
     useEffect(() => {
         for (let i = 0; i < sosokList.length; i++) {
@@ -199,15 +203,15 @@ const ManagementUpdateModal = ({ openUpdate, closeUpdateModal, setSingleCurrRowD
                 break;
             }
         }
-    }, [inserSosok])
+    }, [inserSosok, sosokList])
 
     //물품 정보 셋팅
     const setPrdData = (data) => {
-        console.log(data)
         //박물 조회
         if (data.organization1) {
             setOrganization1(data.organization1)
         }
+        setOrganization2(data.organization2)
         setName(data.name ? data.name : "");
         setSubName(data.subName ? data.subName : "");
         setEngName(data.engName ? data.engName : "");
@@ -229,8 +233,10 @@ const ManagementUpdateModal = ({ openUpdate, closeUpdateModal, setSingleCurrRowD
         setAddMemo(data.addMemo ? data.addMemo : "");
 
         //배경 정보
-        setContinent(data.continent ? data.continent : "");
-        setCountry(data.country ? data.country : "");
+        if (data.continent) {
+            setContinent(data.continent);
+            setCountry(data.country);
+        }
         setYearType(data.yearType ? data.yearType : "");
         setProdYear(data.prodYear ? data.prodYear : "");
         setProducer(data.producer ? data.producer : "");
@@ -360,7 +366,7 @@ const ManagementUpdateModal = ({ openUpdate, closeUpdateModal, setSingleCurrRowD
         } else if (targetData === "continent" && (continent == undefined || continent == "")) {
             for (let i = 0; i < countryData.length; i++) {
                 if (countryData[i].cd === cd) {
-                    setContinent(countryData[i].cd);
+                    // setContinent(countryData[i].cd);
                     break;
                 }
             }

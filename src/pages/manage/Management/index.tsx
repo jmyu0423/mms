@@ -14,7 +14,6 @@ import dayjs from 'dayjs';
 import { ItemGroup, PopupFormControlLabel, ComboControlLabel } from 'src/components/modal/ItemGroup';
 import CustomCombo from 'src/components/combobox/CustomCombo';
 import {
-  itemList,
   materialData,
   countryData,
   organization1List,
@@ -282,7 +281,6 @@ const Management = ({ }) => {
           if (response.data != "") {
             resultData = JSON.parse(response.data);
           }
-          console.log(resultData)
           setRowData(resultData)
         } else {
         }
@@ -338,7 +336,7 @@ const Management = ({ }) => {
 
   const openPreviewModal = (row) => {
     setSingleCurrRowData(row);
-    if (row.imageList.length > 0) {
+    if (row.imageList && row.imageList.length > 0) {
       setOpenPreview(true);
     } else {
       setContent("등록된 이미지가 없습니다.");
@@ -511,8 +509,8 @@ const Management = ({ }) => {
     } else {
       if (isChecked) {
         let idArray = [];
-        imageList.map((data) => {
-          idArray.push(data.seqNo.toString());
+        rowData.map((data) => {
+          idArray.push(data._id.toString());
         })
 
         setImageListChckItems(idArray);
@@ -523,7 +521,7 @@ const Management = ({ }) => {
   }
 
   const openMoreBtn = (e, index) => {
-    let tempData = [...imageList];
+    let tempData = [...rowData];
     for (let i = 0; i < tempData.length; i++) {
       if (i === index) {
         tempData[i].openMoreFlag = !tempData[i].openMoreFlag;
@@ -535,7 +533,7 @@ const Management = ({ }) => {
   }
 
   const openDetailImageModal = (e, index) => {
-    openPreviewModal(imageList[index])
+    openPreviewModal(rowData[index])
   }
 
   const alertClose = () => {
@@ -793,14 +791,14 @@ const Management = ({ }) => {
           <div className={styles.item_list_area}>
             <div className={styles.item_list_result}>
               검색결과
-              <p>(Total {itemList.length}건)</p>
+              <p>(Total {rowData.length}건)</p>
             </div>
             <div className={styles.item_list_button_controller}>
               <div className={styles.float_left}>
                 {seachType === "imgList" ?
                   <div className={styles.image_list_all_checkbox}>
                     <label className={styles.image_list_all_checkbox_label}>
-                      <input type="checkbox" onChange={(e) => onChangeSelectImageList(e)} value={""} checked={imageListChckItems.length === imageList.length ? true : false} />
+                      <input type="checkbox" onChange={(e) => onChangeSelectImageList(e)} value={""} checked={imageListChckItems.length === rowData.length ? true : false} />
                       전체선택
                     </label>
                   </div>
@@ -836,12 +834,12 @@ const Management = ({ }) => {
               :
               <div className={styles.image_list_area}>
                 <ul>
-                  {imageList.length > 0 && imageList.map((data, index) => {
+                  {rowData.length > 0 && rowData.map((data, index) => {
                     return (
                       <li key={index}>
                         <div className={styles.image_list_area_header}>
                           <div className={styles.image_list_area_header_checkbox}>
-                            <input type="checkbox" onChange={(e) => onChangeSelectImageList(e)} value={data.seqNo} checked={imageListChckItems.includes(data.seqNo.toString()) ? true : false} />
+                            <input type="checkbox" onChange={(e) => onChangeSelectImageList(e)} value={data._id} checked={imageListChckItems.includes(data._id) ? true : false} />
                           </div>
                           <div className={styles.image_list_area_header_more}>
                             <div className={styles.more_icon} onClick={(e) => openMoreBtn(e, index)}>
@@ -862,11 +860,11 @@ const Management = ({ }) => {
                         <div className={styles.image_list_area_imageContainer}>
                           <img
                             loading="lazy"
-                            src={data.imageList.length > 0 ? data.imageList[0].imageSrc : '/img/empty-image.png'}
+                            src={data.imageList && data.imageList.length > 0 ? data.imageList[0].imageSrc : '/img/empty-image.png'}
                           />
                         </div>
                         <div className={styles.image_list_area_title}>
-                          {data.itemNm}
+                          {data.name}
                         </div>
                       </li>
                     )

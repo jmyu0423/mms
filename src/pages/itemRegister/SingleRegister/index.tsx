@@ -565,6 +565,8 @@ const SingleRegister = ({ }) => {
       inserSosok: inserSosok, //등록자 소속1
       inserSosokSub: inserSosokSub, //등록자 소속1 서브
       regPosition: regPosition, //직책
+
+      openMoreFlag: false, //더보기 플래그
     }
 
     const params = new FormData();
@@ -578,7 +580,6 @@ const SingleRegister = ({ }) => {
     await axios
       .post("http://smus.scjmatthias.net:5000/artifact", params)
       .then(function (response) {
-        console.log(response)
         if (response.statusText === "OK") {
           alert("등록완료");
           window.location.reload();
