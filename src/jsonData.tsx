@@ -1739,11 +1739,11 @@ export const yearTypeList = ([
     name: '연도일치'
   },
   {
-    cd: '01',
+    cd: '02',
     name: '연대추정(10년단위)'
   },
   {
-    cd: '02',
+    cd: '03',
     name: '연대추정(100년단위)'
   },
   {

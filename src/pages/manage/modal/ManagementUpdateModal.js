@@ -78,6 +78,7 @@ const ManagementUpdateModal = ({ openUpdate, closeUpdateModal, setSingleCurrRowD
     const [today, setToday] = useState(dayjs(new Date()).format('YYYY-MM-DD')); //등록일
     const [organization1, setOrganization1] = useState(""); //보관소속1
     const [organization2, setOrganization2] = useState(""); //보관소속2
+    const [regno, setRegno] = useState(""); //소장품 번호
     const [name, setName] = useState(""); //명칭
     const [subName, setSubName] = useState(""); //이명
     const [engName, setEngName] = useState(""); //영어명칭
@@ -207,11 +208,13 @@ const ManagementUpdateModal = ({ openUpdate, closeUpdateModal, setSingleCurrRowD
 
     //물품 정보 셋팅
     const setPrdData = (data) => {
+        console.log(data)
         //박물 조회
         if (data.organization1) {
             setOrganization1(data.organization1)
         }
         setOrganization2(data.organization2)
+        setRegno(data.regno);
         setName(data.name ? data.name : "");
         setSubName(data.subName ? data.subName : "");
         setEngName(data.engName ? data.engName : "");
@@ -235,8 +238,11 @@ const ManagementUpdateModal = ({ openUpdate, closeUpdateModal, setSingleCurrRowD
         //배경 정보
         if (data.continent) {
             setContinent(data.continent);
-            setCountry(data.country);
         }
+        if (data.country) {
+            setCountry(data.country)
+        }
+
         setYearType(data.yearType ? data.yearType : "");
         setProdYear(data.prodYear ? data.prodYear : "");
         setProducer(data.producer ? data.producer : "");
@@ -356,7 +362,7 @@ const ManagementUpdateModal = ({ openUpdate, closeUpdateModal, setSingleCurrRowD
                     break;
                 }
             }
-        } else if (targetData === "organization2") {
+        } else if (targetData === "organization2" && (organization2 == undefined || organization2 == "")) {
             for (let i = 0; i < sosokSubList.length; i++) {
                 if (sosokSubList[i].code === cd) {
                     setOrganization2(sosokSubList[i].code);
@@ -391,7 +397,7 @@ const ManagementUpdateModal = ({ openUpdate, closeUpdateModal, setSingleCurrRowD
                     break;
                 }
             }
-        } else if (targetData === "regSosokSub1") {
+        } else if (targetData === "regSosokSub1" && (regSosokSub1 == undefined || regSosokSub1 == "")) {
             for (let i = 0; i < regSosokSubList1.length; i++) {
                 if (regSosokSubList1[i].code === cd) {
                     setRegSosokSub1(regSosokSubList1[i].code);
@@ -405,7 +411,7 @@ const ManagementUpdateModal = ({ openUpdate, closeUpdateModal, setSingleCurrRowD
                     break;
                 }
             }
-        } else if (targetData === "regSosokSub2") {
+        } else if (targetData === "regSosokSub2" && (regSosokSub2 == undefined || regSosokSub2 == "")) {
             for (let i = 0; i < regSosokSubList2.length; i++) {
                 if (regSosokSubList2[i].code === cd) {
                     setRegSosokSub2(regSosokSubList2[i].code);
@@ -419,7 +425,7 @@ const ManagementUpdateModal = ({ openUpdate, closeUpdateModal, setSingleCurrRowD
                     break;
                 }
             }
-        } else if (targetData === "inserSosokSub") {
+        } else if (targetData === "inserSosokSub" && (inserSosokSub == undefined || inserSosokSub == "")) {
             for (let i = 0; i < instSosokSubList.length; i++) {
                 if (instSosokSubList[i].code === cd) {
                     setInserSosokSub(instSosokSubList[i].code);
@@ -675,6 +681,7 @@ const ManagementUpdateModal = ({ openUpdate, closeUpdateModal, setSingleCurrRowD
                                                 </td>
                                                 <td style={{ textAlign: 'center', backgroundColor: '#deebff', width: '10%' }}>소장품 번호</td>
                                                 <td >
+                                                    {regno}
                                                 </td>
                                             </tr>
                                             <tr>
@@ -843,7 +850,7 @@ const ManagementUpdateModal = ({ openUpdate, closeUpdateModal, setSingleCurrRowD
                                                                             })}
                                                                         </select>
                                                                         :
-                                                                        <input type="text" style={{ marginRight: "2px", width: "80px", height: "20px" }} onChange={(e) => handleEditType(e, index)}></input>
+                                                                        <input type="text" style={{ marginRight: "2px", width: "80px", height: "20px" }} value={data.name} onChange={(e) => handleEditType(e, index)}></input>
                                                                     }
                                                                     <div>
                                                                         <input type="text" style={{ width: "80px" }} value={data.size} onChange={(e) => { handleSize(e, index) }}></input>

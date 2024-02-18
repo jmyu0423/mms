@@ -117,8 +117,8 @@ const Management = ({ }) => {
         }
       }
     },
-    { field: 'number', headerName: '소장품 번호', flex: 2, cellStyle: { textAlign: "center", whiteSpace: 'normal' }, autoHeight: true },
-    { field: 'detailNumber', headerName: '세부 번호', flex: 2, cellStyle: { textAlign: "center", whiteSpace: 'normal' }, autoHeight: true },
+    { field: 'regno', headerName: '소장품 번호', flex: 2, cellStyle: { textAlign: "center", whiteSpace: 'normal' }, autoHeight: true },
+    { field: 'seq', headerName: '세부 번호', flex: 2, cellStyle: { textAlign: "center", whiteSpace: 'normal' }, autoHeight: true },
     { field: 'name', headerName: '명칭', flex: 2, cellStyle: { textAlign: "center", whiteSpace: 'normal' }, autoHeight: true },
     { field: 'mainNumber', headerName: '주수량', flex: 1.2, cellStyle: { textAlign: "center", whiteSpace: 'normal' }, autoHeight: true },
     { field: 'subNumber', headerName: '부수량', flex: 1.2, cellStyle: { textAlign: "center", whiteSpace: 'normal' }, autoHeight: true },
@@ -281,6 +281,7 @@ const Management = ({ }) => {
           if (response.data != "") {
             resultData = JSON.parse(response.data);
           }
+          console.log(resultData)
           setRowData(resultData)
         } else {
         }
