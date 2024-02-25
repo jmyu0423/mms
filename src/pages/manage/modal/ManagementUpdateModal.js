@@ -154,6 +154,16 @@ const ManagementUpdateModal = ({ openUpdate, closeUpdateModal, setSingleCurrRowD
                 break;
             }
         }
+    }, [organization2, sosokList])
+
+    useEffect(() => {
+        for (let i = 0; i < sosokList.length; i++) {
+            if (sosokList[i].code === organization1) {
+                setSosokSubList(sosokList[i].sub);
+                setOrganization2(sosokList[i].sub[0].code)
+                break;
+            }
+        }
     }, [organization1, sosokList])
 
     useEffect(() => {
@@ -186,12 +196,32 @@ const ManagementUpdateModal = ({ openUpdate, closeUpdateModal, setSingleCurrRowD
                 break;
             }
         }
+    }, [regSosokSub1, sosokList])
+
+    useEffect(() => {
+        for (let i = 0; i < sosokList.length; i++) {
+            if (sosokList[i].code === regSosok1) {
+                setSosokSubList1(sosokList[i].sub);
+                setRegSosokSub1(sosokList[i].sub[0].code)
+                break;
+            }
+        }
     }, [regSosok1, sosokList])
 
     useEffect(() => {
         for (let i = 0; i < sosokList.length; i++) {
             if (sosokList[i].code === regSosok2) {
                 setSosokSubList2(sosokList[i].sub);
+                break;
+            }
+        }
+    }, [regSosokSub2, sosokList])
+
+    useEffect(() => {
+        for (let i = 0; i < sosokList.length; i++) {
+            if (sosokList[i].code === regSosok2) {
+                setSosokSubList2(sosokList[i].sub);
+                setRegSosokSub2(sosokList[i].sub[0].code);
                 break;
             }
         }
@@ -204,11 +234,20 @@ const ManagementUpdateModal = ({ openUpdate, closeUpdateModal, setSingleCurrRowD
                 break;
             }
         }
+    }, [inserSosokSub, sosokList])
+
+    useEffect(() => {
+        for (let i = 0; i < sosokList.length; i++) {
+            if (sosokList[i].code === inserSosok) {
+                setInstSosokSubList(sosokList[i].sub);
+                setInserSosokSub(sosokList[i].sub[0].code);
+                break;
+            }
+        }
     }, [inserSosok, sosokList])
 
     //물품 정보 셋팅
     const setPrdData = (data) => {
-        console.log(data)
         //박물 조회
         if (data.organization1) {
             setOrganization1(data.organization1)
@@ -338,15 +377,112 @@ const ManagementUpdateModal = ({ openUpdate, closeUpdateModal, setSingleCurrRowD
     }
 
     //물품수정
-    const updateItem = () => {
-        let tempList = {
-            ...singleCurrRowData,
-        };
+    const updateItem = async () => {
+        //딸림자료 유무로 인한 수량 체크
+        let tempCnt = 0;
+        if (useYn === "Y") {
+            tempCnt = useNumber;
+        }
 
-        setSingleCurrRowData(tempList);
-        updateRow(tempList)
+        let sizeObj = Object.assign({}, sizeArr);
 
-        closeUpdateModal();
+        //보관소속 이름 추출
+        let org1Value = "";
+        let org2Value = "";
+        for (let i = 0; i < sosokList.length; i++) {
+            if (sosokList[i].code == organization1) {
+                org1Value = sosokList[i].name;
+                break;
+            }
+        }
+
+        for (let i = 0; i < sosokSubList.length; i++) {
+            if (sosokSubList[i].code == organization2) {
+                org2Value = sosokSubList[i].name;
+                break;
+            }
+        }
+
+        let tempProdYear = "";
+        if (yearType != "00") {
+            tempProdYear = prodYear;
+        }
+
+        //raw data
+        const object = {
+            today: today, //등록일
+            organization1: organization1, //보관소속1
+            organization2: organization2, //보관소속2
+            org1Value: org1Value, //보관소속1 명칭
+            org2Value: org2Value, //보관소속2 명칭
+            name: name, //명칭
+            subName: subName, //이명
+            engName: engName, //영어이름
+            oriName: oriName, //원어명칭
+            mainNumber: mainNumber, //주수량
+            subNumber: subNumber, //부수량
+            useYn: useYn, //딸람자료 유무
+            useNumber: tempCnt, //딸림수량
+            material: material, //재질
+            sizeObj: sizeObj, //사이즈
+            addMemo: addMemo, //추가상세기술
+
+            continent: continent, //대륙
+            country: country, //나라
+            yearType: yearType, //년도 유형
+            prodYear: tempProdYear, //제작시기
+            producer: producer, //제작사
+            getReason: getReason, //입수연유
+            getYear: getYear, //입수년도
+            eventTitle: eventTitle, //행사명
+            eventCount: eventCount, //차수
+            getLocation: getLocation, //입사장소
+            getName: getName, //수상자
+            donorName1: donorName1, //기증자1
+            do1Sosok: do1Sosok, //기증자1 소속/직책
+            donorName2: donorName2, //기증자2
+            do2Sosok: do2Sosok, //기증자2 소속/직책
+            impoGrade: impoGrade, //중요등급
+
+            documnet: documnet, //소장품 설명
+            prodGrage: prodGrage, //소장품 가치 등급
+            subImfo: subImfo, //딸림자료 정보
+            docMemo: docMemo, //기타
+
+            storage: storage, //보관 구분
+            regSosok1: regSosok1, //보관처1
+            regSosokSub1: regSosokSub1, //보관처1 서브
+            regSosok2: regSosok2, //보관처2
+            regSosokSub2: regSosokSub2, //보관처2 서브
+            prodState: prodState, //상태
+
+            register: register, //등록자
+            inserSosok: inserSosok, //등록자 소속1
+            inserSosokSub: inserSosokSub, //등록자 소속1 서브
+            regPosition: regPosition, //직책
+
+            openMoreFlag: false, //더보기 플래그
+        }
+
+        const params = new FormData();
+        //사진정보
+        // for (let i = 0; i < imageList.length; i++) {
+        //   params.append('file', imageList[i]);
+        // }
+
+        params.append('data', JSON.stringify(object));
+        await axios
+            .put("http://smus.scjmatthias.net:5000/artifact", params)
+            .then(function (response) {
+                if (response.statusText === "OK") {
+                    updateRow(object)
+                    closeUpdateModal();
+                } else {
+                }
+            })
+            .catch(function (error) {
+                console.log("실패", error);
+            })
     }
 
     //간단조회

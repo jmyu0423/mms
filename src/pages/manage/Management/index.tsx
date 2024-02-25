@@ -281,7 +281,6 @@ const Management = ({ }) => {
           if (response.data != "") {
             resultData = JSON.parse(response.data);
           }
-          console.log(resultData)
           setRowData(resultData)
         } else {
         }
@@ -316,6 +315,7 @@ const Management = ({ }) => {
   const updateRow = (obj) => {
     let rowNode = gridState.current.api.getRowNode(gridState.current.api.getSelectedNodes()[0].rowIndex);
     let newData = { ...rowNode.data }
+    console.log(newData)
     Object.assign(newData, {
       itemNm: obj.itemNm,
       number: obj.number,
