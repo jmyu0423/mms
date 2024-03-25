@@ -1,24 +1,7 @@
 import { useEffect, useState } from "react";
 import { MenuItem, TextField, styled } from "@mui/material";
 import PropTypes from 'prop-types';
-
-const ITEM_HEIGHT = 48;
-const ITEM_PADDING_TOP = 8;
-const MenuProps = {
-    BackdropProps: {
-        style: {
-            backgroundColor: 'transparent',
-            backdropFilter: 'none',
-        }
-    },
-    PaperProps: {
-        style: {
-            maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-        },
-    }
-};
-
-
+import { MenuProps } from 'src/components/common/pure/ControllLabel'
 
 function CustomCombo(props) {
 
@@ -64,6 +47,7 @@ function CustomCombo(props) {
                     height: "30px",
                 },
             }}
+
 
         // sx={{"& fieldset": { border: 'none' },}}
         >
