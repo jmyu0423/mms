@@ -315,22 +315,13 @@ const Management = ({ }) => {
   const updateRow = (obj) => {
     let rowNode = gridState.current.api.getRowNode(gridState.current.api.getSelectedNodes()[0].rowIndex);
     let newData = { ...rowNode.data }
-    console.log(newData)
     Object.assign(newData, {
-      itemNm: obj.itemNm,
-      number: obj.number,
-      storage: obj.storage,
-      texture: obj.texture,
-      count: obj.count,
-      piece: obj.piece,
-      comment: obj.comment,
-      size: obj.size,
-      getReason: obj.getReason,
-      country: obj.country,
-      giver: obj.giver,
-      characteristic: obj.characteristic,
-      fileList: obj.fileList,
-      image: obj.image
+      org1Value: obj.org1Value,
+      regno: obj.regno,
+      seq: obj.seq,
+      name: obj.name,
+      mainNumber: obj.mainNumber,
+      subNumber: obj.subNumber
     });
     rowNode.setData(newData)
   }

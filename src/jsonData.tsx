@@ -1603,6 +1603,10 @@ export const relatedTopicData = ([
   {
     name: "평화 해외순방",
     cd: "3"
+  },
+  {
+    name: "기타",
+    cd: "4"
   }
 ])
 
@@ -1749,5 +1753,32 @@ export const yearTypeList = ([
   {
     cd: '00',
     name: '연도미상'
+  },
+])
+
+export const reasonList = ([
+  {
+    cd: '00',
+    name: '기증'
+  },
+  {
+    cd: '01',
+    name: '수상'
+  },
+  {
+    cd: '02',
+    name: '구입'
+  },
+  {
+    cd: '03',
+    name: '수집'
+  },
+  {
+    cd: '04',
+    name: '이관'
+  },
+  {
+    cd: '05',
+    name: '자체생산'
   },
 ])

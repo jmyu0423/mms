@@ -1,31 +1,33 @@
 import styles from "../register.module.css";
-import React, { useEffect, useRef, useMemo, useState, useLayoutEffect } from 'react';
+import React, { useEffect, useRef, useState, useLayoutEffect } from 'react';
 import { Box, Button, Card, CardActions, CardContent, Container, FormControlLabel, Grid, MenuItem, TextField, Typography } from "@mui/material";
 import { styled } from '@mui/material/styles';
 import { NormalButton, BaseButton, AddButton } from 'src/components/CustomButton';
 import dayjs from 'dayjs';
-import { ItemGroup, PopupFormControlLabel, ComboControlLabel } from 'src/components/modal/ItemGroup';
+import { ComboControlLabel } from 'src/components/modal/ItemGroup';
 import CustomCombo from 'src/components/combobox/CustomCombo';
 import {
   materialData,
   countryData,
-  organization1List,
-  organization2List,
-  countryList,
-  broughtReasonData,
   relatedTopicData,
   historyData,
   storageList,
   sizeType,
   yearTypeList,
+  reasonList ,
 } from 'src/jsonData';
 import AlertModal from 'src/components/modal/AlertModal';
 import PreviewModal from "src/pages/manage/modal/PreviewModal";
 import SimpleSearchModal from "src/pages/manage/modal/SimpleSearchModal";
 import CountrySimpleSearchModal from "src/pages/manage/modal/CountrySimpleSearchModal";
 import PersonnelSearchModal from "src/pages/manage/modal/PersonnelSearchModal";
-import AgGrid from "src/components/AgGrid";
 import axios from 'axios';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { WngFormControlLabel } from 'src/components/common/pure/ControllLabel'
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { ko } from 'date-fns/locale';
+import { MenuProps } from 'src/components/common/pure/ControllLabel'
 
 const PageContainer = styled(Container)(
   ({ theme }) => `
@@ -87,8 +89,8 @@ const SingleRegister = ({ }) => {
   const [subName, setSubName] = useState(""); //이명
   const [engName, setEngName] = useState(""); //영어명칭
   const [oriName, setOriName] = useState(""); //원어명칭
-  const [mainNumber, setMainNumber] = useState(0); //주수량
-  const [subNumber, setSubNumber] = useState(0); //부수량
+  const [mainNumber, setMainNumber] = useState(1); //주수량
+  const [subNumber, setSubNumber] = useState(1); //부수량
   const [useYn, setUseYn] = useState("N"); //딸림자료 유/무
   const [useNumber, setUseNumber] = useState(0); //딸림수량
   const [material, setMaterial] = useState(materialData[0].cd); //재질
@@ -100,12 +102,13 @@ const SingleRegister = ({ }) => {
   const [continent, setContinent] = useState(""); //대륙
   const [country, setCountry] = useState(""); //나라
   const [yearType, setYearType] = useState(yearTypeList[0].cd); //년도 유형
-  const [prodYear, setProdYear] = useState(""); //제작시기
+  const [prodYear, setProdYear] = useState(dayjs(new Date())); //제작시기
   const [producer, setProducer] = useState(""); //제작사
-  const [getReason, setGetReason] = useState(""); //입수연유
-  const [getYear, setGetYear] = useState(""); //입수년도
-  const [eventTitle, setEventTitle] = useState(""); //행사명
-  const [eventCount, setEventCount] = useState(""); //차수
+  const [getReason, setGetReason] = useState(reasonList[0].name); //입수연유
+  const [getYear, setGetYear] = useState(dayjs(new Date())); //입수년도
+  const [eventTitle, setEventTitle] = useState(relatedTopicData[0].name); //행사명
+  const [eventCount, setEventCount] = useState(1); //차수
+  const [getPrice, setGetPrice] = useState(""); //입수가격
   const [getLocation, setGetLocation] = useState(""); //입수장소
   const [getName, setGetName] = useState(""); //수상자
   const [donorName1, setDonorName1] = useState(""); //기증자1
@@ -183,6 +186,16 @@ const SingleRegister = ({ }) => {
     }
     setcountrySubList(tempList);
   }, [continent])
+
+  useEffect(() => {
+    
+    if (material === "00" || material === "000") {
+      setGetReason("수상");      
+    }else{
+      setGetReason("기증");
+    }
+    
+  }, [material])
 
 
   useEffect(() => {
@@ -455,7 +468,7 @@ const SingleRegister = ({ }) => {
   }
 
   //그리드 row 클릭
-  const onRowClicked = (row: any) => {
+  const onRowClicked = (row) => {
   }
 
   //인사검색 모달 닫기
@@ -538,6 +551,7 @@ const SingleRegister = ({ }) => {
       prodYear: tempProdYear, //제작시기
       producer: producer, //제작사
       getReason: getReason, //입수연유
+      getPrice: getPrice, //입수가격
       getYear: getYear, //입수년도
       eventTitle: eventTitle, //행사명
       eventCount: eventCount, //차수
@@ -680,7 +694,7 @@ const SingleRegister = ({ }) => {
       <div className={styles.search_container}>
         <div className={styles.register_step_title}>
           <div style={{ display: 'flex', justifyContent: 'center', flexDirection: 'column' }}>
-            1. 박물 조회
+            1. 식별 정보
           </div>
           <div>
             <BaseButton onClick={(e) => simpleSearch(e)}>간단조회</BaseButton>
@@ -752,7 +766,7 @@ const SingleRegister = ({ }) => {
                     <td style={{ width: '10%', textAlign: 'center', backgroundColor: '#deebff' }}>주 수량(건)</td>
                     <td style={{ width: '30%' }}>
                       <ComboControlLabel
-                        control={<TextField fullWidth size="small" value={mainNumber} inputProps={{ maxLength: 20, min: 0 }}
+                        control={<TextField fullWidth size="small" value={mainNumber} inputProps={{ maxLength: 20, min: 1 }}
                           onChange={(e) => {
                             let value = parseInt(e.target.value)
                             setMainNumber(value)
@@ -771,7 +785,7 @@ const SingleRegister = ({ }) => {
                     <td style={{ width: '10%', textAlign: 'center', backgroundColor: '#deebff' }}>부 수량(점)</td>
                     <td style={{ width: '30%' }}>
                       <ComboControlLabel
-                        control={<TextField fullWidth size="small" value={subNumber} inputProps={{ maxLength: 20, min: 0 }}
+                        control={<TextField fullWidth size="small" value={subNumber} inputProps={{ maxLength: 20, min: 1 }}
                           onChange={(e) => {
                             let value = parseInt(e.target.value)
                             setSubNumber(value)
@@ -847,7 +861,7 @@ const SingleRegister = ({ }) => {
                       <select name="material" style={{ marginRight: "2px", width: "80px" }} onChange={(e) => setMaterial(e.target.value)}>
                         {materialData.map((data) => {
                           return (
-                            <option value={data.cd}>
+                            <option value={data.cd} key={data.cd}>
                               {data.name}
                             </option>
                           )
@@ -986,7 +1000,7 @@ const SingleRegister = ({ }) => {
                     <select name="yearType" onChange={(e) => setYearType(e.target.value)}>
                       {yearTypeList.map((data) => {
                         return (
-                          <option value={data.cd}>
+                          <option value={data.cd} key={data.cd}>
                             {data.name}
                           </option>
                         )
@@ -996,12 +1010,26 @@ const SingleRegister = ({ }) => {
                   <td style={{ width: '10%', textAlign: 'center', backgroundColor: '#deebff' }}>제작시기</td>
                   <td style={{ width: '30%' }}>
                     <Box sx={{ width: '80%' }}>
-                      <TextField
-                        fullWidth
-                        onChange={(e) => setProdYear(e.target.value)}
-                        inputProps={{ style: { height: '0px', fontSize: 14, backgroundColor: 'white' } }}
-                        placeholder='text'
-                        disabled={yearType == "00" ? true : false}
+                      <WngFormControlLabel
+                        control={
+                          <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={ko}>
+                            <Box sx={{ width: '80%' }}>
+                              <DatePicker
+                                label={''}
+                                value={prodYear}
+                                format={"YYYY-MM-DD"}
+                                mask={'____-__-__'}
+                                onChange={(newValue) => {
+                                  const setDate = dayjs(newValue);
+                                  setProdYear(setDate);
+                                }}
+                                disabled={yearType == "00" ? true : false}
+                                sx={{ "& .MuiInputBase-input": { height: "12px" } }}
+                              />
+                            </Box>
+                          </LocalizationProvider>
+                        }
+                        labelPlacement="start"
                       />
                     </Box>
                   </td>
@@ -1023,21 +1051,61 @@ const SingleRegister = ({ }) => {
                   <td style={{ width: '10%', textAlign: 'center' }}>입수 연유</td>
                   <td style={{ width: '10%', textAlign: 'center', backgroundColor: '#deebff' }}>입수 연유</td>
                   <td style={{ width: '30%' }}>
-                    <Box sx={{ width: '80%' }}>
-                      <TextField
-                        fullWidth
+                    <Box sx={{ width: '40%' }}>                     
+                         <TextField
+                        size='small'
+                       /* sx={{ width: '250px' }}*/
+                        select
+                        SelectProps={{ MenuProps }}
+                        value={getReason}
                         onChange={(e) => setGetReason(e.target.value)}
-                        inputProps={{ style: { height: '0px', fontSize: 14, backgroundColor: 'white' } }} placeholder='text' />
+                        inputProps={{
+                          style: {
+                            height: "30px",
+                          },
+                        }}
+
+                      >
+                        {reasonList.map((option) => {
+                          return (
+                            <MenuItem
+                              key={option.cd}
+                              value={option.name}
+                            >
+                              {option.name}
+                            </MenuItem>
+                          )
+                        })}
+                      </TextField>                    
+                    </Box>
+                    <Box sx={{ width: '40%'}}>
+                    <TextField                        
+                        onChange={(e) => setGetPrice(e.target.value)}
+                        inputProps={{ style: { height: '0px', fontSize: 14, backgroundColor: 'white' } }} placeholder='가격' />
                     </Box>
                   </td>
                   <td style={{ width: '10%', textAlign: 'center', backgroundColor: '#deebff' }}>입수 년도</td>
                   <td style={{ width: '30%' }}>
-                    <Box sx={{ width: '80%' }}>
-                      <TextField
-                        fullWidth
-                        onChange={(e) => setGetYear(e.target.value)}
-                        inputProps={{ style: { height: '0px', fontSize: 14, backgroundColor: 'white' } }} placeholder='text' />
-                    </Box>
+                    <WngFormControlLabel
+                      control={
+                        <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={ko}>
+                          <Box sx={{ width: '80%' }}>
+                            <DatePicker
+                              label={''}
+                              value={getYear}
+                              format={"YYYY-MM-DD"}
+                              mask={'____-__-__'}
+                              onChange={(newValue) => {
+                                const setDate = dayjs(newValue);
+                                setGetYear(setDate);
+                              }}
+                              sx={{ "& .MuiInputBase-input": { height: "12px" } }}
+                            />
+                          </Box>
+                        </LocalizationProvider>
+                      }
+                      labelPlacement="start"
+                    />
                   </td>
                 </tr>
                 <tr>
@@ -1045,18 +1113,55 @@ const SingleRegister = ({ }) => {
                   <td colSpan={2}>
                     <Box sx={{ width: '80%' }}>
                       <TextField
-                        fullWidth
+                        size='small'
+                        sx={{ width: '250px' }}
+                        select
+                        SelectProps={{ MenuProps }}
+                        value={eventTitle}
                         onChange={(e) => setEventTitle(e.target.value)}
-                        inputProps={{ style: { height: '0px', fontSize: 14, backgroundColor: 'white' } }} placeholder='text' />
+                        inputProps={{
+                          style: {
+                            height: "30px",
+                          },
+                        }}
+
+                      >
+                        {relatedTopicData.map((option) => {
+                          return (
+                            <MenuItem
+                              key={option.cd}
+                              value={option.name}
+                            >
+                              {option.name}
+                            </MenuItem>
+                          )
+                        })}
+                      </TextField>
                     </Box>
                   </td>
                   <td style={{ textAlign: 'center', backgroundColor: '#deebff' }}>차수</td>
                   <td>
                     <Box sx={{ width: '80%' }}>
-                      <TextField
+                      <ComboControlLabel
+                        control={<TextField fullWidth size="small" value={eventCount} inputProps={{ maxLength: 20, min: 1 }}
+                          onChange={(e) => {
+                            let value = parseInt(e.target.value)
+                            setEventCount(value)
+                          }}
+                          onBlur={(e) => {
+                            if (e.target.value === "") {
+                              setEventCount(0)
+                            }
+                          }}
+                          type="number"
+                        />}
+                        label=""
+                        labelPlacement="start"
+                      />
+                      {/* <TextField
                         fullWidth
                         onChange={(e) => setEventCount(e.target.value)}
-                        inputProps={{ style: { height: '0px', fontSize: 14, backgroundColor: 'white' } }} placeholder='text' />
+                        inputProps={{ style: { height: '0px', fontSize: 14, backgroundColor: 'white' } }} placeholder='text' /> */}
                     </Box>
                   </td>
                 </tr>
@@ -1342,7 +1447,7 @@ const SingleRegister = ({ }) => {
           </div>
         </div>
       </div>
-      <div className={styles.register_step_title}>
+      {/* <div className={styles.register_step_title}>
         <div style={{ display: 'flex', justifyContent: 'center', flexDirection: 'column' }}>
           5. 등록자 정보
         </div>
@@ -1392,7 +1497,7 @@ const SingleRegister = ({ }) => {
             </table>
           </div>
         </div>
-      </div>
+      </div> */}
       {/* <div className={styles.register_step_title}>
         <div style={{ display: 'flex', justifyContent: 'center', flexDirection: 'column' }}>
           6. History
