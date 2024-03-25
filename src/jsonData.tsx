@@ -1603,6 +1603,10 @@ export const relatedTopicData = ([
   {
     name: "평화 해외순방",
     cd: "3"
+  },
+  {
+    name: "기타",
+    cd: "4"
   }
 ])
 

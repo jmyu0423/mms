@@ -1,11 +1,9 @@
-import { useEffect, useRef, useMemo, useState, useLayoutEffect } from 'react';
-import { Box, TextField, styled, Button, DialogContent, Grid, Typography, formControlClasses } from "@mui/material";
+import { useEffect, useRef, useState } from 'react';
+import { Box, TextField, MenuItem, DialogContent } from "@mui/material";
 import UpdateModal from 'src/components/modal/UpdateModal';
-import { ItemGroup, PopupFormControlLabel, ComboControlLabel } from 'src/components/modal/ItemGroup';
-import StorageCombo from 'src/components/combobox/StorageCombo';
-import CountryCombo from 'src/components/combobox/CountryCombo';
+import { ComboControlLabel } from 'src/components/modal/ItemGroup';
 import { indigo } from '@mui/material/colors';
-import DatePicker from "react-datepicker";
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import "react-datepicker/dist/react-datepicker.css";
 import { NormalButton, BaseButton, AddButton } from 'src/components/CustomButton';
 import styles from "src/pages/itemRegister/register.module.css";
@@ -14,39 +12,18 @@ import CustomCombo from 'src/components/combobox/CustomCombo';
 import {
     materialData,
     countryData,
-    organization1List,
-    organization2List,
-    countryList,
-    broughtReasonData,
     relatedTopicData,
-    historyData,
     storageList,
     sizeType,
     yearTypeList,
 } from 'src/jsonData';
 import AlertModal from 'src/components/modal/AlertModal';
 import axios from 'axios';
-
-const FileDownloadButton = styled(Button)(({ theme }) => ({
-    color: theme.palette.getContrastText(indigo[400]),
-    backgroundColor: indigo[400],
-    width: 90,
-    height: 37,
-    fontSize: 12,
-    '&:hover': {
-        backgroundColor: indigo[600],
-    },
-}));
-
-const CustomDatePicker = styled(DatePicker)`
-    width: 200px;
-    height: 35px;
-    box-sizing: border-box;
-    padding: 8px;
-    border-radius: 4px;
-    border: 1px solid darkgray;
-    font-size: 15px;
-`;
+import { WngFormControlLabel } from 'src/components/common/pure/ControllLabel'
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { ko } from 'date-fns/locale';
+import { MenuProps } from 'src/components/common/pure/ControllLabel'
 
 const ManagementUpdateModal = ({ openUpdate, closeUpdateModal, setSingleCurrRowData, singleCurrRowData, updateRow }) => {
 
@@ -96,7 +73,7 @@ const ManagementUpdateModal = ({ openUpdate, closeUpdateModal, setSingleCurrRowD
     const [continent, setContinent] = useState(""); //대륙
     const [country, setCountry] = useState(""); //나라
     const [yearType, setYearType] = useState(yearTypeList[0].cd); //년도 유형
-    const [prodYear, setProdYear] = useState(""); //제작시기
+    const [prodYear, setProdYear] = useState(null); //제작시기
     const [producer, setProducer] = useState(""); //제작사
     const [getReason, setGetReason] = useState(""); //입수연유
     const [getYear, setGetYear] = useState(""); //입수년도
@@ -283,7 +260,7 @@ const ManagementUpdateModal = ({ openUpdate, closeUpdateModal, setSingleCurrRowD
         }
 
         setYearType(data.yearType ? data.yearType : "");
-        setProdYear(data.prodYear ? data.prodYear : "");
+        setProdYear(data.prodYear ? data.prodYear : dayjs(new Date()));
         setProducer(data.producer ? data.producer : "");
         setGetReason(data.getReason ? data.getReason : "");
         setGetYear(data.getYear ? data.getYear : "");
@@ -403,13 +380,14 @@ const ManagementUpdateModal = ({ openUpdate, closeUpdateModal, setSingleCurrRowD
             }
         }
 
-        let tempProdYear = "";
+        let tempProdYear = dayjs(new Date());
         if (yearType != "00") {
             tempProdYear = prodYear;
         }
 
         //raw data
         const object = {
+            _id: singleCurrRowData._id,
             today: today, //등록일
             organization1: organization1, //보관소속1
             organization2: organization2, //보관소속2
@@ -857,7 +835,7 @@ const ManagementUpdateModal = ({ openUpdate, closeUpdateModal, setSingleCurrRowD
                                                 <td style={{ width: '10%', textAlign: 'center', backgroundColor: '#deebff' }}>주 수량(건)</td>
                                                 <td style={{ width: '30%' }}>
                                                     <ComboControlLabel
-                                                        control={<TextField fullWidth size="small" value={mainNumber} inputProps={{ maxLength: 20, min: 0 }}
+                                                        control={<TextField fullWidth size="small" value={mainNumber} inputProps={{ maxLength: 20, min: 1 }}
                                                             onChange={(e) => {
                                                                 let value = parseInt(e.target.value)
                                                                 setMainNumber(value)
@@ -876,7 +854,7 @@ const ManagementUpdateModal = ({ openUpdate, closeUpdateModal, setSingleCurrRowD
                                                 <td style={{ width: '10%', textAlign: 'center', backgroundColor: '#deebff' }}>부 수량(점)</td>
                                                 <td style={{ width: '30%' }}>
                                                     <ComboControlLabel
-                                                        control={<TextField fullWidth size="small" value={subNumber} inputProps={{ maxLength: 20, min: 0 }}
+                                                        control={<TextField fullWidth size="small" value={subNumber} inputProps={{ maxLength: 20, min: 1 }}
                                                             onChange={(e) => {
                                                                 let value = parseInt(e.target.value)
                                                                 setSubNumber(value)
@@ -1098,13 +1076,33 @@ const ManagementUpdateModal = ({ openUpdate, closeUpdateModal, setSingleCurrRowD
                                             <td style={{ width: '10%', textAlign: 'center', backgroundColor: '#deebff' }}>제작시기</td>
                                             <td style={{ width: '30%' }}>
                                                 <Box sx={{ width: '80%' }}>
-                                                    <TextField
-                                                        fullWidth
-                                                        value={prodYear}
+                                                    {/* <TextField
                                                         onChange={(e) => setProdYear(e.target.value)}
+                                                        value={prodYear}
+                                                        fullWidth
                                                         inputProps={{ style: { height: '0px', fontSize: 14, backgroundColor: 'white' } }}
                                                         placeholder='text'
-                                                        disabled={yearType == "00" ? true : false}
+                                                    /> */}
+                                                    <WngFormControlLabel
+                                                        control={
+                                                            <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={ko}>
+                                                                <Box sx={{ width: '80%' }}>
+                                                                    <DatePicker
+                                                                        label={''}
+                                                                        value={dayjs(prodYear)}
+                                                                        format={"YYYY-MM-DD"}
+                                                                        mask={'____-__-__'}
+                                                                        onChange={(newValue) => {
+                                                                            const setDate = dayjs(newValue);
+                                                                            setProdYear(setDate);
+                                                                        }}
+                                                                        disabled={yearType == "00" ? true : false}
+                                                                        sx={{ "& .MuiInputBase-input": { height: "12px" } }}
+                                                                    />
+                                                                </Box>
+                                                            </LocalizationProvider>
+                                                        }
+                                                        labelPlacement="start"
                                                     />
                                                 </Box>
                                             </td>
@@ -1138,11 +1136,32 @@ const ManagementUpdateModal = ({ openUpdate, closeUpdateModal, setSingleCurrRowD
                                             <td style={{ width: '10%', textAlign: 'center', backgroundColor: '#deebff' }}>입수 년도</td>
                                             <td style={{ width: '30%' }}>
                                                 <Box sx={{ width: '80%' }}>
-                                                    <TextField
+                                                    {/* <TextField
                                                         fullWidth
                                                         value={getYear}
                                                         onChange={(e) => setGetYear(e.target.value)}
-                                                        inputProps={{ style: { height: '0px', fontSize: 14, backgroundColor: 'white' } }} placeholder='text' />
+                                                        inputProps={{ style: { height: '0px', fontSize: 14, backgroundColor: 'white' } }} placeholder='text' /> */}
+                                                    <WngFormControlLabel
+                                                        control={
+                                                            <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={ko}>
+                                                                <Box sx={{ width: '80%' }}>
+                                                                    <DatePicker
+                                                                        label={''}
+                                                                        value={dayjs(getYear)}
+                                                                        format={"YYYY-MM-DD"}
+                                                                        mask={'____-__-__'}
+                                                                        onChange={(newValue) => {
+                                                                            const setDate = dayjs(newValue);
+                                                                            setGetYear(setDate);
+                                                                        }}
+                                                                        disabled={yearType == "00" ? true : false}
+                                                                        sx={{ "& .MuiInputBase-input": { height: "12px" } }}
+                                                                    />
+                                                                </Box>
+                                                            </LocalizationProvider>
+                                                        }
+                                                        labelPlacement="start"
+                                                    />
                                                 </Box>
                                             </td>
                                         </tr>
@@ -1151,10 +1170,30 @@ const ManagementUpdateModal = ({ openUpdate, closeUpdateModal, setSingleCurrRowD
                                             <td colSpan={2}>
                                                 <Box sx={{ width: '80%' }}>
                                                     <TextField
-                                                        fullWidth
+                                                        size='small'
+                                                        sx={{ width: '250px' }}
+                                                        select
+                                                        SelectProps={{ MenuProps }}
                                                         value={eventTitle}
                                                         onChange={(e) => setEventTitle(e.target.value)}
-                                                        inputProps={{ style: { height: '0px', fontSize: 14, backgroundColor: 'white' } }} placeholder='text' />
+                                                        inputProps={{
+                                                            style: {
+                                                                height: "30px",
+                                                            },
+                                                        }}
+
+                                                    >
+                                                        {relatedTopicData.map((option) => {
+                                                            return (
+                                                                <MenuItem
+                                                                    key={option.cd}
+                                                                    value={option.name}
+                                                                >
+                                                                    {option.name}
+                                                                </MenuItem>
+                                                            )
+                                                        })}
+                                                    </TextField>
                                                 </Box>
                                             </td>
                                             <td style={{ textAlign: 'center', backgroundColor: '#deebff' }}>차수</td>
@@ -1459,7 +1498,7 @@ const ManagementUpdateModal = ({ openUpdate, closeUpdateModal, setSingleCurrRowD
                             </div>
                         </div>
                     </div>
-                    <div className={styles.register_step_title}>
+                    {/* <div className={styles.register_step_title}>
                         <div style={{ display: 'flex', justifyContent: 'center', flexDirection: 'column' }}>
                             5. 등록자 정보
                         </div>
@@ -1511,7 +1550,7 @@ const ManagementUpdateModal = ({ openUpdate, closeUpdateModal, setSingleCurrRowD
                                 </table>
                             </div>
                         </div>
-                    </div>
+                    </div> */}
                 </div>
             </DialogContent>
 
