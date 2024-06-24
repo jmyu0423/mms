@@ -104,11 +104,18 @@ const SingleRegister = ({ }) => {
   const [yearType, setYearType] = useState(yearTypeList[0].cd); //년도 유형
   const [prodYear, setProdYear] = useState(dayjs(new Date())); //제작시기
   const [producer, setProducer] = useState(""); //제작사
+<<<<<<< HEAD:src/pages/itemRegister/SingleRegister/index.js
   const [getReason, setGetReason] = useState(reasonList[0].name); //입수연유
   const [getYear, setGetYear] = useState(dayjs(new Date())); //입수년도
   const [eventTitle, setEventTitle] = useState(relatedTopicData[0].name); //행사명
   const [eventCount, setEventCount] = useState(1); //차수
   const [getPrice, setGetPrice] = useState(""); //입수가격
+=======
+  const [getReason, setGetReason] = useState(""); //입수연유
+  const [getYear, setGetYear] = useState(dayjs(new Date())); //입수년도
+  const [eventTitle, setEventTitle] = useState(relatedTopicData[0].name); //행사명
+  const [eventCount, setEventCount] = useState(1); //차수
+>>>>>>> a177617f8d414697dc7fd1208bec18e591194ee5:src/pages/itemRegister/SingleRegister/index.tsx
   const [getLocation, setGetLocation] = useState(""); //입수장소
   const [getName, setGetName] = useState(""); //수상자
   const [donorName1, setDonorName1] = useState(""); //기증자1
